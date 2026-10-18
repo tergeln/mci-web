@@ -119,7 +119,7 @@
 #chat{width:380px;max-width:calc(100vw - 30px);max-height:calc(100svh - 140px);display:flex;flex-direction:column;border:1px solid #B89B5E66;border-radius:24px;background:linear-gradient(155deg,#FCFBF7,#F0F3FA);color:#172342;box-shadow:0 20px 65px #030e2140,0 2px 10px #030e211a;font-family:'Roboto',sans-serif;text-align:left}
 #chat .chat-head{display:flex;align-items:center;gap:12px;padding:20px 18px;background:linear-gradient(125deg,#030E21,#162943 70%,#34404A);color:#F5EDDA;border-bottom:1px solid #B89B5E66}
 #chat .bot-avatar{width:48px;height:48px;flex-shrink:0;background:transparent;border:0;box-shadow:none;padding:0}
-#chat .bot-avatar img{display:block;width:100%;height:100%;object-fit:contain}
+#chat .bot-avatar img{display:block;width:72px;height:72px;object-fit:contain;filter:url(#partner-remove-white)}
 #chat .chat-head>div:nth-child(2){min-width:0;flex:1}
 #chat .chat-head strong{font-size:16px;font-weight:500}
 #chat .chat-head small{display:block;margin-top:4px;font-size:11px;color:#C5CFDD;opacity:1;line-height:1.5;text-align:left}
@@ -247,3 +247,37 @@ html.hero-in-view:not([data-theme=dark]) #home{background:radial-gradient(ellips
 /* style block #44 (original-universe-style) */
 #pg{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
 .original-universe-ready #universe{display:none}
+
+/* Partner logos above the contact section. */
+.partners-strip{position:relative;z-index:2;padding:64px 0 40px;border-top:1px solid var(--line)}
+.partners-heading{font:500 12px/1.5 'Roboto',sans-serif;letter-spacing:2px;text-transform:uppercase;text-align:center;color:var(--muted);margin-bottom:22px}
+.partners-strip .strip{margin:0;padding:12px 0 20px;background:transparent;border:0}
+.partners-strip .tech-flow-group{gap:48px;padding-right:48px}
+.partners-strip .partner{display:flex;align-items:center;gap:18px;flex:0 0 auto;width:310px;white-space:normal}
+.partners-strip .partner-logo{display:flex;align-items:center;justify-content:center;flex:0 0 96px;height:96px;padding:12px;overflow:hidden;position:relative;background:transparent;border:0;border-radius:0}
+.partners-strip .partner-logo img{display:block;width:72px;height:72px;object-fit:contain;filter:url(#partner-remove-white)}
+.partners-strip .partner span{font:500 16px/1.5 'Roboto',sans-serif;color:var(--ink)}
+.partners-strip:hover .tech-flow-track{animation-play-state:paused}
+@media(max-width:720px){.partners-heading{font-size:10px;letter-spacing:1px}.partners-strip .partner{width:260px;gap:14px}.partners-strip .partner-logo{flex-basis:96px;height:96px}.partners-strip .partner span{font-size:14px}.partners-strip .tech-flow-group{gap:28px;padding-right:28px}}
+@media(prefers-reduced-motion:reduce){.partners-strip .strip{overflow-x:auto;-webkit-mask-image:none;mask-image:none}.partners-strip .tech-flow-group[aria-hidden]{display:none}}
+
+/* Compensate for the whitespace in the supplied BID artwork. */
+.partners-strip .partner-logo--bid img{width:228px;height:162px;max-width:none;flex-shrink:0;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+
+/* Quiet, compact contact section with a solid surface over the particle canvas. */
+#contact{position:relative;z-index:1;background:var(--bg);padding:80px 0;border-top:1px solid var(--line)}
+#contact .contact{display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:80px;min-height:0}
+#contact .contact>div{min-width:0}
+#contact .eyebrow{font-size:10px;letter-spacing:1.8px;color:var(--muted);font-weight:500;margin-bottom:20px}
+#contact .eyebrow:before{display:none}
+#contact h2{font-family:'Roboto',system-ui,sans-serif;font-size:clamp(32px,3.4vw,48px);line-height:1.2;letter-spacing:-1.5px;font-weight:400;margin:0 0 18px}
+#contact .contact p{font-size:15px;line-height:1.8;max-width:34ch;margin:0;color:var(--muted)}
+#contact .contact-links{display:flex;flex-direction:column;gap:0;padding:0}
+#contact .contact-row{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:18px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.6}
+#contact .contact-row:first-child{padding-top:0}
+#contact .contact-row small{font-size:12px;color:var(--muted);flex-shrink:0}
+#contact .contact-row span{font-size:15px;overflow-wrap:anywhere;text-align:right}
+#contact a.contact-row:hover{color:var(--blue)}
+#contact #contactChat{align-self:flex-start;width:auto;min-height:0;margin-top:24px;padding:0;border:0;border-radius:0;background:transparent;color:var(--ink);font-size:13px;font-weight:500;box-shadow:none}
+#contact #contactChat:hover{color:var(--blue);transform:none}
+@media(max-width:760px){#contact{padding:56px 0}#contact .contact{grid-template-columns:1fr;gap:36px}#contact .contact-row{gap:16px}#contact .contact-row span{font-size:14px}#contact .contact p{font-size:14px}}

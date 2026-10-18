@@ -8,10 +8,10 @@ export default function Contact({ onOpenChat }) {
       <div ref={ref} className={className}>
         <div>
           <div className="eyebrow"><Tr mn="ХОЛБОО БАРИХ" en="SAY HELLO" /></div>
-          <h2><Tr mn="Танд нэг санаа байна уу?<br><em>Ярилцъя.</em>" en="Something on your mind?<br><em>Let’s talk.</em>" /></h2>
+          <h2><Tr mn="Ярилцъя." en="Let’s talk." /></h2>
           <p>
             <Tr
-              mn="Сургалтын талаар асуух эсвэл хамтран ажиллах — бид таныг сонсоход бэлэн."
+              mn="Сургалт, хамтын ажиллагааны талаар бидэнтэй холбогдоорой."
               en="Have a course question or a collaboration idea? We would love to hear from you."
             />
           </p>

@@ -17,6 +17,7 @@ import ScrollProgress from './ScrollProgress';
 import CursorGlow from './CursorGlow';
 import ChapterIndex from './ChapterIndex';
 import Hero from './Hero/Hero';
+import TechStrip from './Hero/TechStrip';
 import Manifesto from './Manifesto';
 import CoursesSection from './Courses/CoursesSection';
 import AboutSection from './About/AboutSection';
@@ -84,6 +85,7 @@ export default function Home() {
         <Activities />
         <Method />
         <Merch />
+        <div className="wrap"><TechStrip /></div>
         <Contact onOpenChat={() => setChatOpen(true)} />
       </main>
       <Footer />

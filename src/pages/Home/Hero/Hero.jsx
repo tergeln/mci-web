@@ -3,8 +3,6 @@ import Tr from '../../../components/Tr/Tr';
 import Constellation from '../../../components/canvas/Constellation';
 import HeroBackdrop from './HeroBackdrop';
 import HeroVisual from './HeroVisual';
-import SkillPills from './SkillPills';
-import TechStrip from './TechStrip';
 
 // `html.hero-in-view` – hero дэлгэцийн дээд хагаст байх үед body/canvas-ын дэвсгэрийг өөрчилдөг.
 function useHeroInView() {
@@ -47,7 +45,6 @@ export default function Hero() {
             <a className="btn" href="#courses"><Tr mn="Сургалтууд үзэх ↗" en="Explore courses ↗" /></a>
             <a className="btn secondary" href="#about"><Tr mn="Бидэнтэй танилцах →" en="Meet the academy →" /></a>
           </div>
-          <SkillPills selected={selected} onSelect={setSelected} />
           <div className="hero-foot">
             <div className="avatars">
               <i>MC</i>
@@ -60,7 +57,6 @@ export default function Hero() {
         </div>
         <HeroVisual />
       </div>
-      <TechStrip />
     </div>
   );
 }

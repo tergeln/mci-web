@@ -14,7 +14,7 @@ export const GRADIENTS = {
 
 /** Нэг өнгийн материалууд */
 const SOLIDS = {
-  chrome: { color: '#e9ecf2', metalness: 1, roughness: 0.1, clearcoat: 0, env: 1.25 },
+  chrome: { color: '#fafbff', metalness: 0.78, roughness: 0.2, clearcoat: 0.65, env: 1.65 },
   gold: { color: '#e0b049', metalness: 1, roughness: 0.18, clearcoat: 0, env: 1.2 },
   white: { color: '#f4f5f8', metalness: 0, roughness: 0.38, clearcoat: 0.8, env: 0.9 },
   onyx: { color: '#15171c', metalness: 0.85, roughness: 0.22, clearcoat: 1, env: 1.4 },

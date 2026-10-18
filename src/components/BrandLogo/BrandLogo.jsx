@@ -5,7 +5,7 @@ import './BrandLogo.css';
 export default function BrandLogo() {
   return (
     <span className="brand-logo3d" aria-hidden="true">
-      <Logo3D variant="ocean" depth={0.45} interactive={false} autoRotate={true} minHeight={0} zoom={1.5} />
+      <Logo3D variant="chrome" depth={0.45} interactive={false} autoRotate={true} minHeight={0} zoom={1.5} />
     </span>
   );
 }
