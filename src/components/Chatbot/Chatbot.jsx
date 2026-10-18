@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLang } from '../../context/LanguageContext';
 import reducedMotion from '../../hooks/reducedMotion';
-import { chatAnswer, chatGreeting, quickQuestions } from '../../data/chat';
+import { chatGreeting, quickQuestions } from '../../data/chat';
+import { sendChatMessage } from '../../api/chat';
+import { errorMessage } from '../../api/client';
 import createBurst from './magicBurst';
 
 // open/onOpenChange-ийг Home барина (Contact хэсгийн товч мөн chat-ийг нээдэг).
@@ -12,6 +14,8 @@ export default function Chatbot({ open, onOpenChange }) {
   const inputRef = useRef(null);
   const messagesRef = useRef(null);
   const pending = useRef(false);
+  const replying = useRef(false);
+  const nextId = useRef(0);
   const timers = useRef([]);
   const burstRef = useRef(null);
   const prevOpen = useRef(open);
@@ -94,8 +98,21 @@ export default function Chatbot({ open, onOpenChange }) {
     }, 1700);
   };
 
-  const ask = (question) => {
-    setMessages((m) => [...m, { text: question, user: true }, { text: chatAnswer(question, t), user: false }]);
+  // POST /api/chat. Хариу ирэх хүртэл "…" бөмбөлөг харуулж, ирэхээр нь солино.
+  const ask = async (question) => {
+    if (replying.current) return;
+    replying.current = true;
+    const id = (nextId.current += 1);
+    const history = messages.map((m) => ({ role: m.user ? 'user' : 'assistant', content: m.text }));
+    setMessages((m) => [...m, { text: question, user: true }, { id, text: '…', user: false, typing: true }]);
+    let text;
+    try {
+      ({ reply: text } = await sendChatMessage({ message: question, lang, history }));
+    } catch (err) {
+      text = errorMessage(err, t);
+    }
+    setMessages((m) => m.map((msg) => (msg.id === id ? { text, user: false } : msg)));
+    replying.current = false;
   };
 
   const onSubmit = (e) => {
@@ -132,7 +149,7 @@ export default function Chatbot({ open, onOpenChange }) {
         <div className="messages" id="messages" ref={messagesRef} aria-live="polite">
           {messages.map((m, i) => (
             // eslint-disable-next-line react/no-array-index-key
-            <div key={i} className={`bubble${m.user ? ' user' : ''}`}>{m.text}</div>
+            <div key={i} className={`bubble${m.user ? ' user' : ''}`} aria-busy={m.typing || undefined}>{m.text}</div>
           ))}
         </div>
         <div className="quick">

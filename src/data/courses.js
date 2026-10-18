@@ -1,7 +1,7 @@
-// Нүүр хуудасны 3 курс. `kind` нь CourseArt-ийн хувилбарыг (code / chart / keys) заана.
+// Нүүр хуудасны 3 курс. `id` нь API-ийн курсын id, `open` бол төлбөртэй бүртгэлтэй (бусад нь хүлээлгийн жагсаалт). `kind` нь CourseArt-ийн хувилбарыг (code / chart / keys) заана.
 export const homeCourses = [
   {
-    kind: 'code', art: 'art1',
+    id: 'vip-course', kind: 'code', art: 'art1',
     tag: { mn: 'ХИЙМЭЛ ОЮУН БА ХӨГЖҮҮЛЭЛТ', en: 'AI & DEVELOPMENT' },
     title: { mn: 'VIP цогц сургалт', en: 'VIP Course' },
     text: { mn: 'Суурь ойлголтоос AI төсөл хүртэлх цогц хөтөлбөр.', en: 'A complete path from fundamentals to your own AI project.' },
@@ -10,7 +10,7 @@ export const homeCourses = [
     button: { mn: 'Хүлээлгийн жагсаалт ↗', en: 'Join waitlist ↗' },
   },
   {
-    kind: 'chart', art: 'art2',
+    id: 'data-analysis', open: true, kind: 'chart', art: 'art2',
     tag: { mn: 'ӨГӨГДӨЛ БА ШИНЖИЛГЭЭ', en: 'DATA & ANALYTICS' },
     title: { mn: 'Өгөгдлийн шинжилгээ ба Power BI', en: 'Data Analysis & Power BI' },
     text: { mn: 'Өгөгдлөө ойлгож, шийдвэр гаргахад туслах тайлан бүтээгээрэй.', en: 'Understand your data. Build dashboards that inform decisions.' },
@@ -19,7 +19,7 @@ export const homeCourses = [
     button: { mn: 'Сургалт авах ↗', en: 'Take this course ↗' },
   },
   {
-    kind: 'keys', art: 'art3',
+    id: 'computer-skills', kind: 'keys', art: 'art3',
     tag: { mn: 'ДИЖИТАЛ СУУРЬ ЧАДВАР', en: 'DIGITAL FOUNDATIONS' },
     title: { mn: 'Компьютерын хэрэглээ', en: 'Computer Skills' },
     text: { mn: 'Дижитал ертөнцөд өөртөө итгэлтэй ажиллах суурь чадвар.', en: 'Build confidence with the everyday tools of the digital world.' },

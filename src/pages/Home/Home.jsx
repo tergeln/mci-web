@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useLang } from '../../context/LanguageContext';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { readStorage, writeStorage } from '../../hooks/useLocalStorage';
+import { homeCourses } from '../../data/courses';
 import MainNavbar from '../../components/MainNavbar/MainNavbar';
 import Footer from '../../components/Footer/Footer';
 import Chatbot from '../../components/Chatbot/Chatbot';
@@ -52,10 +53,12 @@ export default function Home() {
   const openClassroom = useCallback(() => setClassroomRequest((r) => ({ id: (r ? r.id : 0) + 1 })), []);
   const openCart = () => setCartRequest((r) => ({ id: (r ? r.id : 0) + 1 }));
 
-  // `/?course=0|1|2` – каталог хуудсаас орж ирэхэд тухайн курсийн dialog-ийг шууд нээнэ.
+  // `/?course=data-analysis` – каталог хуудсаас орж ирэхэд тухайн курсийн dialog-ийг шууд нээнэ.
+  // Хуучин `/?course=0|1|2` холбоосууд ч ажиллана.
   const requested = searchParams.get('course');
   useEffect(() => {
-    if (['0', '1', '2'].includes(requested)) openCourse(Number(requested));
+    const index = /^[0-2]$/.test(requested ?? '') ? Number(requested) : homeCourses.findIndex((c) => c.id === requested);
+    if (index !== -1) openCourse(index);
   }, [requested, openCourse]);
 
   const saveCart = (next) => {
