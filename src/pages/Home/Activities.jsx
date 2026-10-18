@@ -6,9 +6,20 @@ function ActivityCard({ activity }) {
   const [ref, className] = useReveal('activity');
   return (
     <article ref={ref} className={className}>
-      <span className="number">{activity.number}</span>
+      <div className="service-image" aria-hidden="true">
+        {activity.image && <img src={activity.image} alt="" loading="lazy" />}
+      </div>
+      <div className="service-content">
       <h3><Tr text={activity.title} /></h3>
       <p><Tr text={activity.text} /></p>
+      <div className="service-price">{activity.price}</div>
+      <details className="service-details">
+        <summary><Tr mn="Дэлгэрэнгүй" en="See more" /></summary>
+      <ul className="service-features">
+        {activity.features.map((feature) => <li key={feature.en}><Tr text={feature} /></li>)}
+      </ul>
+      </details>
+      </div>
     </article>
   );
 }
@@ -21,14 +32,8 @@ export default function Activities() {
         <div ref={headRef} className={headClass}>
           <div>
             <div className="eyebrow"><Tr mn="БИДНИЙ ҮЙЛ АЖИЛЛАГАА" en="WHAT WE DO" /></div>
-            <h2><Tr mn="Хичээлээс <em>цааш.</em>" en="Beyond the <em>classroom.</em>" /></h2>
+            <h2><Tr mn="Таны бизнесийн <em>цахим шийдэл.</em>" en="Digital solutions <em>for your business.</em>" /></h2>
           </div>
-          <p>
-            <Tr
-              mn="Мэдлэгээ хуваалцах, санаагаа турших, шинэ хүмүүстэй холбогдох боломжууд."
-              en="More ways to share knowledge, test your ideas and find your people."
-            />
-          </p>
         </div>
         <div className="activities">
           {activities.map((activity) => (

@@ -43,7 +43,7 @@ export default function Hero() {
           </p>
           <div className="actions">
             <a className="btn" href="#courses"><Tr mn="Сургалт үзэх" en="Explore courses" /></a>
-            <a className="btn secondary" href="#about"><Tr mn="Цахим бизнес" en="Digital business" /></a>
+            <a className="btn secondary" href="#activities"><Tr mn="Цахим бизнес" en="Digital business" /></a>
           </div>
           <div className="hero-foot">
             <div className="avatars">
