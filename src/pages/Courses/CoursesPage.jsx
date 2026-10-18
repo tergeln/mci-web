@@ -2,12 +2,29 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SimpleNavbar from '../../components/SimpleNavbar/SimpleNavbar';
 import Tr from '../../components/Tr/Tr';
+import ApiState from '../../components/ApiState/ApiState';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
-import { catalog, catalogFilters } from '../../data/catalog';
+import useApi from '../../hooks/useApi';
+import { getCourses } from '../../api/courses';
+import { catalogFilters } from '../../data/catalog';
 import './courses.css';
+
+// API-аас ирсэн status-ыг дэлгэцийн текст болгоно.
+const STATUS = {
+  open: { mn: 'Бүртгэл нээлттэй', en: 'Enrollment open' },
+  waitlist: { mn: 'Удахгүй', en: 'Coming soon' },
+  planned: { mn: 'Удахгүй', en: 'Coming soon' },
+};
+const CTA = {
+  open: { mn: 'Сургалт авах →', en: 'Take this course →' },
+  waitlist: { mn: 'Хүлээлгийн жагсаалт →', en: 'Join waitlist →' },
+};
+const PLANNED = { mn: 'Төлөвлөж буй чиглэл · Элсэлт нээгдээгүй', en: 'Planned track · Not open yet' };
+const ART_TEXT = ['{ }', 'SQL', '✧'];
 
 export default function CoursesPage() {
   const [filter, setFilter] = useState('all');
+  const { data: courses, loading, error, reload } = useApi((signal) => getCourses({ signal }), []);
   useDocumentTitle('Бүх сургалтууд — Magic Code AI');
 
   return (
@@ -26,27 +43,26 @@ export default function CoursesPage() {
             </button>
           ))}
         </div>
-        <div className="catalog-grid">
-          {catalog.map((c) => (
-            <article
-              key={c.title.en}
-              className="catalog-card"
-              hidden={filter !== 'all' && c.category !== filter}
-            >
-              <div className={`catalog-art catalog-art-${c.art}`} aria-hidden="true">{c.artText}</div>
-              <div className="catalog-body">
-                <small><Tr text={c.status} /></small>
-                <h3><Tr text={c.title} /></h3>
-                <p><Tr text={c.text} /></p>
-                {c.planned ? (
-                  <span className="planned-note"><Tr text={c.planned} /></span>
-                ) : (
-                  <Link className="btn" to={`/?course=${c.course}#courses`}><Tr text={c.cta} /></Link>
-                )}
-              </div>
-            </article>
-          ))}
-        </div>
+        <ApiState loading={loading} error={error} onRetry={reload} />
+        {courses && (
+          <div className="catalog-grid">
+            {courses.map((c, i) => (
+              <article key={c.id} className="catalog-card" hidden={filter !== 'all' && c.category !== filter}>
+                <div className={`catalog-art catalog-art-${i % 3}`} aria-hidden="true">{ART_TEXT[i % 3]}</div>
+                <div className="catalog-body">
+                  <small><Tr text={STATUS[c.status] ?? STATUS.waitlist} /></small>
+                  <h3><Tr text={c.title} /></h3>
+                  <p><Tr text={c.description} /></p>
+                  {CTA[c.status] ? (
+                    <Link className="btn" to={`/?course=${c.id}#courses`}><Tr text={CTA[c.status]} /></Link>
+                  ) : (
+                    <span className="planned-note"><Tr text={PLANNED} /></span>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </main>
     </>
   );
