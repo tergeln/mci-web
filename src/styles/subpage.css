@@ -1,2 +1,3 @@
 /* style block #42 */
+header .news-back,header #newsLang{color:var(--nav-ink)}
 .news-page{padding:125px 0 70px}.news-page .impact-news{margin-top:0}.news-back{margin-left:auto;color:#F1E6D5;font-size:14px}#newsLang{color:#F1E6D5}.news-page .impact-grid{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:950px){.news-page .impact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.news-page .impact-grid{grid-template-columns:1fr}.news-page{padding-top:110px}}

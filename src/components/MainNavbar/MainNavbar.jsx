@@ -21,18 +21,23 @@ export default function MainNavbar({ cartCount, onCartClick }) {
     setOpen(value);
   };
   const enter = () => {
-    if (hoverCapable()) setMenu(true);
+    if (!hoverCapable()) return;
+    clearTimeout(timer.current);
+    if (!open) timer.current = setTimeout(() => setOpen(true), 180);
   };
   const leave = () => {
     if (hoverCapable()) {
       clearTimeout(timer.current);
-      timer.current = setTimeout(() => setOpen(false), 180);
+      timer.current = setTimeout(() => setOpen(false), 240);
     }
   };
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') setMenu(false);
+      if (e.key === 'Escape') {
+        setMenu(false);
+        if (menuRef.current?.contains(document.activeElement)) triggerRef.current?.focus();
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => {
@@ -49,7 +54,7 @@ export default function MainNavbar({ cartCount, onCartClick }) {
   };
 
   return (
-    <header onBlur={onBlur}>
+    <header className={open ? 'menu-open' : undefined} onBlur={onBlur}>
       <div className="wrap">
         <a className="brand" href="#home" aria-label="Magic Code AI">
           <BrandLogo />
@@ -58,12 +63,15 @@ export default function MainNavbar({ cartCount, onCartClick }) {
           id="nav"
           ref={menuRef}
           className={open ? 'open' : undefined}
+          aria-label={t('Үндсэн цэс', 'Main navigation')}
+          aria-hidden={!open}
+          inert={open ? undefined : ''}
           onPointerEnter={enter}
           onPointerLeave={leave}
           onFocus={() => setMenu(true)}
         >
           {navLinks.map((link) => (
-            <a key={link.hash} href={link.hash} onClick={() => setOpen(false)}>
+            <a key={link.hash} href={link.hash} onClick={() => setMenu(false)}>
               <Tr text={link} />
             </a>
           ))}
@@ -95,14 +103,14 @@ export default function MainNavbar({ cartCount, onCartClick }) {
             className="mobile"
             id="menuBtn"
             ref={triggerRef}
-            aria-label={t('Цэс нээх', 'Open menu')}
+            aria-label={open ? t('Цэс хаах', 'Close menu') : t('Цэс нээх', 'Open menu')}
             aria-expanded={open}
+            aria-controls="nav"
             onPointerEnter={enter}
             onPointerLeave={leave}
-            onFocus={() => setMenu(true)}
-            onClick={() => (hoverCapable() ? setMenu(true) : setOpen((o) => !o))}
+            onClick={() => setMenu(!open)}
           >
-            ☰
+            <span className="menu-icon" aria-hidden="true"><span /><span /><span /></span>
           </button>
         </div>
       </div>
