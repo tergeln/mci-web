@@ -1,3 +1,4 @@
+import AccountMenu from '../AccountMenu';
 import { Link } from 'react-router-dom';
 import { useLang } from '../../context/LanguageContext';
 import Tr from '../Tr/Tr';
@@ -19,6 +20,7 @@ export default function SimpleNavbar({ logoTo, backTo, back }) {
         <button className="language" id="newsLang" onClick={toggleLang}>
           {lang === 'mn' ? 'EN' : 'MN'}
         </button>
+        <AccountMenu />
       </div>
     </header>
   );

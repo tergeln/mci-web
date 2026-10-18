@@ -1,3 +1,4 @@
+import { useAuth } from '../../context/AuthContext';
 import { useEffect, useRef, useState } from 'react';
 import Tr from '../Tr/Tr';
 import { useLang } from '../../context/LanguageContext';
@@ -5,9 +6,9 @@ import closeOnBackdrop from '../../hooks/dialogBackdrop';
 import { readStorage, writeStorage } from '../../hooks/useLocalStorage';
 import { courseLessons } from '../../data/lessons';
 
-function loadCompleted() {
+function loadCompleted(key) {
   try {
-    const saved = JSON.parse(readStorage('mc-lessons-v1', '[]'));
+    const saved = JSON.parse(readStorage(key, '[]'));
     if (Array.isArray(saved)) return [...new Set(saved.filter((id) => courseLessons.some((l) => l.id === id)))];
   } catch {
     /* эвдэрсэн өгөгдлийг алгасна */
@@ -15,25 +16,34 @@ function loadCompleted() {
   return [];
 }
 
-function loadLast() {
-  const last = Number(readStorage('mc-last-lesson', ''));
+function loadLast(key) {
+  const last = Number(readStorage(key, ''));
   return Number.isInteger(last) && last >= 0 && last < courseLessons.length ? last : 0;
 }
 
 // request – id нэмэгдэх бүрт dialog нээгдэж, видеог ачаална.
-export default function ClassroomDialog({ request }) {
+export default function ClassroomDialog({ request, onProgress }) {
   const { t } = useLang();
+  const { user } = useAuth();
+  const progressKey = `mc-lessons-v1-${user?.id || 'guest'}`;
+  const lastKey = `mc-last-lesson-${user?.id || 'guest'}`;
   const dialogRef = useRef(null);
-  const [current, setCurrent] = useState(loadLast);
-  const [completed, setCompleted] = useState(loadCompleted);
+  const [current, setCurrent] = useState(() => loadLast(lastKey));
+  const [completed, setCompleted] = useState(() => loadCompleted(progressKey));
   const [videoId, setVideoId] = useState(null);
+
+  useEffect(() => {
+    setCurrent(loadLast(lastKey));
+    setCompleted(loadCompleted(progressKey));
+    setVideoId(null);
+  }, [lastKey, progressKey]);
 
   const lesson = courseLessons[current];
 
   const play = (index) => {
     setCurrent(index);
     setVideoId(courseLessons[index].id);
-    writeStorage('mc-last-lesson', String(index));
+    writeStorage(lastKey, String(index));
   };
 
   useEffect(() => {
@@ -47,7 +57,8 @@ export default function ClassroomDialog({ request }) {
   const toggleComplete = () => {
     const next = completed.includes(lesson.id) ? completed.filter((x) => x !== lesson.id) : [...completed, lesson.id];
     setCompleted(next);
-    writeStorage('mc-lessons-v1', JSON.stringify(next));
+    writeStorage(progressKey, JSON.stringify(next));
+    onProgress?.();
   };
 
   return (

@@ -1,0 +1,153 @@
+flowchart LR
+ LOGIN["A01 · Админ нэвтрэх"]
+ DASH["A02 · Хянах самбар"]
+ LOGIN --> DASH
+ subgraph COURSES["01 · СУРГАЛТ / БЭЛЭН ВИДЕО · FR0187–FR0190"]
+  direction TB
+  CL["A03 · Сургалтын жагсаалт"]
+  CE["A04 · Сургалт үүсгэх / Засах"]
+  BASIC["Үндсэн мэдээлэл · MN / EN"]
+  PRICE["Үнэ / Эрхийн хугацаа / Худалдааны төлөв"]
+  OUTLINE["A05 · Бүлэг, хичээлийн бүтэц"]
+  GROUP["A06 · Бүлэг нэмэх / Засах · Цонх"]
+  LESSON["A07 · Хичээл нэмэх / Засах"]
+  VIDEO["Видео байршуулах / Холбоос холбох"]
+  FILES["Материал нэмэх / Жишээ хичээл сонгох"]
+  PRE["A08 · Сургалт / Видео урьдчилан харах"]
+  PUBLISH["Нийтлэх / Худалдааг зогсоох / Архивлах"]
+  CL --> CE
+  CE --> BASIC
+  CE --> PRICE
+  CE --> OUTLINE
+  OUTLINE --> GROUP
+  OUTLINE --> LESSON
+  LESSON --> VIDEO
+  LESSON --> FILES
+  CE --> PRE --> PUBLISH
+ end
+ subgraph USERS["02 · ХЭРЭГЛЭГЧ / ЭРХ / ЯВЦ · FR0186, FR0191, FR0194"]
+  direction TB
+  UL["A09 · Хэрэглэгчдийн жагсаалт"]
+  UD["A10 · Хэрэглэгчийн дэлгэрэнгүй"]
+  RIGHTS["A11 · Эрх олгох / Хугацаа өөрчлөх / Сэргээх · Цонх"]
+  STATUS["Идэвхтэй / Түдгэлзүүлсэн төлөв"]
+  PROGRESS["A12 · Суралцах явц · Сургалт / Хичээл"]
+  UL --> UD
+  UD --> RIGHTS
+  UD --> STATUS
+  UD --> PROGRESS
+ end
+ subgraph PURCHASE["03 · ХУДАЛДАН АВАЛТ / ХҮЛЭЭЛГИЙН ЖАГСААЛТ"]
+  direction TB
+  PL["A13 · Сургалтын худалдан авалтууд"]
+  PD["A14 · Худалдан авалтын дэлгэрэнгүй"]
+  WL["A15 · Хүлээлгийн жагсаалт"]
+  WD["A16 · Хүлээлгийн хүсэлтийн дэлгэрэнгүй"]
+  SEND["A17 · Сургалт нээгдсэн мэдэгдэл бэлтгэх"]
+  CONFIRM["Хүлээн авагч, агуулга батлах → Илгээх"]
+  PL --> PD
+  WL --> WD --> SEND --> CONFIRM
+ end
+ subgraph FINANCE["04 · ТӨЛБӨР / БУЦААЛТ · FR0192"]
+  direction TB
+  PAYL["A18 · Төлбөрийн жагсаалт"]
+  PAYD["A19 · Төлбөрийн дэлгэрэнгүй"]
+  VERIFY["A20 · Банкны төлбөр батлах · Цонх"]
+  CHECK["Үйлчилгээний төлбөрийн төлөв шалгах"]
+  RL["A21 · Буцаалтын хүсэлтүүд"]
+  RD["A22 · Буцаалтын дэлгэрэнгүй"]
+  DECIDE["A23 · Зөвшөөрөх / Татгалзах · Цонх"]
+  RECORD["Буцаасан дүн / Эрхийн шийдвэр бүртгэх"]
+  PAYL --> PAYD --> VERIFY
+  PAYD --> CHECK
+  RL --> RD --> DECIDE --> RECORD
+ end
+ subgraph SHOP["05 · БҮТЭЭГДЭХҮҮН / ЗАХИАЛГА · FR0196"]
+  direction TB
+  ML["A24 · Бүтээгдэхүүний жагсаалт"]
+  ME["A25 · Бүтээгдэхүүн нэмэх / Засах"]
+  VAR["Зураг / Үнэ / Хэмжээ / Өнгө / Үлдэгдэл"]
+  MP["Нийтлэх / Худалдааг зогсоох"]
+  OL["A26 · Захиалгын жагсаалт"]
+  OD["A27 · Захиалгын дэлгэрэнгүй"]
+  OS["A28 · Захиалгын төлөв өөрчлөх · Цонх"]
+  ML --> ME --> VAR --> MP
+  OL --> OD --> OS
+ end
+ subgraph CONTENT["06 · МЭДЭЭ / ВЭБИЙН АГУУЛГА · FR0195"]
+  direction TB
+  NL["A29 · Мэдээний жагсаалт"]
+  NE["A30 · Мэдээ нэмэх / Засах · MN / EN"]
+  NP["A31 · Мэдээ урьдчилан харах"]
+  NS["Ноорог / Нийтлэх / Архивлах"]
+  HOME["A32 · Нүүр хуудасны агуулга"]
+  FEATURE["Онцлох сургалт / Мэдээ сонгох"]
+  ABOUT["A33 · Бидний тухай засах"]
+  CONTACT["A34 · Холбоо барих мэдээлэл засах"]
+  DELIVERY["A35 · Хүргэлтийн үнэ / Өөрөө авах газар"]
+  CHAT["A36 · Чатны лавлах / Бэлэн асуултууд"]
+  NL --> NE --> NP --> NS
+  HOME --> FEATURE
+ end
+ subgraph OPERATIONS["07 · ХҮСЭЛТ / ТАЙЛАН / ТҮҮХ"]
+  direction TB
+  REQL["A37 · Холбоо барих хүсэлтүүд"]
+  REQD["A38 · Хүсэлтийн дэлгэрэнгүй"]
+  REQS["Шинэ / Шалгаж буй / Шийдвэрлэсэн"]
+  REPORT["A39 · Тайлангийн төв"]
+  SALES["Сургалтын борлуулалт"]
+  PAYREPORT["Төлбөр / Буцаалт"]
+  SHOPREPORT["Бүтээгдэхүүний борлуулалт / Захиалга"]
+  LEARNREPORT["Суралцах явц"]
+  EXPORT["Хугацаагаар шүүх → CSV / Excel татах"]
+  AUDIT["A40 · Үйлдлийн түүх"]
+  AUDITD["A41 · Өөрчлөлтийн дэлгэрэнгүй · Өмнөх / Шинэ утга"]
+  PASS["A42 · Админы нууц үг солих"]
+  REQL --> REQD --> REQS
+  REPORT --> SALES --> EXPORT
+  REPORT --> PAYREPORT --> EXPORT
+  REPORT --> SHOPREPORT --> EXPORT
+  REPORT --> LEARNREPORT --> EXPORT
+  AUDIT --> AUDITD
+ end
+ DASH --> CL
+ DASH --> UL
+ DASH --> PL
+ DASH --> WL
+ DASH --> PAYL
+ DASH --> RL
+ DASH --> ML
+ DASH --> OL
+ DASH --> NL
+ DASH --> HOME
+ DASH --> ABOUT
+ DASH --> CONTACT
+ DASH --> DELIVERY
+ DASH --> CHAT
+ DASH --> REQL
+ DASH --> REPORT
+ DASH --> AUDIT
+ DASH --> PASS
+ DASH -->|"Гарах"| LOGIN
+ PD -.->|"Хэрэглэгч"| UD
+ PD -.->|"Сургалт"| CE
+ PD -.->|"Төлбөр"| PAYD
+ PD -.->|"Сургалтын эрх"| RIGHTS
+ UD -.->|"Төлбөрийн түүх"| PAYD
+ UD -.->|"Захиалгын түүх"| OD
+ OD -.->|"Төлбөр"| PAYD
+ RD -.->|"Төлбөр"| PAYD
+ VERIFY -.->|"Сургалтын төлбөр батлагдсан"| RIGHTS
+ RECORD -.->|"Эрх шинэчлэх"| RIGHTS
+ classDef root fill:#E8DFFF,stroke:#7C3AED,color:#452075
+ classDef course fill:#EAF2FF,stroke:#4F7EF7,color:#19346B
+ classDef user fill:#E7F8EF,stroke:#26A269,color:#155D3B
+ classDef money fill:#FFF2E0,stroke:#E99A26,color:#784A13
+ classDef content fill:#F0EBFF,stroke:#9B7BD4,color:#4B287B
+ classDef modal fill:#FFFBE6,stroke:#C4A53B,color:#675410
+ class LOGIN,DASH root
+ class CL,CE,BASIC,PRICE,OUTLINE,LESSON,VIDEO,FILES,PRE,PUBLISH course
+ class UL,UD,STATUS,PROGRESS,PL,PD,WL,WD,SEND,CONFIRM user
+ class PAYL,PAYD,CHECK,RL,RD,RECORD,ML,ME,VAR,MP,OL,OD money
+ class NL,NE,NP,NS,HOME,FEATURE,ABOUT,CONTACT,DELIVERY,CHAT,REQL,REQD,REQS,REPORT,SALES,PAYREPORT,SHOPREPORT,LEARNREPORT,EXPORT,AUDIT,AUDITD,PASS content
+ class GROUP,RIGHTS,VERIFY,DECIDE,OS modal

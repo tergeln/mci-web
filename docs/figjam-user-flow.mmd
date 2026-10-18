@@ -1,0 +1,147 @@
+flowchart LR
+ H["U01 · Нүүр хуудас"]
+ subgraph AUTH["01 · НЭВТРЭЛТ · FR0109–FR0122"]
+  direction TB
+  L["U02 · Нэвтрэх"]
+  R["U03 · Бүртгүүлэх"]
+  E["U04 · И-мэйл баталгаажуулах"]
+  F["U05 · Нууц үг сэргээх"]
+  SENT["U06 · Сэргээх холбоос илгээсэн"]
+  RESET["U07 · Шинэ нууц үг"]
+  RETURN{"Анх хүссэн үйлдэл"}
+  L --> R --> E --> L
+  L --> F --> SENT --> RESET --> L
+  L -->|"Амжилттай"| RETURN
+ end
+ subgraph COURSES["02 · COURSES / ENROLL · FR0129–FR0152"]
+  direction TB
+  C["U08 · Сургалтын жагсаалт · Хайлт / Ангилал"]
+  D["U09 · Сургалтын дэлгэрэнгүй"]
+  PREVIEW["U10 · Жишээ видео · Цонх"]
+  WAIT["U11 · Хүлээлгийн жагсаалт · Цонх"]
+  WS["U12 · Хүсэлт хүлээн авсан"]
+  BUY["U13 · Худалдан авалт батлах"]
+  GATE{"Нэвтэрсэн үү?"}
+  PG["U14 · Төлбөрийн арга сонгох"]
+  Q["U15 · QPay · QR / Банкны апп"]
+  B["U16 · Банкны данс / Гүйлгээний утга"]
+  PS["U17 · Төлбөрийн төлөв"]
+  RESULT{"Төлбөрийн үр дүн"}
+  PENDING["Хүлээгдэж буй"]
+  FAIL["Амжилтгүй / Хугацаа дууссан"]
+  OK["U18 · Төлбөр баталгаажсан"]
+  C --> D
+  D --> PREVIEW
+  D -->|"Удахгүй"| WAIT --> WS
+  D -->|"Худалдан авах"| GATE
+  GATE -->|"Тийм"| BUY --> PG
+  GATE -->|"Үгүй"| L
+  PG --> Q --> PS
+  PG --> B --> PS
+  PS --> RESULT
+  RESULT --> PENDING -->|"Дахин шалгах"| PS
+  RESULT --> FAIL -->|"Дахин төлөх"| PG
+  RESULT --> OK
+ end
+ subgraph LEARNING["03 · БЭЛЭН ВИДЕО СУРГАЛТ · FR0153–FR0166"]
+  direction TB
+  MY["U19 · Миний сургалтууд"]
+  SUM["U20 · Сургалтын явц / Бүлэг / Эрхийн хугацаа"]
+  RIGHTS{"Эрх хүчинтэй юу?"}
+  PLAYER["U21 · Видео хичээл үзэх"]
+  MATERIAL["Хавсралт материал татах"]
+  PROGRESS["Дууссан тэмдэглэх · Явц хадгалах"]
+  NEXT["Өмнөх / Дараагийн хичээл"]
+  EXPIRE["U22 · Сургалтын эрх дууссан"]
+  MY --> SUM --> RIGHTS
+  RIGHTS -->|"Тийм"| PLAYER
+  RIGHTS -->|"Үгүй"| EXPIRE -->|"Дахин авах"| D
+  PLAYER --> MATERIAL
+  PLAYER --> PROGRESS
+  PLAYER --> NEXT --> PLAYER
+ end
+ subgraph MERCH["04 · MERCH / CHECKOUT · FR0167–FR0174"]
+  direction TB
+  ML["U23 · Бүтээгдэхүүний жагсаалт"]
+  MD["U24 · Бүтээгдэхүүний дэлгэрэнгүй"]
+  CART["U25 · Сагс · Тоо өөрчлөх / Хасах"]
+  MG{"Нэвтэрсэн үү?"}
+  REC["U26 · Хүлээн авагчийн мэдээлэл"]
+  METHOD{"Хүлээн авах хэлбэр"}
+  ADDRESS["U27 · Хүргэлтийн хаяг"]
+  PICK["U28 · Өөрөө авах газрын мэдээлэл"]
+  CONFIRM["U29 · Захиалга / Эцсийн дүн батлах"]
+  ORDER["U30 · Захиалгын дэлгэрэнгүй / Явц"]
+  ML --> MD --> CART --> MG
+  MG -->|"Үгүй"| L
+  MG -->|"Тийм"| REC --> METHOD
+  METHOD -->|"Хүргэлт"| ADDRESS --> CONFIRM
+  METHOD -->|"Өөрөө авах"| PICK --> CONFIRM
+  CONFIRM --> PG
+ end
+ subgraph ACCOUNT["05 · МИНИЙ ХЭСЭГ · FR0123–FR0128"]
+  direction TB
+  ACC["U31 · Хувийн хэсгийн тойм"]
+  PROF["U32 · Миний мэдээлэл засах"]
+  HIST["U33 · Худалдан авалт / Төлбөрийн түүх"]
+  PD["U34 · Төлбөрийн дэлгэрэнгүй / Баталгаа"]
+  REF["U35 · Цуцлалт / Буцаалтын хүсэлт · Цонх"]
+  RS["U36 · Буцаалтын хүсэлтийн төлөв"]
+  ORDERS["U37 · Миний захиалгууд"]
+  NOTIF["U38 · Мэдэгдлүүд"]
+  PASS["U39 · Нууц үг солих"]
+  ACC --> PROF
+  ACC --> MY
+  ACC --> HIST --> PD --> REF --> RS
+  PD -->|"Төлөгдөөгүй"| PG
+  ACC --> ORDERS --> ORDER
+  ORDER -->|"Төлөгдөөгүй"| PG
+  ACC --> NOTIF
+  NOTIF -.->|"Холбогдох зүйл"| SUM
+  NOTIF -.-> ORDER
+  ACC --> PASS
+  ACC -->|"Гарах"| H
+ end
+ subgraph INFO["06 · МЭДЭЭ / ХОЛБОО · FR0175–FR0184"]
+  direction TB
+  NL["U40 · Мэдээ · Хайлт / Ангилал / Хуудаслалт"]
+  ND["U41 · Мэдээний дэлгэрэнгүй"]
+  ABOUT["U42 · Бидний тухай"]
+  CONTACT["U43 · Холбоо барих / Хүсэлтийн маягт"]
+  CS["U44 · Хүсэлт хүлээн авсан"]
+  CHAT["U45 · Чат туслах · Цонх"]
+  ERROR["U46 · Хуудас олдсонгүй"]
+  NL --> ND
+  CONTACT --> CS
+  CONTACT --> CHAT
+  CHAT -.->|"Сургалтын холбоос"| D
+  CHAT -.-> CONTACT
+  ERROR --> H
+ end
+ H --> C
+ H --> ML
+ H --> NL
+ H --> ABOUT
+ H --> CONTACT
+ H --> CHAT
+ H -->|"Нэвтрэх"| L
+ H -->|"Нэвтэрсэн"| ACC
+ RETURN -->|"Сургалт авах"| BUY
+ RETURN -->|"Бараа захиалах"| REC
+ RETURN -->|"Миний хэсэг"| ACC
+ OK -->|"Сургалтын төлбөр"| MY
+ OK -->|"Барааны төлбөр"| ORDER
+ D -->|"Эрхтэй бол үргэлжлүүлэх"| SUM
+ ACC -->|"Сүүлд үзсэн хичээл"| PLAYER
+ classDef nav fill:#EAF2FF,stroke:#4F7EF7,color:#19346B
+ classDef auth fill:#F0EBFF,stroke:#8B5CF6,color:#4B287B
+ classDef commerce fill:#FFF2E0,stroke:#E99A26,color:#784A13
+ classDef learn fill:#E7F8EF,stroke:#26A269,color:#155D3B
+ classDef modal fill:#FFFBE6,stroke:#C4A53B,color:#675410
+ classDef state fill:#FDEBEC,stroke:#D76875,color:#7A2636
+ class H,C,D,ACC,PROF,HIST,PD,ORDERS,NOTIF,PASS,NL,ND,ABOUT,CONTACT,CS nav
+ class L,R,E,F,SENT,RESET,RETURN,GATE,MG auth
+ class BUY,PG,Q,B,PS,RESULT,ML,MD,CART,REC,METHOD,ADDRESS,PICK,CONFIRM,ORDER commerce
+ class OK,MY,SUM,RIGHTS,PLAYER,MATERIAL,PROGRESS,NEXT learn
+ class PREVIEW,WAIT,WS,REF,RS,CHAT modal
+ class PENDING,FAIL,EXPIRE,ERROR state

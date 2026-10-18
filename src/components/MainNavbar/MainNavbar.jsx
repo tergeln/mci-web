@@ -1,3 +1,4 @@
+import AccountLink from '../AccountLink';
 import { useEffect, useRef, useState } from 'react';
 import { useLang } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -75,6 +76,7 @@ export default function MainNavbar({ cartCount, onCartClick }) {
               <Tr text={link} />
             </a>
           ))}
+          <AccountLink onClick={() => setMenu(false)} />
         </nav>
         <div className="tools">
           <button id="themeToggle" aria-label={t('Өдрийн болон шөнийн горим солих', 'Switch light or dark theme')} onClick={toggleTheme}>

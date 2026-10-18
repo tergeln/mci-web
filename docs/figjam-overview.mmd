@@ -1,0 +1,63 @@
+flowchart LR
+ subgraph USER["01 · ХЭРЭГЛЭГЧИЙН ТАЛ"]
+  direction TB
+  HOME["Нүүр хуудас"]
+  COURSES["Courses · Сургалтууд"]
+  LEARN["Миний сургалтууд · Видео хичээл"]
+  MERCH["Merch · Дэлгүүр"]
+  NEWS["Мэдээ · Хийсэн ажлууд"]
+  ABOUT["Бидний тухай"]
+  CONTACT["Холбоо барих · Чат"]
+  ACCOUNT["Миний хэсэг"]
+  HOME --> COURSES
+  HOME --> MERCH
+  HOME --> NEWS
+  HOME --> ABOUT
+  HOME --> CONTACT
+  HOME --> ACCOUNT
+  ACCOUNT --> LEARN
+ end
+ subgraph SHARED["02 · НЭГДСЭН УРСГАЛ"]
+  direction TB
+  AUTH["Нэвтрэх · Бүртгүүлэх"]
+  PAYMENT["Төлбөр · QPay / Банк"]
+  SUCCESS["Төлбөр баталгаажсан"]
+  ACCESS["Сургалтын эрх нээгдэх"]
+  ORDER["Бүтээгдэхүүний захиалга"]
+  AUTH --> PAYMENT --> SUCCESS
+  SUCCESS --> ACCESS --> LEARN
+  SUCCESS --> ORDER
+ end
+ subgraph ADMIN["03 · АДМИНЫ ТАЛ"]
+  direction TB
+  DASH["Админ · Хянах самбар"]
+  AC["Сургалт · Бэлэн видео · Материал"]
+  AU["Хэрэглэгч · Эрх · Суралцах явц"]
+  AP["Худалдан авалт · Төлбөр · Буцаалт"]
+  AM["Бүтээгдэхүүн · Үлдэгдэл · Захиалга"]
+  CONTENT["Мэдээ · Вэбийн агуулга · Чат"]
+  REPORT["Хүсэлт · Тайлан · Үйлдлийн түүх"]
+  DASH --> AC
+  DASH --> AU
+  DASH --> AP
+  DASH --> AM
+  DASH --> CONTENT
+  DASH --> REPORT
+ end
+ COURSES -->|"Худалдан авах"| AUTH
+ MERCH -->|"Сагс → Checkout"| AUTH
+ ACCOUNT --> AUTH
+ AUTH -->|"Админ эрх"| DASH
+ AC -.->|"Нийтлэх"| COURSES
+ AC -.->|"Видео нийтлэх"| LEARN
+ AM -.->|"Нийтлэх"| MERCH
+ ORDER -.->|"Боловсруулах"| AM
+ AP -.->|"Баталгаажуулах"| ACCESS
+ classDef blue fill:#EAF2FF,stroke:#4F7EF7,color:#19346B
+ classDef violet fill:#F0EBFF,stroke:#8B5CF6,color:#4B287B
+ classDef mint fill:#E7F8EF,stroke:#26A269,color:#155D3B
+ classDef orange fill:#FFF2E0,stroke:#E99A26,color:#784A13
+ class HOME,COURSES,NEWS,ABOUT,CONTACT,ACCOUNT blue
+ class LEARN,ACCESS,SUCCESS mint
+ class AUTH,PAYMENT,MERCH,ORDER orange
+ class DASH,AC,AU,AP,AM,CONTENT,REPORT violet
