@@ -24,7 +24,7 @@ export default function NewsDetailPage() {
 
   return (
     <>
-      <SimpleNavbar logoTo="/#about" backTo="/news" back={{ mn: '← Бүх мэдээ', en: '← All stories' }} />
+      <SimpleNavbar logoTo="/#about" backTo="/news" back={{ mn: 'Бүх мэдээ', en: 'All stories' }} />
       <main className="story-page" id="story">
         {missing && t('Мэдээ олдсонгүй. Бүх мэдээ рүү буцна уу.', 'Story not found. Return to all stories.')}
         {!missing && <ApiState loading={loading} error={error} onRetry={reload} />}
@@ -63,7 +63,7 @@ export default function NewsDetailPage() {
                 'Verified outcomes, participant reflections and photographs will appear here.',
               )}
             </p>
-            <Link className="btn secondary" to="/news">{t('← Бүх мэдээ рүү буцах', '← Back to all stories')}</Link>
+            <Link className="btn secondary" to="/news">{t('Бүх мэдээ рүү буцах', 'Back to all stories')}</Link>
           </>
         )}
       </main>

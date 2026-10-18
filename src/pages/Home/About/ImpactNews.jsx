@@ -20,7 +20,7 @@ export default function ImpactNews() {
         </div>
       )}
       <Link className="btn secondary" id="moreImpact" to="/news">
-        <Tr mn="Цааш үзэх →" en="See all stories →" />
+        <Tr mn="Цааш үзэх" en="See all stories" />
       </Link>
     </div>
   );

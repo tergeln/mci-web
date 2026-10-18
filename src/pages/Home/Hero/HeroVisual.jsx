@@ -11,7 +11,7 @@ export default function HeroVisual() {
       <div className="float f1"><b>⌘</b> Python & automation</div>
       <div className="float f2"><b>✳</b> Artificial intelligence</div>
       <div className="float f3"><b>▥</b> Data & analytics</div>
-      <div className="float f4"><b>↗</b> Your next big idea</div>
+      <div className="float f4"><b></b> Your next big idea</div>
       <span className="visual-bottom">A LITTLE CURIOSITY. A LOT OF POSSIBILITY.</span>
     </div>
   );

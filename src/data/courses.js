@@ -7,16 +7,16 @@ export const homeCourses = [
     text: { mn: 'Суурь ойлголтоос AI төсөл хүртэлх цогц хөтөлбөр.', en: 'A complete path from fundamentals to your own AI project.' },
     meta: { mn: 'Бүх түвшин · Төсөлд суурилсан', en: 'All levels · Project-based' },
     status: { mn: 'Удахгүй', en: 'Coming soon' },
-    button: { mn: 'Хүлээлгийн жагсаалт ↗', en: 'Join waitlist ↗' },
+    button: { mn: 'Хүлээлгийн жагсаалт', en: 'Join waitlist' },
   },
   {
     id: 'data-analysis', open: true, kind: 'chart', art: 'art2',
     tag: { mn: 'ӨГӨГДӨЛ БА ШИНЖИЛГЭЭ', en: 'DATA & ANALYTICS' },
     title: { mn: 'Өгөгдлийн шинжилгээ ба Power BI', en: 'Data Analysis & Power BI' },
     text: { mn: 'Өгөгдлөө ойлгож, шийдвэр гаргахад туслах тайлан бүтээгээрэй.', en: 'Understand your data. Build dashboards that inform decisions.' },
-    meta: { mn: 'Анхан → Ахисан · SQL, Python, Power BI', en: 'Beginner → Advanced · SQL, Python, Power BI' },
+    meta: { mn: 'Анхан Ахисан · SQL, Python, Power BI', en: 'Beginner Advanced · SQL, Python, Power BI' },
     status: { mn: 'Бүртгэл нээлттэй', en: 'Enrollment open' },
-    button: { mn: 'Сургалт авах ↗', en: 'Take this course ↗' },
+    button: { mn: 'Сургалт авах', en: 'Take this course' },
   },
   {
     id: 'computer-skills', kind: 'keys', art: 'art3',
@@ -25,7 +25,7 @@ export const homeCourses = [
     text: { mn: 'Дижитал ертөнцөд өөртөө итгэлтэй ажиллах суурь чадвар.', en: 'Build confidence with the everyday tools of the digital world.' },
     meta: { mn: 'Анхан шат · Практик дасгалууд', en: 'Beginner friendly · Practical exercises' },
     status: { mn: 'Удахгүй', en: 'Coming soon' },
-    button: { mn: 'Хүлээлгийн жагсаалт ↗', en: 'Join waitlist ↗' },
+    button: { mn: 'Хүлээлгийн жагсаалт', en: 'Join waitlist' },
   },
 ];
 
@@ -37,4 +37,4 @@ export const courseCodeArt = {
   en: { lines: ['> hello, future.', 'def build_your_idea():', '  return possibility'], ok: '✓ ready to create' },
 };
 
-export const courseKeys = ['⌘', '⇧', '↗'];
+export const courseKeys = ['⌘', '⇧', '✦'];

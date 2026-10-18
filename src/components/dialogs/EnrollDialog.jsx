@@ -9,7 +9,7 @@ import { USE_MOCK, errorMessage } from '../../api/client';
 const PAYMENT_METHODS = ['qpay', 'bank'];
 
 // request = { course, id } – id нэмэгдэх бүрт dialog шинээр нээгдэнэ. `course` нь homeCourses-ийн индекс.
-// `open` курс бүртгэл → төлбөр, бусад нь хүлээлгийн жагсаалт. Эцсийн шийдвэрийг API-ийн status гаргана.
+// `open` курс бүртгэл төлбөр, бусад нь хүлээлгийн жагсаалт. Эцсийн шийдвэрийг API-ийн status гаргана.
 export default function EnrollDialog({ request, onOpenClassroom }) {
   const { lang, t } = useLang();
   const dialogRef = useRef(null);
@@ -90,7 +90,7 @@ export default function EnrollDialog({ request, onOpenClassroom }) {
         <button className="icon-btn" aria-label={t('Хаах', 'Close')} onClick={() => dialogRef.current.close()}>×</button>
       </div>
       <div className="progress" id="progress">
-        {isCourse ? t('01 Бүртгэл → 02 Төлбөр', '01 Register → 02 Payment') : t('Сонирхлоо илэрхийлэх · Туршилт', 'Register your interest · Demo')}
+        {isCourse ? t('01 Бүртгэл 02 Төлбөр', '01 Register 02 Payment') : t('Сонирхлоо илэрхийлэх · Туршилт', 'Register your interest · Demo')}
       </div>
       <div id="enrollStep" hidden={step !== 'form'}>
         <p className="muted" id="chosenCourse">{name}</p>
@@ -104,8 +104,8 @@ export default function EnrollDialog({ request, onOpenClassroom }) {
           {errorBox}
           <button className="btn full" id="enrollSubmit" disabled={busy}>
             {busy
-              ? t('Илгээж байна…', 'Sending…')
-              : isCourse ? t('Үргэлжлүүлэх · Төлбөр →', 'Continue to payment →') : t('Жагсаалтад нэгдэх →', 'Join waitlist →')}
+              ? t('Илгээж байна', 'Sending')
+              : isCourse ? t('Төлбөр рүү үргэлжлүүлэх', 'Continue to payment') : t('Жагсаалтад нэгдэх', 'Join waitlist')}
           </button>
         </form>
       </div>
@@ -131,10 +131,10 @@ export default function EnrollDialog({ request, onOpenClassroom }) {
         </p>
         {errorBox}
         <button className="btn full" id="finishPayment" disabled={busy} onClick={onPay}>
-          {busy ? t('Илгээж байна…', 'Sending…') : t('Туршилтын бүртгэлийг дуусгах →', 'Finish demo enrollment →')}
+          {busy ? t('Илгээж байна', 'Sending') : t('Туршилтын бүртгэлийг дуусгах', 'Finish demo enrollment')}
         </button>
         <button className="btn secondary full" id="backEnroll" disabled={busy} onClick={() => { setError(''); setStep('form'); }}>
-          <Tr mn="← Буцах" en="← Back" />
+          <Tr mn="Буцах" en="Back" />
         </button>
       </div>
       <div id="successStep" hidden={step !== 'success'}>

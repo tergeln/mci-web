@@ -4,7 +4,7 @@ import reducedMotion from '../../hooks/reducedMotion';
 import { LOGO_SHAPES } from '../BrandLogo/logoShapes';
 
 // section id -> particle хэлбэрийн индекс
-const SHAPE_BY_SECTION = { home: 0, manifesto: 4, courses: 0, about: 1, activities: 5, method: 3, journey: 2, merch: 4, contact: 5 };
+const SHAPE_BY_SECTION = { home: 0, courses: 0, about: 1, activities: 5, method: 3, journey: 2, merch: 4, contact: 5 };
 const X_OFFSET = [2.7, -2.7, 2.5, 0, 2.6, -2.6];
 const OPACITY = [0.95, 0.6, 0.55, 0.5, 0.7, 0.6];
 

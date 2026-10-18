@@ -16,8 +16,8 @@ export default function CoursesSection({ onSelectCourse }) {
           </div>
           <p>
             <Tr
-              mn="Анхан шатнаас ахисан түвшин хүртэл. Зөвхөн хичээл үзэхээс илүүг — өөрийн бүтээлтэй болохыг сонго."
-              en="From first steps to your next level. Go beyond watching lessons. Build something you can call your own."
+              mn="Анхан шатнаас ахисан түвшин хүртэл."
+              en="From first steps to your next level."
             />
           </p>
         </div>
@@ -26,7 +26,7 @@ export default function CoursesSection({ onSelectCourse }) {
             <CourseCard key={course.title.en} course={course} index={i} onSelect={() => onSelectCourse(i)} />
           ))}
           <Link className="btn secondary courses-more" to="/courses">
-            <Tr mn="Цааш үзэх →" en="See all courses →" />
+            <Tr mn="Цааш үзэх" en="See all courses" />
           </Link>
         </div>
       </div>

@@ -15,7 +15,7 @@ export default function NewsPage() {
 
   return (
     <>
-      <SimpleNavbar logoTo="/#about" backTo="/#about" back={{ mn: '← Бидний тухай', en: '← About us' }} />
+      <SimpleNavbar logoTo="/#about" backTo="/#about" back={{ mn: 'Бидний тухай', en: 'About us' }} />
       <main className="news-page">
         <div className="wrap impact-news">
           <ImpactIntro />

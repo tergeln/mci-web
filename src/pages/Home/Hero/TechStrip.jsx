@@ -13,7 +13,7 @@ export default function TechStrip() {
       <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}>
         <defs>
           <filter id="partner-remove-white" colorInterpolationFilters="sRGB" x="0" y="0" width="100%" height="100%">
-            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1 -1 -1 0 3" result="mask" />
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -10 -10 -10 0 29" result="mask" />
             <feComposite in="SourceGraphic" in2="mask" operator="in" />
           </filter>
         </defs>

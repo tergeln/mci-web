@@ -16,8 +16,8 @@ const STATUS = {
   planned: { mn: 'Удахгүй', en: 'Coming soon' },
 };
 const CTA = {
-  open: { mn: 'Сургалт авах →', en: 'Take this course →' },
-  waitlist: { mn: 'Хүлээлгийн жагсаалт →', en: 'Join waitlist →' },
+  open: { mn: 'Сургалт авах', en: 'Take this course' },
+  waitlist: { mn: 'Хүлээлгийн жагсаалт', en: 'Join waitlist' },
 };
 const PLANNED = { mn: 'Төлөвлөж буй чиглэл · Элсэлт нээгдээгүй', en: 'Planned track · Not open yet' };
 const ART_TEXT = ['{ }', 'SQL', '✧'];
@@ -29,7 +29,7 @@ export default function CoursesPage() {
 
   return (
     <>
-      <SimpleNavbar logoTo="/#courses" backTo="/#courses" back={{ mn: '← Сургалтууд', en: '← Courses' }} />
+      <SimpleNavbar logoTo="/#courses" backTo="/#courses" back={{ mn: 'Сургалтууд', en: 'Courses' }} />
       <main className="catalog-page wrap">
         <div className="eyebrow"><Tr mn="СУРАЛЦАХ ЗАМАА СОНГО" en="CHOOSE YOUR PATH" /></div>
         <h1><Tr mn="Бүх сургалтууд" en="Explore courses" /></h1>

@@ -18,12 +18,9 @@ import CursorGlow from './CursorGlow';
 import ChapterIndex from './ChapterIndex';
 import Hero from './Hero/Hero';
 import TechStrip from './Hero/TechStrip';
-import Manifesto from './Manifesto';
 import CoursesSection from './Courses/CoursesSection';
 import AboutSection from './About/AboutSection';
-import MotionBand from './MotionBand';
 import Activities from './Activities';
-import Method from './Method';
 import Merch from './Merch';
 import Contact from './Contact';
 import LiveStrip from './LiveStrip';
@@ -78,14 +75,11 @@ export default function Home() {
       <MainNavbar cartCount={cart.length} onCartClick={openCart} />
       <main>
         <Hero />
-        <Manifesto />
         <CoursesSection onSelectCourse={openCourse} />
         <AboutSection />
-        <MotionBand />
         <Activities />
-        <Method />
         <Merch />
-        <div className="wrap"><TechStrip /></div>
+        <TechStrip />
         <Contact onOpenChat={() => setChatOpen(true)} />
       </main>
       <Footer />

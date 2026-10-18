@@ -34,23 +34,23 @@ export default function Hero() {
       <div className="hero">
         <div>
           <div className="eyebrow"><Tr mn="ИРЭЭДҮЙГ ХАМТДАА БҮТЭЭЕ" en="BUILD YOUR NEXT CHAPTER" /></div>
-          <h1><Tr mn="AI-г ашиглах уу,<em>өөрөө бүтээх үү?</em>" en="Will you use AI,<em>or build it?</em>" /></h1>
+          <h1><Tr mn="Технологиор боломжийг бүтээнэ" en="Creating possibilities through technology" /></h1>
           <p>
             <Tr
-              mn="Сониуч зангаа бодит ур чадвар болго. Программчлал, өгөгдөл, хиймэл оюуныг практик төсөл дээр суралцах таны шинэ орон зай."
-              en="Turn your curiosity into real skills. Your space to learn programming, data and artificial intelligence through hands-on projects."
+              mn="Таны бизнест зориулсан веб хөгжүүлэлт, программчлал, өгөгдөл болон хиймэл оюуны сургалтыг бид санал болгож байна."
+              en="We offer web development for your business and training in programming, data and artificial intelligence."
             />
           </p>
           <div className="actions">
-            <a className="btn" href="#courses"><Tr mn="Сургалтууд үзэх ↗" en="Explore courses ↗" /></a>
-            <a className="btn secondary" href="#about"><Tr mn="Бидэнтэй танилцах →" en="Meet the academy →" /></a>
+            <a className="btn" href="#courses"><Tr mn="Сургалт үзэх" en="Explore courses" /></a>
+            <a className="btn secondary" href="#about"><Tr mn="Цахим бизнес" en="Digital business" /></a>
           </div>
           <div className="hero-foot">
             <div className="avatars">
               <i>MC</i>
               <i>AI</i>
               <i>&lt;/&gt;</i>
-              <i>↗</i>
+              <i>✦</i>
             </div>
             <span><Tr mn="Суралц. Турш. Бүтээ. Хамтдаа." en="Learn. Experiment. Build. Together." /></span>
           </div>

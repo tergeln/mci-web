@@ -11,7 +11,7 @@ export default function AboutSection() {
           <div className="picture-note">
             <strong><Tr mn="Эхний алхмаас ид шид эхэлнэ." en="Magic happens when you start." /></strong>
             <br />
-            <span className="muted"><Tr mn="Улаанбаатар, Монгол ↗" en="Ulaanbaatar, Mongolia ↗" /></span>
+            <span className="muted"><Tr mn="Улаанбаатар, Монгол" en="Ulaanbaatar, Mongolia" /></span>
           </div>
         </div>
         <div ref={copyRef} className={copyClass}>
@@ -24,10 +24,6 @@ export default function AboutSection() {
             />
           </p>
           <div className="values">
-            <div>
-              <b><Tr mn="Практик эхэнд" en="Practice comes first" /></b>
-              <span><Tr mn="Бодит төсөл дээр суралцана" en="Learn by making real projects" /></span>
-            </div>
             <div>
               <b><Tr mn="Хамтдаа илүү хол" en="Better together" /></b>
               <span><Tr mn="Асууж, туршиж, хамтдаа өснө" en="Ask, experiment and grow" /></span>

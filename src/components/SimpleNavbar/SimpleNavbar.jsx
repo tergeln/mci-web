@@ -4,7 +4,7 @@ import Tr from '../Tr/Tr';
 import BrandLogo from '../BrandLogo/BrandLogo';
 import '../../styles/subpage.css';
 
-// courses, news, news-detail хуудасны header: logo + "← буцах" + хэлний товч
+// courses, news, news-detail хуудасны header: logo + "буцах" + хэлний товч
 export default function SimpleNavbar({ logoTo, backTo, back }) {
   const { lang, toggleLang } = useLang();
   return (

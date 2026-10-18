@@ -22,7 +22,7 @@ export default function ImpactCard({ story, index, to }) {
       {to ? (
         <Link className="news-card-link" to={to}>
           {content}
-          <span className="news-read"><Tr mn="Дэлгэрэнгүй →" en="Read story →" /></span>
+          <span className="news-read"><Tr mn="Дэлгэрэнгүй" en="Read story" /></span>
         </Link>
       ) : (
         content

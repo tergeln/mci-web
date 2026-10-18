@@ -80,16 +80,16 @@ export default function ClassroomDialog({ request }) {
             />
           </p>
           <a id="lessonYoutube" href={`https://www.youtube.com/watch?v=${lesson.id}`} target="_blank" rel="noopener noreferrer">
-            <Tr mn="YouTube дээр үзэх ↗" en="Watch on YouTube ↗" />
+            <Tr mn="YouTube дээр үзэх" en="Watch on YouTube" />
           </a>
           <div className="lesson-actions">
             <button className="btn" id="completeLesson" onClick={toggleComplete}>
               {completed.includes(lesson.id)
-                ? t('✓ Үзсэн · Тэмдэглэгээг авах', '✓ Completed · Undo')
-                : t('Үзсэн гэж тэмдэглэх ✓', 'Mark as completed ✓')}
+                ? t('Үзсэн тэмдэглэгээг авах', 'Undo completion')
+                : t('Үзсэн гэж тэмдэглэх', 'Mark as completed')}
             </button>
             <button className="btn secondary" id="nextLesson" disabled={current === courseLessons.length - 1} onClick={() => play(current + 1)}>
-              <Tr mn="Дараагийн хичээл →" en="Next lesson →" />
+              <Tr mn="Дараагийн хичээл" en="Next lesson" />
             </button>
           </div>
         </div>

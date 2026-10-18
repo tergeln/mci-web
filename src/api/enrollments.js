@@ -6,7 +6,7 @@ const PHONE = /^[+0-9 ()-]{8,20}$/;
 
 /**
  * POST /api/enrollments
- * Нээлттэй курс → status "pending_payment", хүлээлгийн жагсаалттай курс → "waitlisted".
+ * Нээлттэй курс status "pending_payment", хүлээлгийн жагсаалттай курс "waitlisted".
  */
 export function createEnrollment({ courseId, name, email, phone }) {
   const body = { courseId, name: name?.trim(), email: email?.trim(), phone: phone?.trim() };

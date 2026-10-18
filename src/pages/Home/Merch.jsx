@@ -28,7 +28,6 @@ function ProductCard({ product }) {
       </a>
       <div ref={infoRef} className={infoClass}>
         <div><h3><Tr text={product.title} /></h3></div>
-        <a href={product.href} target="_blank" rel="noopener noreferrer" aria-label={`View ${product.label}`}>↗</a>
       </div>
     </article>
   );
