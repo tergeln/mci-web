@@ -1,0 +1,20 @@
+#courses .course-art.course-art--image{height:auto;aspect-ratio:3/2;padding:0;opacity:1;align-self:center;background:#dbe4f1}
+.course-art--image>img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+#courses .course-art--image .tag{position:absolute;top:16px;left:16px;max-width:calc(100% - 32px);background:#fbfcfff0;color:#172342;border-color:#ffffffb3;border-radius:8px;padding:6px 10px;font-size:10px;line-height:1.4;backdrop-filter:blur(8px)}
+.catalog-page .catalog-art.catalog-art--image{height:auto;aspect-ratio:3/2;overflow:hidden;background:#dbe4f1}
+.catalog-art--image>img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.impact-news .impact-art.impact-art--photo{height:auto;aspect-ratio:3/2}
+.impact-art--illustration img{object-position:center}
+#about .about-picture--image{min-height:0;aspect-ratio:3/2;align-self:center;overflow:hidden;background:#dbe4f1}
+#about .about-picture--image::before{content:none}
+.about-picture--image>img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.about-picture--image .picture-note{position:absolute;z-index:1;bottom:16px;left:16px;right:16px;padding:14px 18px;border-radius:12px;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(8px)}
+#activities .service-image{aspect-ratio:3/2}
+#activities .service-image img{object-position:center}
+@media(max-width:1000px) and (min-width:641px){#activities .service-image{aspect-ratio:auto;height:100%}}
+@media(max-width:640px){
+  #courses .course-art--image .tag{top:12px;left:12px;font-size:9px;max-width:calc(100% - 24px)}
+  .about-picture--image .picture-note{position:relative;left:auto;right:auto;bottom:auto;width:100%;margin-top:auto;border-radius:0;padding:12px 16px}
+  #about .about-picture--image{aspect-ratio:auto;display:flex;flex-direction:column}
+  .about-picture--image>img{position:static;aspect-ratio:3/2;height:auto}
+}

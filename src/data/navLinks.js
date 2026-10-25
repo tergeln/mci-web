@@ -1,5 +1,6 @@
 export const navLinks = [
   { hash: '#about', mn: 'Бидний тухай', en: 'About us' },
+  { hash: '#volunteering', mn: 'Бидний оролцоо', en: 'Our impact' },
   { hash: '#activities', mn: 'Үйл ажиллагаа', en: 'What we do' },
   { hash: '#courses', mn: 'Сургалт', en: 'Courses' },
   { hash: '#merch', mn: 'Бүтээгдэхүүн', en: 'Merch' },

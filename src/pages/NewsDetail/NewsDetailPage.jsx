@@ -1,5 +1,4 @@
 import { Link, useParams } from 'react-router-dom';
-import SimpleNavbar from '../../components/SimpleNavbar/SimpleNavbar';
 import ApiState from '../../components/ApiState/ApiState';
 import { useLang } from '../../context/LanguageContext';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
@@ -7,6 +6,7 @@ import useApi from '../../hooks/useApi';
 import { getNewsItem } from '../../api/news';
 import { USE_MOCK } from '../../api/client';
 import './news-detail.css';
+import ContentImage from '../../components/ContentImage/ContentImage';
 
 const detailRows = [
   ['date', 'Огноо', 'Date'],
@@ -24,7 +24,7 @@ export default function NewsDetailPage() {
 
   return (
     <>
-      <SimpleNavbar logoTo="/#about" backTo="/news" back={{ mn: 'Бүх мэдээ', en: 'All stories' }} />
+
       <main className={`story-page${story?.coverImage ? ' story-page--with-photos' : ''}`} id="story">
         {missing && t('Мэдээ олдсонгүй. Бүх мэдээ рүү буцна уу.', 'Story not found. Return to all stories.')}
         {!missing && <ApiState loading={loading} error={error} onRetry={reload} />}
@@ -73,7 +73,7 @@ export default function NewsDetailPage() {
 
 function StoryPhoto({ image, lang, cover = false }) {
   return <figure className={`story-photo${cover ? ' story-cover' : ''}`}>
-    <img src={image.src} alt={image.alt?.[lang] || ''} width={image.width} height={image.height} loading={cover ? 'eager' : 'lazy'} decoding="async" />
+    <ContentImage image={image} sizes={cover ? '(max-width: 980px) calc(100vw - 40px), 932px' : '(max-width: 640px) calc(100vw - 40px), 454px'} loading={cover ? 'eager' : 'lazy'} />
     {image.caption?.[lang] && <figcaption>{image.caption[lang]}</figcaption>}
   </figure>;
 }

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { demoUsers, useAuth } from '../../context/AuthContext';
 import { useLang } from '../../context/LanguageContext';
-import SimpleNavbar from '../../components/SimpleNavbar/SimpleNavbar';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './account.css';
 export default function LoginPage() {
@@ -22,7 +21,7 @@ export default function LoginPage() {
     const next = location.state?.from;
     navigate(profile.role === 'admin' ? '/admin' : (next === '/account' ? next : '/account'), { replace: true });
   }
-  return <><SimpleNavbar logoTo="/" backTo="/" back={{ mn: '← Нүүр хуудас', en: '← Home' }} />
+  return <>
     <main className="account-page wrap login-layout">
       <div className="login-intro"><div className="eyebrow">MAGIC CODE · YOUR SPACE</div><h1>{t('Үргэлжлүүлэн', 'Keep')}<br /><em>{t('бүтээцгээе.', 'creating.')}</em></h1><p>{t('Хичээлээ үзэж, шинэ зүйл суралцаж, өөрийн ахиц бүрийг бүтээх орон зай.', 'Your space to learn, explore lessons and keep moving forward.')}</p><div className="account-note">{t('DEMO ОРЧИН · Бүртгэл болон захиалга энэ хөтөч дээр хадгалагдана. Бодит төлбөр хийгдэхгүй.', 'DEMO · Accounts and orders are stored in this browser. No real payments are made.')}</div></div>
       <div className="account-card"><h2>{t('Тавтай морил', 'Welcome back')}</h2><p>{t('Бүртгэлээрээ нэвтрэх', 'Log in to your account')}</p>

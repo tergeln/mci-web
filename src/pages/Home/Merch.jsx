@@ -41,7 +41,7 @@ export default function Merch() {
       <div className="wrap">
         <div ref={headRef} className={headClass}>
           <div>
-            <div className="eyebrow"><Tr mn="ЦУГЛУУЛГА" en="COLLECTION" /></div>
+            <div className="eyebrow"><Tr mn="БҮТЭЭГДЭХҮҮН" en="PRODUCTS" /></div>
             <h2><Tr mn="Цүнхнүүд" en="Bags" /></h2>
           </div>
         </div>

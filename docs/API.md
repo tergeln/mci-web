@@ -83,6 +83,7 @@ Frontend (`mci-web`) болон backend-ийн хоорондын тохирол
 | `status` | `"open" \| "waitlist" \| "planned"` | `open` — бүртгэл + төлбөр; `waitlist` — хүлээлгийн жагсаалт; `planned` — бүртгэл хаалттай |
 | `price` | number \| null | Төгрөгөөр. Үнэ батлагдаагүй бол `null` |
 | `title`, `description` | LocalizedText | |
+| `image` | NewsImage \| null (optional) | Сургалтын нүүр болон каталогт ашиглах зураг. `src`, `width`, `height`, `alt` бүтэц нь доорх NewsImage-тэй ижил. |
 
 Нүүр хуудасны 3 курс одоогоор `vip-course`, `data-analysis`, `computer-skills` гэсэн id-тай. Backend мөн эдгээр id-г ашиглах ёстой.
 
@@ -139,6 +140,8 @@ Frontend (`mci-web`) болон backend-ийн хоорондын тохирол
 ```
 
 Зургийн `width`, `height` нь бодит хэмжээ; харьцааг хадгалж, ачааллах үеийн байрлалын үсрэлтийг багасгана. `alt` нь LocalizedText, `caption` optional LocalizedText. Өгөгдөлгүй мэдээ өмнөх дугаар бүхий загвараар харагдана. Бодит нийтэлсэн огноо өгөөгүй үед `publishedAt` нь `null` байна.
+
+Optional `srcSet` нь жижиг болон том дэлгэцэд тохирох файлуудыг заана: `"/assets/courses/data-analysis-small.jpg 768w, /assets/courses/data-analysis.jpg 1536w"`. Frontend нь тухайн картын `sizes`-аар браузерт тохирох зургийг сонгуулна. Optional `generated: true` нь AI-ээр үүсгэсэн дүрслэлийг заана; жишээ мэдээнд `isSample: true` хэвээр үлдэж, дэлгэрэнгүй нүүр зургийн тайлбарт AI дүрслэл гэдгийг тэмдэглэнэ. Бодит үйл явдлын гэрэл зургийг орлуулахгүй.
 
 ### `GET /news/:id`
 

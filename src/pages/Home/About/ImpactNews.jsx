@@ -9,7 +9,7 @@ import { getNews } from '../../../api/news';
 export default function ImpactNews() {
   const { data: stories, loading, error, reload } = useApi((signal) => getNews({ limit: 3, signal }), []);
   return (
-    <div className="wrap impact-news">
+    <div className="wrap impact-news" id="volunteering">
       <ImpactIntro animate />
       <ApiState loading={loading} error={error} onRetry={reload} />
       {stories && (

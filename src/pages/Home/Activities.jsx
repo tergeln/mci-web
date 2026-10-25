@@ -1,13 +1,16 @@
 import Tr from '../../components/Tr/Tr';
 import useReveal from '../../hooks/useReveal';
 import { activities } from '../../data/activities';
+import { serviceImages } from '../../assets/siteImages';
+import ContentImage from '../../components/ContentImage/ContentImage';
 
 function ActivityCard({ activity }) {
   const [ref, className] = useReveal('activity');
+  const image = serviceImages[activity.number.split(' ')[0]];
   return (
     <article ref={ref} className={className}>
       <div className="service-image" aria-hidden="true">
-        {activity.image && <img src={activity.image} alt="" loading="lazy" />}
+        {image ? <ContentImage image={image} sizes="(max-width: 640px) calc(100vw - 40px), 380px" decorative /> : activity.image && <img src={activity.image} alt="" loading="lazy" />}
       </div>
       <div className="service-content">
       <h3><Tr text={activity.title} /></h3>

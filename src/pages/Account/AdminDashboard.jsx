@@ -2,7 +2,6 @@ import { useId, useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { demoUsers, useAuth } from '../../context/AuthContext';
 import { useLang } from '../../context/LanguageContext';
-import SimpleNavbar from '../../components/SimpleNavbar/SimpleNavbar';
 import ApiState from '../../components/ApiState/ApiState';
 import useApi from '../../hooks/useApi';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
@@ -81,7 +80,7 @@ function AdminWorkspace() {
     { label: t('Шинэ хүсэлт', 'Pending requests'), value: analytics.pending, detail: t('Шалгах шаардлагатай', 'Awaiting review'), icon: 'pending' },
   ];
   return <>
-    <SimpleNavbar logoTo="/" backTo="/" back={{ mn: '← Вэбсайт харах', en: '← View website' }} />
+
     <main className="account-page admin-page wrap">
       <div className="admin-heading">
         <div><div className="eyebrow">MAGIC CODE · ADMIN</div><h1>{t('Удирдлагын самбар', 'Admin dashboard')}</h1><p>{t('Сургалт, элсэлт, мэдээллээ нэг дороос хянаарай.', 'Monitor courses, enrollments and content in one place.')}</p></div>

@@ -1,7 +1,7 @@
 import Tr from '../../../components/Tr/Tr';
 
 const partners = [
-  { name: 'Хушхан брэнд', en: 'HushKhan', logo: 'hushkhan' },
+  { name: 'Хушхан брэнд', en: 'HUSHKHAN', logo: 'hushkhan' },
   { name: 'Монгол Улсын Их Сургууль', en: 'National University of Mongolia', logo: 'num' },
   { name: 'БИД ББСБ', en: 'BID NBFI', logo: 'bid' },
   { name: 'ХААН Банк', en: 'Khan Bank', logo: 'khan-bank' },

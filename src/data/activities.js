@@ -3,7 +3,7 @@ const feature = (mn, en) => ({ mn, en });
 export const activities = [
   {
     number: '01 /',
-    title: { mn: 'Нэг хуудаст вэбсайт', en: 'Landing page' },
+    title: { mn: 'Танилцуулга сайт', en: 'Presentation website' },
     text: { mn: '1 хуудас · Жижиг бизнес, хувь хүн, үйлчилгээ', en: '1 page · Small businesses, individuals and services' },
     price: '500,000₮ – 1,200,000₮',
     features: [

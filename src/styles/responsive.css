@@ -1,4 +1,17 @@
 /* Final responsive rules, loaded after page styles. */
+/* News titles and body copy share the same justified alignment. */
+.impact-news .section-head h2,
+.impact-news .impact-card-body h3,
+.impact-news .impact-card-body p,
+.impact-news .impact-sample,
+.story-page h1,
+.story-page h2,
+.story-page p {
+  text-align: justify;
+  text-align-last: start;
+  text-justify: inter-word;
+  word-spacing: normal;
+}
 /* Keep body copy aligned on both sides at every screen size. */
 main p,
 #home .hero p,
@@ -104,7 +117,7 @@ main p,
   .impact-card h3 { font-size: 24px; }
   .impact-card p { font-size: 14px; }
   .products.lv-products { gap: 30px; }
-  .lv-products .product-art { height: auto; aspect-ratio: 1; }
+  .lv-products .product-art { height: auto; aspect-ratio: 4 / 5; }
   #merch .product-info h3 { font-size: 16px; }
   .merch-notice { font-size: 12px; text-align: left; }
   #activities { padding-block: 48px; }
@@ -170,11 +183,6 @@ main p,
   .dialog-top { gap: 12px; align-items: flex-start; }
   .dialog-top h3 { min-width: 0; font-size: 24px; line-height: 1.2; }
   .dialog-top > button { flex-shrink: 0; width: 44px; height: 44px; }
-  .selection-scene { height: 180px; }
-  .selection-content { padding: 0 22px 24px; }
-  #cartDialog .dialog-top h3 { font-size: 26px; }
-  #cartDialog .dialog-top > [data-close] { top: -164px; right: 12px; width: 44px; height: 44px; }
-  #collectionDescription { font-size: 14px; }
   .payment-options { flex-wrap: wrap; }
   .payment-options button { flex: 1 1 110px; min-height: 48px; }
   #paymentSummary .summary-row { flex-wrap: wrap; gap: 8px; }

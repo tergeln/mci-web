@@ -16,8 +16,8 @@ export const motionBandLabels = {
   en: ['Real projects', 'Mentor reviews', 'Website development', 'Build your idea'],
 };
 
-// Доод талын гүйдэг мөр (эхний `●` нь тусдаа <b> дотор)
+// Доод мөрийн сэдвүүдийг ижил зайтай бүлгээр давтана.
 export const liveStrip = {
-  mn: ' Хамтарсан дадлага · Багшийн зөвлөгөө · Дараагийн санаагаа бүтээ · Улаанбаатар · Python · SQL · Power BI · Хиймэл оюун · Хамтарсан дадлага · Багшийн зөвлөгөө · Дараагийн санаагаа бүтээ · Улаанбаатар · Python · SQL · Power BI · Хиймэл оюун ·',
-  en: ' Live labs · Mentor reviews · Build your next idea · Ulaanbaatar · Python · SQL · Power BI · AI · Live labs · Mentor reviews · Build your next idea · Ulaanbaatar · Python · SQL · Power BI · AI ·',
+  mn: ['Программчлал', 'Өгөгдлийн шинжилгээ', 'Хиймэл оюун', 'Вэб хөгжүүлэлт', 'Цахим хичээл', 'Бизнесийн цахим шийдэл'],
+  en: ['Programming', 'Data analytics', 'Artificial intelligence', 'Web development', 'Online lessons', 'Digital business solutions'],
 };

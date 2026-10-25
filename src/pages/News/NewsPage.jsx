@@ -1,4 +1,3 @@
-import SimpleNavbar from '../../components/SimpleNavbar/SimpleNavbar';
 import ImpactCard from '../../components/ImpactCard/ImpactCard';
 import ImpactIntro from '../../components/ImpactCard/ImpactIntro';
 import { useLang } from '../../context/LanguageContext';
@@ -15,7 +14,7 @@ export default function NewsPage() {
 
   return (
     <>
-      <SimpleNavbar logoTo="/#about" backTo="/#about" back={{ mn: 'Бидний тухай', en: 'About us' }} />
+
       <main className="news-page">
         <div className="wrap impact-news">
           <ImpactIntro />

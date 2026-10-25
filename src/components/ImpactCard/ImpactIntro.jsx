@@ -9,7 +9,7 @@ export default function ImpactIntro({ animate = false }) {
       <div ref={ref} className={animate ? revealClass : 'section-head'}>
         <div>
           <div className="eyebrow"><Tr mn="БИДНИЙ ОРОЛЦОО" en="OUR IMPACT" /></div>
-          <h2><Tr mn="Бидний <em>хийсэн ажлууд.</em>" en="Our work <em>in the community.</em>" /></h2>
+          <h2><Tr mn="Бидний хийсэн <em>нийгэмд тустай ажлууд.</em>" en="Our work <em>for the community.</em>" /></h2>
         </div>
       </div>
       <p className="impact-sample">

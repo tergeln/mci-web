@@ -1,5 +1,6 @@
 import AccountLink from '../AccountLink';
 import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useLang } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
 import { navLinks } from '../../data/navLinks';
@@ -10,6 +11,7 @@ import BrandLogo from '../BrandLogo/BrandLogo';
 const hoverCapable = () => window.matchMedia('(hover:hover) and (pointer:fine)').matches;
 
 export default function MainNavbar({ cartCount, onCartClick }) {
+  const { pathname, hash } = useLocation();
   const { lang, t, toggleLang } = useLang();
   const { toggleTheme } = useTheme();
   const [open, setOpen] = useState(false);
@@ -21,6 +23,15 @@ export default function MainNavbar({ cartCount, onCartClick }) {
     clearTimeout(timer.current);
     setOpen(value);
   };
+  const navigateSection = (target) => {
+    setMenu(false);
+    if (pathname === '/') document.getElementById(target.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    clearTimeout(timer.current);
+    setOpen(false);
+  }, [pathname, hash]);
   const enter = () => {
     if (!hoverCapable()) return;
     clearTimeout(timer.current);
@@ -57,9 +68,9 @@ export default function MainNavbar({ cartCount, onCartClick }) {
   return (
     <header className={`main-header${open ? ' menu-open' : ''}`} onBlur={onBlur}>
       <div className="wrap">
-        <a className="brand" href="#home" aria-label="Magic Code AI">
+        <Link className="brand" to="/#home" onClick={() => navigateSection('#home')} aria-label="Magic Code AI">
           <BrandLogo />
-        </a>
+        </Link>
         <nav
           id="nav"
           ref={menuRef}
@@ -72,9 +83,9 @@ export default function MainNavbar({ cartCount, onCartClick }) {
           onFocus={() => setMenu(true)}
         >
           {navLinks.map((link) => (
-            <a key={link.hash} href={link.hash} onClick={() => setMenu(false)}>
+            <Link key={link.hash} to={`/${link.hash}`} onClick={() => navigateSection(link.hash)}>
               <Tr text={link} />
-            </a>
+            </Link>
           ))}
           <AccountLink onClick={() => setMenu(false)} />
         </nav>
@@ -100,7 +111,7 @@ export default function MainNavbar({ cartCount, onCartClick }) {
             <PouchIcon />
             {cartCount > 0 && <span className="cart-count" id="count" aria-live="polite">{cartCount}</span>}
           </button>
-          <a href="#courses" className="btn"><Tr mn="Элсэх" en="Get started" /></a>
+          <Link to="/#courses" className="btn" onClick={() => navigateSection('#courses')}><Tr mn="Элсэх" en="Get started" /></Link>
           <button
             className="mobile"
             id="menuBtn"
