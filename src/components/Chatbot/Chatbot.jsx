@@ -5,6 +5,7 @@ import { chatGreeting, quickQuestions } from '../../data/chat';
 import { sendChatMessage } from '../../api/chat';
 import { errorMessage } from '../../api/client';
 import createBurst from './magicBurst';
+import getChatViewport from './chatViewport';
 
 // open/onOpenChange-ийг Home барина (Contact хэсгийн товч мөн chat-ийг нээдэг).
 export default function Chatbot({ open, onOpenChange }) {
@@ -32,13 +33,57 @@ export default function Chatbot({ open, onOpenChange }) {
     if (prevOpen.current !== open) {
       if (open) {
         setMessages((m) => (m.length ? m : [{ text: t(chatGreeting.open.mn, chatGreeting.open.en), user: false }]));
-        inputRef.current.focus();
+        inputRef.current.focus({ preventScroll: true });
       } else {
         toggleRef.current.focus({ preventScroll: true });
       }
       prevOpen.current = open;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  // Follow the visible viewport so the input sits directly above the phone keyboard.
+  useEffect(() => {
+    if (!open || !window.visualViewport) return;
+    const viewport = window.visualViewport;
+    const panel = panelRef.current;
+    let fullHeight = window.innerHeight;
+    let viewportWidth = window.innerWidth;
+    const sync = () => {
+      if (window.innerWidth !== viewportWidth) {
+        viewportWidth = window.innerWidth;
+        fullHeight = window.innerHeight;
+      } else {
+        fullHeight = Math.max(fullHeight, window.innerHeight);
+      }
+      const { height, bottom, keyboardOpen } = getChatViewport({
+        layoutHeight: window.innerHeight,
+        fullHeight,
+        height: viewport.height,
+        offsetTop: viewport.offsetTop,
+        scale: viewport.scale,
+        inputFocused: document.activeElement === inputRef.current,
+      });
+      panel.style.setProperty('--chat-viewport-height', `${height}px`);
+      panel.style.setProperty('--chat-viewport-bottom', `${bottom}px`);
+      panel.dataset.keyboardOpen = String(keyboardOpen);
+    };
+    sync();
+    viewport.addEventListener('resize', sync);
+    viewport.addEventListener('scroll', sync);
+    window.addEventListener('resize', sync);
+    panel.addEventListener('focusin', sync);
+    panel.addEventListener('focusout', sync);
+    return () => {
+      viewport.removeEventListener('resize', sync);
+      viewport.removeEventListener('scroll', sync);
+      window.removeEventListener('resize', sync);
+      panel.removeEventListener('focusin', sync);
+      panel.removeEventListener('focusout', sync);
+      panel.style.removeProperty('--chat-viewport-height');
+      panel.style.removeProperty('--chat-viewport-bottom');
+      delete panel.dataset.keyboardOpen;
+    };
   }, [open]);
 
   // Хэл солиход өмнөх мессежүүдийг нэг мэндчилгээгээр солино.

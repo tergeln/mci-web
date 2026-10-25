@@ -1,5 +1,5 @@
 /* Final responsive rules, loaded after page styles. */
-/* News titles and body copy share the same justified alignment. */
+/* News uses justified alignment on larger screens; mobile overrides it below. */
 .impact-news .section-head h2,
 .impact-news .impact-card-body h3,
 .impact-news .impact-card-body p,
@@ -88,10 +88,10 @@ main p,
   #home { padding-inline: 20px; }
   #home .hero { min-height: auto; padding-top: calc(112px + env(safe-area-inset-top, 0px)); padding-bottom: 48px; }
   #home .hero > div:first-child { width: 100%; max-width: none; }
-  #home .hero h1 { max-width: 100%; font-size: clamp(32px, 8.8vw, 44px); line-height: 1.15; letter-spacing: -.025em; }
+  #home .hero h1 { max-width: 100%; font-size: clamp(38px, 10vw, 48px); line-height: 1.15; letter-spacing: -.025em; }
   #home .hero p { max-width: none; font-size: 14px; margin-top: 18px; }
-  #home .hero .actions { width: 100%; max-width: none; gap: 10px; margin-top: 24px; }
-  #home .hero .actions .btn { min-height: 52px; padding: 13px 10px; font-size: 14px; }
+  #home .hero .actions { width: 100%; max-width: none; gap: 12px; margin-top: 24px; }
+  #home .hero .actions .btn { min-height: 52px; padding: 14px 12px; font-size: 14px; }
   #home #constellation, #cursorGlow, .live-strip { display: none; }
   .hero-color-clouds i { filter: blur(32px); }
 
@@ -113,6 +113,21 @@ main p,
   .about-copy .values span { font-size: 14px; }
   .values { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .impact-news { margin-top: 48px; }
+  /* Natural spacing keeps short news headings readable on a phone. */
+  .impact-news .section-head h2,
+  .impact-news .impact-card-body h3,
+  .impact-news .impact-card-body p,
+  .impact-news .impact-sample,
+  .news-page .section-head h2,
+  .news-page .impact-card h3,
+  .news-page .impact-card p,
+  .news-page .impact-sample,
+  .story-page h1,
+  .story-page h2,
+  .story-page p {
+    text-align: left;
+    text-justify: none;
+  }
   .impact-grid, .news-page .impact-grid, .catalog-grid, .products.lv-products { grid-template-columns: minmax(0, 1fr); }
   .impact-card h3 { font-size: 24px; }
   .impact-card p { font-size: 14px; }
@@ -154,6 +169,20 @@ main p,
   .news-page .section-head h2 { font-size: clamp(28px, 7.5vw, 34px); }
   .catalog-intro, .login-intro p, .news-page .section-head p { font-size: 14px; }
   .account-card { padding: 20px; border-radius: 16px; }
+  .login-layout { min-height: 100svh; align-content: start; gap: 24px; padding-bottom: 32px; }
+  .login-layout > * { min-width: 0; }
+  .login-layout .login-intro h1 { margin: 12px 0; font-size: clamp(32px, 8.5vw, 40px); line-height: 1.15; }
+  .login-layout .login-intro h1 em { padding-left: 0; }
+  .login-layout .login-intro p, .login-layout .login-card p { text-align: left; }
+  .login-layout .login-intro p { max-width: 38ch; line-height: 1.6; }
+  .login-layout .login-card h2 { margin-bottom: 6px; text-align: left; }
+  .login-layout .login-card > p { font-size: 14px; }
+  .login-card form { gap: 0; margin-top: 24px; }
+  .login-card label { margin: 18px 0 8px; font-size: 13px; text-align: left; }
+  .login-card label:first-child { margin-top: 0; }
+  .login-card input { min-width: 0; min-height: 50px; }
+  .login-card .account-error { margin-top: 12px; font-size: 13px; }
+  .login-card form .btn { width: 100%; min-height: 50px; margin-top: 24px; font-size: 15px; }
   .account-note { padding: 14px 16px; text-align: left; overflow-wrap: anywhere; }
   .account-stats { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-block: 24px; }
   .account-stats .account-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; }
@@ -167,7 +196,6 @@ main p,
   .account-filters { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .account-filters label:first-child { grid-column: auto; }
   .account-quantity button { width: 44px; height: 44px; }
-  .demo-accounts button { min-height: 64px; overflow-wrap: anywhere; }
   .story-page { padding: calc(104px + env(safe-area-inset-top, 0px)) 20px 48px; }
   .story-page p { font-size: 14px; }
   .story-page h2 { font-size: 24px; }
@@ -196,14 +224,22 @@ main p,
   .lesson-choice { min-height: 52px; }
 
   #chatToggle, #chatToggle:hover { width: 72px; height: 72px; right: 12px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
-  #chat { right: 12px; width: calc(100vw - 24px); max-width: none; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); max-height: calc(100dvh - 100px); overflow-y: auto; }
-  #chat .messages { min-height: 0; max-height: 40dvh; padding: 16px; }
+  #chat { right: 12px; width: calc(100vw - 24px); max-width: none; bottom: calc(var(--chat-viewport-bottom, 0px) + 12px + env(safe-area-inset-bottom, 0px)); max-height: calc(var(--chat-viewport-height, 100dvh) - 24px - env(safe-area-inset-bottom, 0px)); overflow: hidden; }
+  #chat .messages { flex: 1 1 auto; min-height: 0; max-height: 40dvh; padding: 16px; overscroll-behavior: contain; }
+  #chat .chat-head, #chat .quick, #chat #chatForm { flex-shrink: 0; }
   #chat .quick { gap: 8px; padding-inline: 16px; }
   #chat .quick button { min-height: 44px; }
   #chat #chatInput { font-size: 16px; }
   #chat #closeChat { width: 40px; height: 40px; }
   #chat .chat-head { min-height: 60px; }
+  #chat[data-keyboard-open="true"] { right: 0; width: 100%; bottom: var(--chat-viewport-bottom, 0px); max-height: calc(var(--chat-viewport-height, 100dvh) - 8px); border-radius: 18px 18px 0 0; border-bottom: 0; }
+  #chat[data-keyboard-open="true"] .quick { display: none; }
+  #chat[data-keyboard-open="true"] #chatForm { padding: 6px; margin: 0 10px 8px; }
   .toast { max-width: calc(100vw - 32px); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+}
+
+@media (max-width: 380px) {
+  #home .hero .actions { grid-template-columns: minmax(0, 1fr); gap: 10px; }
 }
 
 @media (max-width: 359px) {

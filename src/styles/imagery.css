@@ -1,6 +1,13 @@
 #courses .course-art.course-art--image{height:auto;aspect-ratio:3/2;padding:0;opacity:1;align-self:center;background:#dbe4f1}
 .course-art--image>img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
 #courses .course-art--image .tag{position:absolute;top:16px;left:16px;max-width:calc(100% - 32px);background:#fbfcfff0;color:#172342;border-color:#ffffffb3;border-radius:8px;padding:6px 10px;font-size:10px;line-height:1.4;backdrop-filter:blur(8px)}
+@media(min-width:761px){
+  #courses .card{align-items:stretch}
+  #courses .course-art.course-art--image{min-height:280px;aspect-ratio:auto;align-self:stretch}
+  #courses .course-art--image>img{position:absolute;inset:0}
+  #courses .card-body{display:flex;flex-direction:column;padding-block:0;min-width:0}
+  #courses .card-bottom{margin-top:auto;gap:16px;flex-wrap:wrap}
+}
 .catalog-page .catalog-art.catalog-art--image{height:auto;aspect-ratio:3/2;overflow:hidden;background:#dbe4f1}
 .catalog-art--image>img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
 .impact-news .impact-art.impact-art--photo{height:auto;aspect-ratio:3/2}
