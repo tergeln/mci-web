@@ -453,28 +453,46 @@ footer{background:transparent;border-top:0;padding-top:12px}
 #courses>.wrap{position:relative;z-index:1}
 
 /* Director profile inside the about section: heading across the top, photo card beside the copy, CV highlights below. */
-.about-head{margin-bottom:clamp(36px,4.5vw,64px)}
-.about-head .eyebrow{margin-bottom:20px}
-.about-head h2{max-width:none}
-#about .about-grid .about-copy p:first-child{margin-top:0}
-#about .about-director{min-height:0;margin:0;display:flex;flex-direction:column;align-items:center;gap:18px;padding:clamp(28px,4vw,44px) clamp(20px,3vw,36px);text-align:center}
+.about-head{margin-bottom:clamp(28px,3.5vw,48px)}
+.about-head .eyebrow{margin-bottom:16px}
+.about-head h2{max-width:none;font-size:clamp(28px,4.2vw,62px)}
+#about .about-grid{gap:clamp(32px,4.5vw,64px)}
+#about .about-grid .about-copy p{margin:0 0 16px;font-size:clamp(15px,1.15vw,17px);line-height:1.7}
+#about .about-director{min-height:0;margin:0;display:flex;flex-direction:column;align-items:center;gap:14px;padding:clamp(22px,2.6vw,36px) clamp(18px,2.4vw,30px);text-align:center}
 #about .about-director::before{content:none}
-.about-director img{display:block;width:min(100%,220px);height:auto;aspect-ratio:185/215;object-fit:cover;border-radius:20px;box-shadow:0 18px 40px #0F18401f}
-.about-director figcaption{display:grid;gap:6px}
-.about-director figcaption strong{font:400 clamp(26px,2.6vw,34px)/1.1 var(--font-display);letter-spacing:-.01em;color:var(--ink)}
-.about-director figcaption span{font:400 15px/1.4 var(--font-body);color:var(--blue)}
-.about-director-langs{display:grid;justify-items:center;gap:10px;width:100%;padding-top:18px;border-top:1px solid var(--line)}
-.about-director-langs>span{font:500 11px/1.4 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.about-director-langs ul{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0;padding:0;list-style:none}
-.about-director-langs li{padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:color-mix(in srgb,var(--paper) 70%,transparent);font:400 13px/1.4 var(--font-body);color:var(--ink)}
-.about-director-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:28px 0 0;padding:20px 0;border-block:1px solid var(--line)}
-.about-director-stats dt{font:400 clamp(30px,3vw,40px)/1 var(--font-display);color:var(--blue)}
-.about-director-stats dd{margin:8px 0 0;font:400 13px/1.45 var(--font-body);color:var(--muted);text-align:left}
-.about-director-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;margin-top:clamp(48px,6vw,72px);padding-top:clamp(28px,3vw,40px);border-top:1px solid var(--line)}
-.about-director-facts h3{margin-bottom:14px;font:500 13px/1.4 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
-.about-director-facts ul{margin:0;padding-left:18px;text-align:left}
-.about-director-facts li{font:400 15px/1.6 var(--font-body);color:var(--ink)}
-.about-director-facts li+li{margin-top:8px}
+.about-director img{display:block;width:clamp(150px,13vw,200px);height:auto;aspect-ratio:185/215;object-fit:cover;border-radius:18px;box-shadow:0 14px 32px #0F18401f}
+.about-director figcaption{display:grid;gap:4px}
+.about-director figcaption strong{font:400 clamp(22px,2.1vw,30px)/1.15 var(--font-display);letter-spacing:-.01em;color:var(--ink)}
+.about-director figcaption span{font:400 14px/1.4 var(--font-body);color:var(--blue)}
+.about-director-langs{display:grid;justify-items:center;gap:8px;width:100%;padding-top:14px;border-top:1px solid var(--line)}
+.about-director-langs>span{font:500 10px/1.4 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.about-director-langs ul{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:0;padding:0;list-style:none}
+.about-director-langs li{padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:color-mix(in srgb,var(--paper) 70%,transparent);font:400 12px/1.4 var(--font-body);color:var(--ink)}
+.about-director-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:20px 0 0;padding:16px 0;border-block:1px solid var(--line)}
+.about-director-stats dt{font:400 clamp(26px,2.4vw,34px)/1 var(--font-display);color:var(--blue)}
+.about-director-stats dd{margin:6px 0 0;font:400 12px/1.45 var(--font-body);color:var(--muted);text-align:left}
+.about-director-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;margin-top:clamp(36px,4.5vw,56px);padding-top:clamp(22px,2.4vw,32px);border-top:1px solid var(--line)}
+.about-director-facts h3{margin-bottom:12px;font:500 12px/1.4 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.about-director-facts ul{margin:0;padding-left:16px;text-align:left}
+.about-director-facts li{font:400 14px/1.55 var(--font-body);color:var(--ink)}
+.about-director-facts li+li{margin-top:6px}
 .about-director-facts li::marker{color:var(--blue)}
 @media(max-width:1000px){.about-director-facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:640px){.about-director-stats{gap:12px}.about-director-facts{grid-template-columns:minmax(0,1fr);gap:24px}.about-director-facts li{font-size:14px}}
+/* Phones: the photo card turns into a compact row so the copy starts sooner. */
+@media(max-width:720px){
+  #about .about-director{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:center;gap:14px 16px;padding:16px;text-align:left}
+  .about-director img{width:96px;border-radius:14px;box-shadow:0 8px 20px #0F18401a}
+  .about-director figcaption strong{font-size:20px}
+  .about-director figcaption span{font-size:13px}
+  .about-director-langs{grid-column:1/-1;justify-items:start;padding-top:12px}
+  .about-director-langs ul{justify-content:flex-start}
+}
+@media(max-width:640px){
+  .about-head{margin-bottom:24px}
+  #about .about-grid .about-copy p{font-size:14px}
+  .about-director-stats{gap:12px}
+  .about-director-stats dt{font-size:24px}
+  .about-director-stats dd{font-size:11px}
+  .about-director-facts{grid-template-columns:minmax(0,1fr);gap:20px}
+  .about-director-facts li{font-size:13px}
+}

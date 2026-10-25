@@ -18,7 +18,6 @@ import TechStrip from './Hero/TechStrip';
 import CoursesSection from './Courses/CoursesSection';
 import AboutSection from './About/AboutSection';
 import Activities from './Activities';
-import Merch from './Merch';
 import Contact from './Contact';
 import LiveStrip from './LiveStrip';
 import '../../styles/home.css';
@@ -57,7 +56,6 @@ export default function Home() {
         <CoursesSection onSelectCourse={openCourse} />
         <AboutSection />
         <Activities />
-        <Merch />
         <TechStrip />
         <Contact onOpenChat={() => setChatOpen(true)} />
       </main>
