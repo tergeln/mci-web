@@ -5,6 +5,9 @@ const partners = [
   { name: 'Монгол Улсын Их Сургууль', en: 'National University of Mongolia', logo: 'num' },
   { name: 'БИД ББСБ', en: 'BID NBFI', logo: 'bid' },
   { name: 'ХААН Банк', en: 'Khan Bank', logo: 'khan-bank' },
+  { name: 'Голомт Банк', en: 'Golomt Bank', logo: 'golomt' },
+  { name: 'Мэдээлэл технологийн үндэсний парк', en: 'IT Park Mongolia', logo: 'it-park' },
+  { name: 'Монголын Залуу Бизнес Эрхлэгч Эмэгтэйчүүдийн Холбоо', en: 'Mongolian Young Women Entrepreneurs Association', logo: 'young-women-entrepreneurs' },
 ];
 
 export default function TechStrip() {
