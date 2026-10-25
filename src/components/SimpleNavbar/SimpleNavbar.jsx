@@ -9,7 +9,7 @@ import '../../styles/subpage.css';
 export default function SimpleNavbar({ logoTo, backTo, back }) {
   const { lang, toggleLang } = useLang();
   return (
-    <header>
+    <header className="subpage-header">
       <div className="wrap">
         <Link className="brand" to={logoTo} aria-label="Magic Code AI">
           <BrandLogo />

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLang } from '../../context/LanguageContext';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
-import { readStorage, writeStorage } from '../../hooks/useLocalStorage';
 import { homeCourses } from '../../data/courses';
 import MainNavbar from '../../components/MainNavbar/MainNavbar';
 import Footer from '../../components/Footer/Footer';
@@ -26,21 +25,11 @@ import Contact from './Contact';
 import LiveStrip from './LiveStrip';
 import '../../styles/home.css';
 
-function loadCart() {
-  try {
-    const saved = JSON.parse(readStorage('mc-cart', '[]'));
-    return Array.isArray(saved) ? saved.filter((x) => Number.isInteger(x) && x >= 0 && x < 3) : [];
-  } catch {
-    return [];
-  }
-}
-
 export default function Home() {
   const { t } = useLang();
   const [searchParams] = useSearchParams();
   const [glReady, setGlReady] = useState(null);
   const [chatOpen, setChatOpen] = useState(false);
-  const [cart, setCart] = useState(loadCart);
   const [enrollRequest, setEnrollRequest] = useState(null);
   const [cartRequest, setCartRequest] = useState(null);
   const [classroomRequest, setClassroomRequest] = useState(null);
@@ -59,11 +48,6 @@ export default function Home() {
     if (index !== -1) openCourse(index);
   }, [requested, openCourse]);
 
-  const saveCart = (next) => {
-    setCart(next);
-    writeStorage('mc-cart', JSON.stringify(next));
-  };
-
   return (
     <>
       <Universe2D active={glReady === false} />
@@ -72,7 +56,7 @@ export default function Home() {
       <ScrollProgress />
       <CursorGlow />
       <ChapterIndex />
-      <MainNavbar cartCount={cart.length} onCartClick={openCart} />
+      <MainNavbar cartCount={0} onCartClick={openCart} />
       <main>
         <Hero />
         <CoursesSection onSelectCourse={openCourse} />
@@ -85,12 +69,7 @@ export default function Home() {
       <Footer />
       <Chatbot open={chatOpen} onOpenChange={setChatOpen} />
       <EnrollDialog request={enrollRequest} onOpenClassroom={openClassroom} />
-      <CartDialog
-        request={cartRequest}
-        cart={cart}
-        onRemove={(index) => saveCart(cart.filter((_, i) => i !== index))}
-        onClear={() => saveCart([])}
-      />
+      <CartDialog request={cartRequest} />
       <div className="toast" id="toast" hidden role="status" />
       <LiveStrip />
       <ClassroomDialog request={classroomRequest} />

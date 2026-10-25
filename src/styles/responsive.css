@@ -1,0 +1,216 @@
+/* Final responsive rules, loaded after page styles. */
+/* Keep body copy aligned on both sides at every screen size. */
+main p,
+#home .hero p,
+#about .about-copy p,
+.about-copy .values span,
+#contact .contact p,
+#activities .service-content p:not(.service-price),
+.catalog-body p,
+.news-page .impact-card p,
+.story-page p,
+.classroom-main p,
+.classroom-sidebar p {
+  text-align: justify;
+  text-align-last: start;
+  text-justify: inter-word;
+  word-spacing: normal;
+}
+
+@media (max-width: 900px) {
+  .hero-in-view #pg {
+    opacity: .8;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .wrap { width: 100%; min-width: 0; padding-inline: 24px; }
+  .login-layout, .account-columns { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .account-page, .catalog-page, .news-page { padding-top: 112px; }
+  .account-heading > *, .account-row > *, .section-head > * { min-width: 0; }
+  .account-card { min-width: 0; }
+}
+
+@media (max-width: 640px) {
+  :root { --mobile-header-height: 72px; }
+  html { scroll-padding-top: calc(var(--mobile-header-height) + env(safe-area-inset-top, 0px) + 16px); }
+  body { font-size: 14px; text-align: left; }
+  body:has(.main-header.menu-open), body:has(dialog[open]) { overflow: hidden; }
+  main { min-width: 0; }
+  main p, #home .hero p, .about-copy p, #contact .contact p {
+    text-align: justify; text-justify: inter-word; word-spacing: normal; line-height: 1.65;
+  }
+  .wrap { padding-inline: 20px; }
+  section { padding-block: 52px; }
+  h1, h2, h3 { text-align: left; word-spacing: normal; overflow-wrap: break-word; }
+  h2 { font-size: clamp(28px, 7.5vw, 34px); line-height: 1.2; letter-spacing: -.025em; max-width: 100%; }
+  .section-head { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 26px; }
+  .section-head p { max-width: none; font-size: 14px; }
+  .eyebrow { font-size: 11px; }
+
+  /* Keep all navigation controls reachable without squeezing the logo. */
+  header { height: calc(var(--mobile-header-height) + env(safe-area-inset-top, 0px)); }
+  header .wrap { height: var(--mobile-header-height); gap: 8px; padding-inline: 16px; }
+  header .brand { flex: 0 0 64px; width: 64px; max-width: 64px; min-width: 0; }
+  header .brand-logo3d { width: 64px; height: 46px; }
+  header .tools { gap: 4px; min-width: 0; }
+  header #themeToggle, header #cartBtn, header #menuBtn, .account-menu-trigger, header #newsLang {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; width: 44px; height: 44px; padding: 6px;
+  }
+  header #language { min-height: 44px; padding: 3px; }
+  header #language .lang-option { padding: 8px 9px; }
+  header #nav, header #nav.open {
+    top: 100%; gap: 2px; padding: 12px 20px 20px;
+    max-height: calc(100svh - var(--mobile-header-height) - env(safe-area-inset-top, 0px));
+    max-height: calc(100dvh - var(--mobile-header-height) - env(safe-area-inset-top, 0px));
+    overscroll-behavior: contain;
+  }
+  header #nav a { display: flex; align-items: center; min-height: 48px; padding: 10px 12px; font-size: 15px; white-space: normal; }
+  .subpage-header .news-back { flex: 1 1 auto; min-width: 0; margin-left: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+  header nav.account-dropdown { width: min(260px, calc(100vw - 32px)); max-height: calc(100dvh - 110px); overflow-y: auto; }
+  .account-dropdown > a, .account-dropdown > button { min-height: 44px; }
+
+  /* A compact opening screen with readable copy and two clear actions. */
+  #home { padding-inline: 20px; }
+  #home .hero { min-height: auto; padding-top: calc(112px + env(safe-area-inset-top, 0px)); padding-bottom: 48px; }
+  #home .hero > div:first-child { width: 100%; max-width: none; }
+  #home .hero h1 { max-width: 100%; font-size: clamp(32px, 8.8vw, 44px); line-height: 1.15; letter-spacing: -.025em; }
+  #home .hero p { max-width: none; font-size: 14px; margin-top: 18px; }
+  #home .hero .actions { width: 100%; max-width: none; gap: 10px; margin-top: 24px; }
+  #home .hero .actions .btn { min-height: 52px; padding: 13px 10px; font-size: 14px; }
+  #home #constellation, #cursorGlow, .live-strip { display: none; }
+  .hero-color-clouds i { filter: blur(32px); }
+
+  /* Course, news and collection cards fit a single comfortable column. */
+  .card { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-block: 28px; }
+  .course-art { height: 200px; min-width: 0; padding: 20px; }
+  .card-body { min-width: 0; padding: 0; }
+  .card-body h3 { font-size: clamp(24px, 6.5vw, 28px); line-height: 1.2; }
+  .card-body p { max-width: none; font-size: 14px; margin-top: 12px; }
+  .meta { font-size: 12px; margin-block: 14px; }
+  .card-bottom { flex-direction: column; align-items: stretch; gap: 14px; margin-top: 18px; }
+  .card-bottom strong { font-size: 20px; }
+  .card-bottom button { min-height: 48px; padding: 12px 16px; font-size: 13px; }
+  .about-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .about-picture { min-height: 240px; }
+  .about-picture::before { font-size: 38px; padding: 36px 16px; }
+  #about .about-copy p { font-size: 14px; }
+  .values b { font-size: 16px; }
+  .about-copy .values span { font-size: 14px; }
+  .values { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .impact-news { margin-top: 48px; }
+  .impact-grid, .news-page .impact-grid, .catalog-grid, .products.lv-products { grid-template-columns: minmax(0, 1fr); }
+  .impact-card h3 { font-size: 24px; }
+  .impact-card p { font-size: 14px; }
+  .products.lv-products { gap: 30px; }
+  .lv-products .product-art { height: auto; aspect-ratio: 1; }
+  #merch .product-info h3 { font-size: 16px; }
+  .merch-notice { font-size: 12px; text-align: left; }
+  #activities { padding-block: 48px; }
+  #activities h2 { font-size: clamp(28px, 7.5vw, 34px); }
+  #activities .service-content { padding: 20px; }
+  #activities .service-content h3 { min-height: 0; font-size: 24px; }
+  #activities .service-content p { font-size: 13px; }
+  #activities .service-price { font-size: 16px; }
+  .service-features { font-size: 13px; }
+  .service-details summary { min-height: 48px; }
+
+  .partners-strip { padding: 36px 0; }
+  .partners-heading { font-size: 11px; letter-spacing: 1px; margin-bottom: 18px; }
+  .partners-strip .strip .tech-flow-group { gap: 24px; padding-right: 24px; }
+  .partners-strip .strip .partner { width: 220px; min-width: 0; grid-template-columns: 56px minmax(0, 1fr); column-gap: 12px; }
+  .partners-strip .partner-logo { flex-basis: 56px; width: 56px; height: 56px; padding: 4px; }
+  .partners-strip .partner-logo img { width: 48px; height: 48px; }
+  .partners-strip .strip .partner span { max-width: none; font-size: 13px; }
+  #contact .contact-links { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  #contact h2 { font-size: 28px; }
+  #contact .contact-row, #contact .contact-row:first-child { min-width: 0; max-width: 100%; white-space: normal; flex-wrap: wrap; justify-content: center; }
+  #contact .contact-row span { min-width: 0; overflow-wrap: anywhere; }
+  footer { padding: 20px 0 calc(88px + env(safe-area-inset-bottom, 0px)); }
+  footer small { font-size: 12px; text-align: center; }
+
+  /* Form controls avoid automatic zoom and remain easy to tap. */
+  input, select, textarea, .account-card input, .account-card select { font-size: 16px; min-height: 48px; }
+  .btn { min-height: 48px; white-space: normal; line-height: 1.4; font-size: 13px; }
+  .catalog-filters { gap: 8px; }
+  .catalog-filters button { min-height: 44px; padding: 10px 14px; }
+  .account-page, .catalog-page, .news-page { padding-top: calc(104px + env(safe-area-inset-top, 0px)); padding-bottom: 48px; }
+  .account-page h1, .catalog-page h1, .story-page h1 { font-size: clamp(28px, 7.5vw, 36px); line-height: 1.2; }
+  .catalog-body h3, .news-page .impact-card h3 { font-size: 24px; }
+  .news-page .section-head h2 { font-size: clamp(28px, 7.5vw, 34px); }
+  .catalog-intro, .login-intro p, .news-page .section-head p { font-size: 14px; }
+  .account-card { padding: 20px; border-radius: 16px; }
+  .account-note { padding: 14px 16px; text-align: left; overflow-wrap: anywhere; }
+  .account-stats { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-block: 24px; }
+  .account-stats .account-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; }
+  .account-stats small { font-size: 13px; }
+  .account-stats strong { font-size: 32px; }
+  .account-actions { width: 100%; }
+  .account-actions .btn { flex: 1 1 140px; }
+  .account-row { flex-wrap: wrap; gap: 12px; }
+  .account-row > * { min-width: 0; max-width: 100%; }
+  .account-row select { flex: 1 1 160px; }
+  .account-filters { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .account-filters label:first-child { grid-column: auto; }
+  .account-quantity button { width: 44px; height: 44px; }
+  .demo-accounts button { min-height: 64px; overflow-wrap: anywhere; }
+  .story-page { padding: calc(104px + env(safe-area-inset-top, 0px)) 20px 48px; }
+  .story-page p { font-size: 14px; }
+  .story-page h2 { font-size: 24px; }
+  .story-page dl { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .story-page dd { margin-bottom: 12px; overflow-wrap: anywhere; }
+
+  dialog, #cartDialog, #enrollDialog, #classroom {
+    width: calc(100vw - 24px); max-width: calc(100vw - 24px);
+    max-height: calc(100svh - 24px); max-height: calc(100dvh - 24px);
+    margin: auto; overflow-y: auto; overscroll-behavior: contain;
+  }
+  dialog { padding: 22px; border-radius: 20px; }
+  .dialog-top { gap: 12px; align-items: flex-start; }
+  .dialog-top h3 { min-width: 0; font-size: 24px; line-height: 1.2; }
+  .dialog-top > button { flex-shrink: 0; width: 44px; height: 44px; }
+  .selection-scene { height: 180px; }
+  .selection-content { padding: 0 22px 24px; }
+  #cartDialog .dialog-top h3 { font-size: 26px; }
+  #cartDialog .dialog-top > [data-close] { top: -164px; right: 12px; width: 44px; height: 44px; }
+  #collectionDescription { font-size: 14px; }
+  .payment-options { flex-wrap: wrap; }
+  .payment-options button { flex: 1 1 110px; min-height: 48px; }
+  #paymentSummary .summary-row { flex-wrap: wrap; gap: 8px; }
+  .classroom-layout { grid-template-columns: minmax(0, 1fr); }
+  #classroom .classroom-top { padding: 16px; gap: 12px; }
+  .classroom-top h3 { font-size: 22px; line-height: 1.2; }
+  .classroom-top button { width: 44px; height: 44px; }
+  .classroom-main { padding: 16px; }
+  .classroom-sidebar { border-left: 0; border-top: 1px solid var(--line); padding: 20px 16px; }
+  .lesson-actions .btn { flex: 1 1 100%; font-size: 14px; }
+  .lesson-choice { min-height: 52px; }
+
+  #chatToggle, #chatToggle:hover { width: 72px; height: 72px; right: 12px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+  #chat { right: 12px; width: calc(100vw - 24px); max-width: none; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); max-height: calc(100dvh - 100px); overflow-y: auto; }
+  #chat .messages { min-height: 0; max-height: 40dvh; padding: 16px; }
+  #chat .quick { gap: 8px; padding-inline: 16px; }
+  #chat .quick button { min-height: 44px; }
+  #chat #chatInput { font-size: 16px; }
+  #chat #closeChat { width: 40px; height: 40px; }
+  #chat .chat-head { min-height: 60px; }
+  .toast { max-width: calc(100vw - 32px); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+}
+
+@media (max-width: 359px) {
+  header .wrap { padding-inline: 12px; gap: 6px; }
+  header .brand { flex-basis: 56px; width: 56px; max-width: 56px; }
+  header .brand-logo3d { width: 56px; height: 42px; }
+  header .tools { gap: 2px; }
+  #home .hero .actions { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 900px) and (max-height: 500px) and (orientation: landscape) {
+  :root { --mobile-header-height: 60px; }
+  header { height: calc(var(--mobile-header-height) + env(safe-area-inset-top, 0px)); }
+  header .wrap { height: var(--mobile-header-height); }
+  header #nav, header #nav.open { max-height: calc(100dvh - var(--mobile-header-height) - env(safe-area-inset-top, 0px)); }
+  #home .hero { min-height: auto; padding-top: 92px; }
+  dialog, #cartDialog, #enrollDialog, #classroom { max-height: calc(100dvh - 16px); }
+}

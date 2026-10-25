@@ -1,6 +1,7 @@
 import { AuthProvider } from './context/AuthContext';
 import LoginPage from './pages/Account/LoginPage';
 import AccountPage from './pages/Account/AccountPage';
+import AdminDashboard from './pages/Account/AdminDashboard';
 import './pages/Account/account.css';
 import { Route, Routes } from 'react-router-dom';
 import ScrollManager from './components/ScrollManager/ScrollManager';
@@ -17,7 +18,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/account" element={<AccountPage />} />
-        <Route path="/admin" element={<AccountPage admin />} />
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/" element={<Home />} />
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/news" element={<NewsPage />} />

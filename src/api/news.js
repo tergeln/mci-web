@@ -1,8 +1,8 @@
 import { request } from './client';
 import { news, notFound } from './mock/db';
 
-const summary = ({ id, number, category, title, summary: text, publishedAt }) => ({
-  id, number, category, title, summary: text, publishedAt,
+const summary = ({ id, number, category, title, summary: text, publishedAt, isSample, coverImage }) => ({
+  id, number, category, title, summary: text, publishedAt, isSample, coverImage,
 });
 
 /** GET /api/news?limit=3 — мэдээний жагсаалт (дэлгэрэнгүйгүй). */

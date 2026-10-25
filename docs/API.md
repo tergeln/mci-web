@@ -119,6 +119,27 @@ Frontend (`mci-web`) болон backend-ийн хоорондын тохирол
 
 `number` нь картан дээрх том дугаар ("01", "02").
 
+`NewsSummary` нь дараах optional талбартай:
+
+| Талбар | Төрөл | Тайлбар |
+|---|---|---|
+| `isSample` | boolean | `true` бол загварын жишээ. Бодит мэдээлэл оруулсан мэдээнд `false`; mock API-аар дамжсан ч жишээ мэдээ гэж харуулахгүй. |
+| `coverImage` | NewsImage \| null | Нүүр болон жагсаалтын карт, дэлгэрэнгүй хуудасны нүүр зураг. |
+
+`NewsImage`:
+
+```json
+{
+  "src": "/assets/news/khush-tugul/saplings.jpg",
+  "width": 4032,
+  "height": 3024,
+  "alt": { "mn": "Мод тарихаар бэлтгэсэн хоёр суулгац", "en": "Two saplings prepared for planting" },
+  "caption": { "mn": "Мод тарихаар бэлтгэсэн суулгацууд.", "en": "Saplings prepared for planting." }
+}
+```
+
+Зургийн `width`, `height` нь бодит хэмжээ; харьцааг хадгалж, ачааллах үеийн байрлалын үсрэлтийг багасгана. `alt` нь LocalizedText, `caption` optional LocalizedText. Өгөгдөлгүй мэдээ өмнөх дугаар бүхий загвараар харагдана. Бодит нийтэлсэн огноо өгөөгүй үед `publishedAt` нь `null` байна.
+
 ### `GET /news/:id`
 
 Дэлгэрэнгүй хуудас (`/news/:id`). `NewsSummary`-ийн бүх талбар дээр нэмээд:
@@ -136,6 +157,8 @@ Frontend (`mci-web`) болон backend-ийн хоорондын тохирол
 ```
 
 `body` болон `details`-ийн талбар бүр `null` байж болно. Тэр үед frontend "Мэдээлэл нэмэгдэнэ" гэж харуулна. **404** `not_found`.
+
+Optional `gallery: NewsImage[]` нь дэлгэрэнгүй хуудасны зургийн цомог. `coverImage`-ийг давтахгүй нэмэлт зургууд орно. `isSample: false` мэдээний дутуу `details` мөрийг нууж, зурагтай мэдээнд хоосон жишээ тайлбар харуулахгүй.
 
 ---
 

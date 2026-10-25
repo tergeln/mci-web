@@ -1,33 +1,34 @@
 import Tr from '../../components/Tr/Tr';
 import useReveal from '../../hooks/useReveal';
-import { merch, merchImageQuery } from '../../data/merch';
+import { merch } from '../../data/merch';
 
 function ProductCard({ product }) {
   const [infoRef, infoClass] = useReveal('product-info');
-  // Эх `onerror`: эхний удаа алдаа гарвал query-гүй эх зураг руу шилжинэ.
-  const onError = (e) => {
-    const img = e.currentTarget;
-    if (!img.dataset.fallback) {
-      img.dataset.fallback = 'true';
-      img.src = product.original;
-    }
-  };
   return (
     <article>
-      <a className="product-art" href={product.href} target="_blank" rel="noopener noreferrer">
+      <div className="product-art product-art--locked">
         <img
-          src={product.original + merchImageQuery}
+          src={product.original}
           alt={product.alt}
           width="1800"
           height="1800"
           loading="lazy"
           decoding="async"
-          referrerPolicy="no-referrer"
-          onError={onError}
         />
-      </a>
+        <div className="product-locked-overlay">
+          <span className="product-locked-label">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="5" y="10" width="14" height="11" rx="3" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3" />
+            </svg>
+            <Tr mn="Тун удахгүй" en="Coming soon" />
+          </span>
+        </div>
+      </div>
       <div ref={infoRef} className={infoClass}>
-        <div><h3><Tr text={product.title} /></h3></div>
+        <div>
+          <h3><Tr text={product.title} /></h3>
+        </div>
       </div>
     </article>
   );
@@ -40,8 +41,8 @@ export default function Merch() {
       <div className="wrap">
         <div ref={headRef} className={headClass}>
           <div>
-            <div className="eyebrow"><Tr mn="ШИДЭТ ЦУГЛУУЛГА" en="THE MAGIC COLLECTION" /></div>
-            <h2><Tr mn="Өдөр бүрт <em>багахан шид.</em>" en="A little magic, <em>every day.</em>" /></h2>
+            <div className="eyebrow"><Tr mn="ЦУГЛУУЛГА" en="COLLECTION" /></div>
+            <h2><Tr mn="Цүнхнүүд" en="Bags" /></h2>
           </div>
         </div>
         <div className="products lv-products">

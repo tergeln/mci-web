@@ -55,7 +55,7 @@ export default function MainNavbar({ cartCount, onCartClick }) {
   };
 
   return (
-    <header className={open ? 'menu-open' : undefined} onBlur={onBlur}>
+    <header className={`main-header${open ? ' menu-open' : ''}`} onBlur={onBlur}>
       <div className="wrap">
         <a className="brand" href="#home" aria-label="Magic Code AI">
           <BrandLogo />

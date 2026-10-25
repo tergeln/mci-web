@@ -11,7 +11,8 @@
 .selection-scene span{position:absolute;left:30px;top:24px;font-size:10px;letter-spacing:.23em;color:#F5E2B3;text-shadow:0 1px 8px #000}
 .selection-content{padding:0 30px 30px;position:relative}
 #cartDialog .dialog-top{gap:24px;align-items:flex-start;margin:0 0 24px}
-#cartDialog .dialog-top h3{font-family:'Instrument Serif',Georgia,serif;font-size:36px;line-height:1.13;color:#F1E6D5}
+#cartDialog .dialog-top h3{font-family:var(--font-display);font-size:36px;line-height:1.13;color:#F1E6D5;text-align:left}
+#collectionDescription{color:#CBBCC8;font-size:16px;line-height:1.65;text-align:left;margin-bottom:24px}
 #cartDialog .dialog-top>[data-close]{position:absolute;right:14px;top:-219px;background:#21191Fbb;border:1px solid #DBC68F55;border-radius:50%;width:34px;height:34px;display:grid;place-items:center;color:#F1E6D5}
 #cartItems{font-size:14px;color:#CBBCC8;line-height:1.7}
 #cartDialog .summary-row{display:flex;gap:14px;align-items:center;padding:16px 0;border-color:#B89B5E30;color:#EADFCC}
@@ -167,7 +168,7 @@
 .strip{display:block;overflow:hidden;padding:24px 0;white-space:nowrap}
 .strip .tech-flow-track{display:flex;width:max-content;gap:0;animation:tech-flow 36s linear infinite}
 .strip .tech-flow-group{display:flex;align-items:center;gap:clamp(32px,5vw,80px);padding-right:clamp(32px,5vw,80px);flex-shrink:0}
-.strip .tech-flow-group>span{font:400 clamp(42px,6vw,88px)/1.2 'Instrument Serif',Georgia,serif;color:var(--ink);flex-shrink:0}
+.strip .tech-flow-group>span{font:400 clamp(42px,6vw,88px)/1.2 var(--font-display);color:var(--ink);flex-shrink:0}
 .strip .tech-flow-group>span:nth-child(even){color:var(--blue);font-style:italic}
 .motion-band{overflow:hidden;padding:22px 0;border-block:1px solid var(--line);color:var(--muted);white-space:nowrap;-webkit-mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent)}
 .motion-band-track{display:flex;width:max-content;animation:tech-flow 45s linear infinite reverse}
@@ -317,10 +318,10 @@ main p,#home .hero p,.about-copy p,#contact .contact p{ text-align:justify;text-
 #home .hero h1{font-size:min(76px,8.4cqw)}
 @media(max-width:720px){.partners-strip .strip .tech-flow-group{gap:40px;padding-right:40px}.partners-strip .strip .partner{column-gap:14px}}
 
-/* Give the two-line headline enough room to be the hero's main focal point. */
+/* Keep the short two-line headline compact and readable. */
 #home .hero>div:first-child{width:78%;max-width:1120px}
-#home .hero h1{font-size:min(104px,8.8cqw);line-height:1.08}
-@media(max-width:900px){#home .hero>div:first-child{width:100%;max-width:none}#home .hero h1{font-size:min(80px,8.8cqw)}}
+#home .hero h1{max-width:14ch;font-size:clamp(44px,7.6cqw,88px);line-height:1.08}
+@media(max-width:900px){#home .hero>div:first-child{width:100%;max-width:none}#home .hero h1{font-size:clamp(36px,8.8cqw,64px)}}
 
 /* Simple single-column contact and centered copyright. */
 #contact{padding:48px 0}
@@ -414,6 +415,15 @@ footer{background:transparent;border-top:0;padding-top:12px}
 
 /* Center every partner name within its text column. */
 .partners-strip .strip .partner span{text-align:center}
+
+/* Collection previews stay locked until the shop is available. */
+#merch .product-art--locked{overflow:hidden;cursor:default;padding:0;background:var(--soft)!important}
+#merch .product-art--locked img{object-fit:cover;filter:blur(16px) brightness(.66) saturate(.55);opacity:1}
+.product-locked-overlay{position:absolute;inset:0;display:grid;place-items:center;background:transparent}
+.product-locked-label{display:flex;flex-direction:column;align-items:center;gap:12px;padding:0;border:0;background:transparent;color:#fff;font:500 15px/1.4 var(--font-body);text-align:center;filter:drop-shadow(0 2px 6px #0006)}
+.product-locked-label svg{width:36px;height:36px}
+#merch .product-info{display:block;text-align:center}
+#merch .product-info h3{font:500 18px/1.5 var(--font-body);text-align:center;word-spacing:normal;letter-spacing:normal}
 
 /* Digital business services. */
 #activities .activities{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:stretch}

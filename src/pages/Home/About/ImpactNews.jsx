@@ -15,7 +15,7 @@ export default function ImpactNews() {
       {stories && (
         <div className="impact-grid">
           {stories.map((story, i) => (
-            <ImpactCard key={story.id} story={story} index={i} />
+            <ImpactCard key={story.id} story={story} index={i} to={`/news/${story.id}`} />
           ))}
         </div>
       )}

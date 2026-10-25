@@ -1,15 +1,13 @@
-const lv = 'https://us.louisvuitton.com';
-const img = (code) => `${lv}/images/is/image/lv/1/PP_VP_L/louis-vuitton-neverfull-mm--${code}_PM2_Front%20view.jpg`;
-
-export const merchImageQuery = '?wid=1800&hei=1800&fit=constrain&qlt=95';
-
 export const merch = [
-  { href: `${lv}/eng-us/products/neverfull-mm-monogram-nvprod5350101v/M46975`, original: img('M46975'),
-    alt: 'Monogram large tote bag', label: 'Monogram', title: { mn: 'Монограмм', en: 'Monogram' } },
-  { href: `${lv}/eng-us/products/neverfull-mm-damier-ebene-nvprod5350103v/N40599`, original: img('N40599'),
-    alt: 'Damier Ébène large tote bag', label: 'Damier Ébène', title: { mn: 'Бор шатрын хээ', en: 'Damier Ébène' } },
-  { href: `${lv}/eng-us/products/neverfull-mm-damier-azur-nvprod5350102v/N40604`, original: img('N40604'),
-    alt: 'Damier Azur large tote bag', label: 'Damier Azur', title: { mn: 'Цайвар шатрын хээ', en: 'Damier Azur' } },
+  { original: '/assets/merch/leather-cognac-tote.png',
+    alt: 'Unbranded cognac brown leather tote bag', label: 'Leather tote',
+    title: { mn: 'Бор арьсан цүнх', en: 'Brown leather tote' } },
+  { original: '/assets/merch/leather-black-satchel.png',
+    alt: 'Unbranded black leather rounded satchel', label: 'Black satchel',
+    title: { mn: 'Хар арьсан цүнх', en: 'Black leather satchel' } },
+  { original: '/assets/merch/leather-taupe-shoulder.png',
+    alt: 'Unbranded taupe leather flap shoulder bag', label: 'Shoulder bag',
+    title: { mn: 'Нэг мөрний цүнх', en: 'Shoulder bag' } },
 ];
 
 // Cart dialog-д ашиглагдах бүтээгдэхүүний нэрс ба тэмдэг

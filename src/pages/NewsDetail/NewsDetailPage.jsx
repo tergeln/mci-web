@@ -25,19 +25,19 @@ export default function NewsDetailPage() {
   return (
     <>
       <SimpleNavbar logoTo="/#about" backTo="/news" back={{ mn: 'Бүх мэдээ', en: 'All stories' }} />
-      <main className="story-page" id="story">
+      <main className={`story-page${story?.coverImage ? ' story-page--with-photos' : ''}`} id="story">
         {missing && t('Мэдээ олдсонгүй. Бүх мэдээ рүү буцна уу.', 'Story not found. Return to all stories.')}
         {!missing && <ApiState loading={loading} error={error} onRetry={reload} />}
         {story && !loading && (
           <>
             <small className="story-meta">{story.category[lang]}</small>
             <h1>{story.title[lang]}</h1>
-            {USE_MOCK && (
+            {USE_MOCK && story.isSample !== false && (
               <p className="sample-note">
                 {t('Загварын жишээ · Энэ мэдээний бодит мэдээлэл хараахан ороогүй.', 'Sample story · Real details have not been added yet.')}
               </p>
             )}
-            <div className="story-art" aria-hidden="true">{story.number}</div>
+            {story.coverImage ? <StoryPhoto image={story.coverImage} lang={lang} cover /> : <div className="story-art" aria-hidden="true">{story.number}</div>}
             <p>{story.summary[lang]}</p>
             <h2>{t('Ажлын тухай', 'About this initiative')}</h2>
             <p>
@@ -48,7 +48,7 @@ export default function NewsDetailPage() {
                 )}
             </p>
             <dl>
-              {detailRows.map(([key, mn, en]) => (
+              {detailRows.filter(([key]) => story.isSample !== false || story.details?.[key]?.[lang]).map(([key, mn, en]) => (
                 <DetailRow
                   key={key}
                   label={t(mn, en)}
@@ -56,19 +56,26 @@ export default function NewsDetailPage() {
                 />
               ))}
             </dl>
-            <h2>{t('Үр дүн ба онцлох агшнууд', 'Results and highlights')}</h2>
-            <p>
-              {t(
-                'Бодит үр дүн, оролцогчдын сэтгэгдэл болон гэрэл зургуудыг энд нэмнэ.',
-                'Verified outcomes, participant reflections and photographs will appear here.',
-              )}
-            </p>
+            {story.gallery?.length ? <>
+              <h2>{t('Онцлох зургууд', 'Photo highlights')}</h2>
+              <div className="story-gallery">{story.gallery.map((image) => <StoryPhoto key={image.src} image={image} lang={lang} />)}</div>
+            </> : story.isSample !== false && <>
+              <h2>{t('Үр дүн ба онцлох агшнууд', 'Results and highlights')}</h2>
+              <p>{t('Бодит үр дүн, оролцогчдын сэтгэгдэл болон гэрэл зургуудыг энд нэмнэ.', 'Verified outcomes, participant reflections and photographs will appear here.')}</p>
+            </>}
             <Link className="btn secondary" to="/news">{t('Бүх мэдээ рүү буцах', 'Back to all stories')}</Link>
           </>
         )}
       </main>
     </>
   );
+}
+
+function StoryPhoto({ image, lang, cover = false }) {
+  return <figure className={`story-photo${cover ? ' story-cover' : ''}`}>
+    <img src={image.src} alt={image.alt?.[lang] || ''} width={image.width} height={image.height} loading={cover ? 'eager' : 'lazy'} decoding="async" />
+    {image.caption?.[lang] && <figcaption>{image.caption[lang]}</figcaption>}
+  </figure>;
 }
 
 function DetailRow({ label, value }) {

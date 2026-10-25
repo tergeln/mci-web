@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import * as THREE from 'three';
 import reducedMotion from '../../hooks/reducedMotion';
 import { LOGO_SHAPES } from '../BrandLogo/logoShapes';
+import { particleLayout } from './particleLayout';
 
 // section id -> particle хэлбэрийн индекс
 const SHAPE_BY_SECTION = { home: 0, courses: 0, about: 1, activities: 5, method: 3, journey: 2, merch: 4, contact: 5 };
-const X_OFFSET = [2.7, -2.7, 2.5, 0, 2.6, -2.6];
 const OPACITY = [0.95, 0.6, 0.55, 0.5, 0.7, 0.6];
 
 const polyArea = (pts) => {
@@ -65,8 +65,8 @@ function sampleLogoPoints(n, scale, thickness) {
 export default function ParticleUniverse({ onResult }) {
   useEffect(() => {
     const RM = reducedMotion();
-    const M = window.innerWidth < 760;
-    const N = M ? 2600 : 7000;
+    let compact = window.innerWidth <= 900;
+    const N = 7000;
 
     const canvas = document.createElement('canvas');
     canvas.id = 'pg';
@@ -125,15 +125,29 @@ export default function ParticleUniverse({ onResult }) {
       C.set([cc.r, cc.g, cc.b], j);
     }
 
+    const shapeBounds = T.map((target) => {
+      let x = 0;
+      let y = 0;
+      let radiusSquared = 0;
+      for (let i = 0; i < target.length; i += 3) {
+        x = Math.max(x, Math.abs(target[i]));
+        y = Math.max(y, Math.abs(target[i + 1]));
+        radiusSquared = Math.max(radiusSquared, target[i] ** 2 + target[i + 1] ** 2 + target[i + 2] ** 2);
+      }
+      return { width: x * 2, height: y * 2, diameter: Math.sqrt(radiusSquared) * 2 };
+    });
+
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(P, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(C, 3));
-    const material = new THREE.PointsMaterial({ size: M ? 0.06 : 0.05, vertexColors: true, transparent: true, opacity: 0.9, depthWrite: false });
+    const material = new THREE.PointsMaterial({ size: compact ? 0.032 : 0.05, vertexColors: true, transparent: true, opacity: 0.9, depthWrite: false });
     const points = new THREE.Points(geometry, material);
     scene.add(points);
 
     const size = () => {
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, M ? 1.5 : 2));
+      compact = window.innerWidth <= 900;
+      material.size = compact ? 0.032 : 0.05;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compact ? 1.5 : 2));
       renderer.setSize(window.innerWidth, window.innerHeight, false);
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -152,6 +166,7 @@ export default function ParticleUniverse({ onResult }) {
       go = true;
     }, 1100);
     const onPointer = (e) => {
+      if (e.pointerType === 'touch') return;
       mx = e.clientX / window.innerWidth - 0.5;
       my = e.clientY / window.innerHeight - 0.5;
     };
@@ -169,28 +184,34 @@ export default function ParticleUniverse({ onResult }) {
     });
 
     let raf = 0;
-    const loop = () => {
+    let lastFrame = 0;
+    const loop = (now = 0) => {
       raf = requestAnimationFrame(loop);
-      if (document.hidden) return;
-      const L = go ? 0.045 : 0;
+      if (document.hidden || (compact && now - lastFrame < 1000 / 30)) return;
+      lastFrame = now;
+      const L = go ? (compact ? 0.088 : 0.045) : 0;
       const target = T[ti];
       for (let i = 0; i < N * 3; i++) P[i] += (target[i] - P[i]) * L;
       geometry.attributes.position.needsUpdate = true;
       vel += ((window.scrollY - ly) - vel) * 0.1;
       ly = window.scrollY;
-      if (!RM) k += 0.003;
+      if (!RM) k += compact ? 0.006 : 0.003;
       // Лого (хэлбэр 0) урдаасаа харагдаж, зөвхөн бага зэрэг найгана. Бусад хэлбэр бүтэн эргэнэ.
       const targetRotY = ti === 0 ? Math.sin(k * 4) * 0.28 + mx * 0.35 : k + mx * 1.2 + vel * 0.02;
       const targetRotX = ti === 0 ? my * 0.25 : (ti === 2 || ti === 4) ? 0.9 : my * 0.6;
       points.rotation.y += (targetRotY - points.rotation.y) * 0.05;
       points.rotation.x += (targetRotX - points.rotation.x) * 0.04;
-      // Лого (хэлбэр 0) нь дэлгэцийн баруун талын хоосон зайн яг төвд (өргөний 75%) байрлана.
-      const rightCenterX = Math.tan((camera.fov * Math.PI) / 360) * 9 * camera.aspect * 0.5;
-      const targetX = ti === 0 ? rightCenterX : X_OFFSET[ti];
-      points.position.x += ((M ? 0 : targetX) - points.position.x) * 0.04;
-      points.position.y += ((M ? 2 : 0) - points.position.y) * 0.04;
-      material.opacity += ((M ? OPACITY[ti] * 0.55 : OPACITY[ti]) - material.opacity) * 0.05;
-      camera.position.z = 9 - Math.min(Math.abs(vel) * 0.05, 2);
+      camera.position.z = compact ? 9 : 9 - Math.min(Math.abs(vel) * 0.05, 2);
+      const layout = particleLayout({ width: window.innerWidth, height: window.innerHeight,
+        fov: camera.fov, distance: compact ? camera.position.z : 9, shape: ti, bounds: shapeBounds[ti] });
+      points.scale.setScalar(layout.scale);
+      // Resize immediately into the compact viewport; desktop movement remains eased.
+      if (compact) points.position.set(layout.x, layout.y, 0);
+      else {
+        points.position.x += (layout.x - points.position.x) * 0.04;
+        points.position.y += (layout.y - points.position.y) * 0.04;
+      }
+      material.opacity += ((compact ? OPACITY[ti] * 0.72 : OPACITY[ti]) - material.opacity) * 0.05;
       renderer.render(scene, camera);
     };
     loop();
