@@ -84,13 +84,14 @@ main p,
   header nav.account-dropdown { width: min(260px, calc(100vw - 32px)); max-height: calc(100dvh - 110px); overflow-y: auto; }
   .account-dropdown > a, .account-dropdown > button { min-height: 44px; }
 
-  /* A compact opening screen with readable copy and two clear actions. */
+  /* A full opening screen: copy at the top, the particle logo in the middle,
+     and the two actions near the bottom, clear of the chat robot. */
   #home { padding-inline: 20px; }
-  #home .hero { min-height: auto; padding-top: calc(112px + env(safe-area-inset-top, 0px)); padding-bottom: 48px; }
-  #home .hero > div:first-child { width: 100%; max-width: none; }
+  #home .hero { min-height: 100svh; display: flex; flex-direction: column; padding-top: calc(112px + env(safe-area-inset-top, 0px)); padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+  #home .hero > div:first-child { flex: 1 0 auto; display: flex; flex-direction: column; width: 100%; max-width: none; }
   #home .hero h1 { max-width: 100%; font-size: clamp(38px, 10vw, 48px); line-height: 1.15; letter-spacing: -.025em; }
   #home .hero p { max-width: none; font-size: 14px; margin-top: 18px; }
-  #home .hero .actions { width: 100%; max-width: none; gap: 12px; margin-top: 24px; }
+  #home .hero .actions { width: 100%; max-width: none; gap: 12px; margin-top: auto; padding-top: 24px; }
   #home .hero .actions .btn { min-height: 52px; padding: 14px 12px; font-size: 14px; }
   #home #constellation, #cursorGlow, .live-strip { display: none; }
   .hero-color-clouds i { filter: blur(32px); }

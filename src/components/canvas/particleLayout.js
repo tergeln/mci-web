@@ -9,10 +9,14 @@ export function particleLayout({ width, height, fov, distance, shape, bounds }) 
   // Fit the entire logo; rotating shapes use their bounding sphere for safe margins.
   const modelWidth = shape === 0 ? bounds.width : bounds.diameter;
   const modelHeight = shape === 0 ? bounds.height : bounds.diameter;
+  // On phones the logo sits, slightly smaller, between the hero copy and the actions at the bottom of the screen.
+  const phone = width <= 640;
+  const logoY = phone ? -.05 : .12;
+  const fitWidth = shape === 0 && phone ? .74 : .84;
   return {
     compact,
-    scale: Math.min(1, viewWidth * .84 / modelWidth, viewHeight * .42 / modelHeight),
+    scale: Math.min(1, viewWidth * fitWidth / modelWidth, viewHeight * .42 / modelHeight),
     x: 0,
-    y: shape === 0 ? viewHeight * .12 : 0,
+    y: shape === 0 ? viewHeight * logoY : 0,
   };
 }
