@@ -64,6 +64,9 @@ const MESSAGES = {
   enrollment_closed: ['Энэ сургалтын бүртгэл одоогоор хаалттай байна.', 'Enrollment for this course is currently closed.'],
   already_enrolled: ['Та энэ сургалтад аль хэдийн бүртгүүлсэн байна.', 'You are already enrolled in this course.'],
   network_error: ['Сервертэй холбогдож чадсангүй. Интернэтээ шалгаад дахин оролдоно уу.', 'Could not reach the server. Check your connection and try again.'],
+  configuration_error: ['Gemini API key буруу эсвэл тохируулагдаагүй байна. .env.local файлаа шалгаад server-ээ restart хийнэ үү.', 'The Gemini API key is invalid or missing. Check .env.local and restart the server.'],
+  rate_limited: ['Хэт олон хүсэлт явсан байна. Түр хүлээгээд дахин оролдоно уу.', 'Too many requests. Please wait and try again.'],
+  ai_error: ['Gemini хариу өгөхөөс татгалзлаа. Асуултаа өөрөөр бичиж дахин оролдоно уу.', 'Gemini did not return text. Try rephrasing your question.'],
 };
 const FALLBACK = ['Алдаа гарлаа. Дахин оролдоно уу.', 'Something went wrong. Please try again.'];
 

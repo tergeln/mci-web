@@ -1,26 +1,56 @@
-import { request } from './client';
+import { ApiError } from './client';
+import { chatSystemPrompt } from '../data/chat';
 
-/**
- * POST /api/chat
- * @param {string} message  Хэрэглэгчийн асуулт
- * @param {'mn'|'en'} lang  Хариулах хэл
- * @param {{ role: 'user'|'assistant', content: string }[]} history  Өмнөх мессежүүд (сүүлийн 10)
- * @returns {Promise<{ reply: string }>}
- */
+const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-3.5-flash-lite';
+
+/** Gemini API-аас chatbot-ийн хариу авна. */
 export function sendChatMessage({ message, lang, history = [] }) {
-  return request('/chat', {
-    method: 'POST',
-    body: { message, lang, history: history.slice(-10) },
-    mock: () => ({ reply: mockAnswer(message, lang) }),
-  });
+  return generateGeminiReply({ message, lang, history });
 }
 
-// Backend-ийн AI холбогдох хүртэлх түр хариултууд.
-function mockAnswer(question, lang) {
-  const t = (mn, en) => (lang === 'mn' ? mn : en);
-  const s = question.toLowerCase();
-  if (/төлбөр|үнэ|payment|price|qpay/.test(s)) return t('Өгөгдлийн шинжилгээний сургалтын Бүртгүүлэх товчийг дараад мэдээллээ бөглөхөд төлбөрийн туршилтын хэсэг нээгдэнэ. Бодит үнэ, төлбөрийг magiccodeai@gmail.com хаягаар лавлаарай.', 'Choose Enroll on Data Analysis and complete the form to see the payment demo. Confirm official pricing and payment via magiccodeai@gmail.com.');
-  if (/сургалт|course|python|power|vip|элс|enroll/.test(s)) return t('VIP цогц сургалт, Өгөгдлийн шинжилгээ ба Power BI, Компьютерын хэрэглээ гэсэн 3 чиглэлтэй. Өгөгдлийн шинжилгээний сургалтын бүртгэлийн явцыг турших боломжтой, бусад нь хүлээлгийн жагсаалттай.', 'Explore VIP Course, Data Analysis & Power BI and Computer Skills. Data Analysis has an enrollment demo; the other paths have waitlist demos.');
-  if (/merch|бараа|цамц|tote/.test(s)) return t('Бүтээгдэхүүний хэсэгт одоогоор цүнхний загвар зургуудыг түр ашиглаж байна. Байгууллагын бүтээгдэхүүний мэдээллийг и-мэйлээр лавлаарай.', 'Explore the concept merch collection and add items to your selection. Pricing and stock are not yet confirmed.');
-  return t('Бидэнтэй magiccodeai@gmail.com хаягаар холбогдоорой. Сургалт болон төлбөрийн талаар ч асууж болно.', 'Reach the team at magiccodeai@gmail.com. You can also ask me about courses and payment.');
+async function generateGeminiReply({ message, lang, history }) {
+  if (!API_KEY) throw new ApiError(500, 'configuration_error', 'Gemini API key is not configured');
+
+  const historyContents = history.slice(-10).map(({ role, content }) => ({
+    role: role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: content }],
+  }));
+  const firstUserMessage = historyContents.findIndex(({ role }) => role === 'user');
+  const contents = [
+    ...(firstUserMessage === -1 ? [] : historyContents.slice(firstUserMessage)),
+    { role: 'user', parts: [{ text: message }] },
+  ];
+
+  let response;
+  try {
+    response = await fetch(`${API_URL}/${MODEL}:generateContent`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': API_KEY },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: chatSystemPrompt[lang] }] },
+        contents,
+        generationConfig: { temperature: 0.7, maxOutputTokens: 500 },
+      }),
+    });
+  } catch (error) {
+    throw new ApiError(0, 'network_error', error.message);
+  }
+
+  const data = await response.json().catch(() => undefined);
+  if (!response.ok) {
+    const code = response.status === 429
+      ? 'rate_limited'
+      : [400, 401, 403].includes(response.status) ? 'configuration_error' : 'ai_error';
+    throw new ApiError(response.status, code, data?.error?.message || `Gemini request failed (${response.status})`);
+  }
+
+  const candidate = data?.candidates?.[0];
+  const reply = candidate?.content?.parts?.map((part) => part.text || '').join('').trim();
+  if (!reply) {
+    const reason = candidate?.finishReason || data?.promptFeedback?.blockReason || 'empty_response';
+    throw new ApiError(502, 'ai_error', `Gemini returned no text (${reason})`);
+  }
+  return { reply };
 }
