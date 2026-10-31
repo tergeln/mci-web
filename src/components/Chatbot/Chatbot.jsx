@@ -5,10 +5,7 @@ import { sendChatMessage } from '../../api/chat';
 import { errorMessage } from '../../api/client';
 import getChatViewport from './chatViewport';
 
-// Preview the new mascot only in the local development server.
-const mascotImage = import.meta.env.DEV
-  ? '/src/assets/chatbot-hedgehog.png'
-  : '/assets/chatbot-wizard.png';
+const mascotImage = '/assets/chatbot-hedgehog.png';
 
 // open/onOpenChange-ийг Home барина (Contact хэсгийн товч мөн chat-ийг нээдэг).
 export default function Chatbot({ open, onOpenChange }) {
