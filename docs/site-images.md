@@ -82,61 +82,12 @@ Subject: A layered neural network of soft blue and muted gold spheres connected 
 
 Subject: A substantial frosted blue protective shield with a small solid gold padlock at its center, subtle circuit paths spreading out beneath it, calm professional digital security.
 
-### news/scholarships
 
-- Main: `public/assets/news/scholarships.jpg`
-- Small: `public/assets/news/scholarships-small.jpg`
-- Original output: `/Users/serulien/.codex/generated_images/01a14d1c-817c-7942-8d43-6bf353fe4636/exec-388939fd-e6b2-41e1-b0db-894d17052d11.png`
 
-Subject: An open cream book at the base of a short elegant blue staircase leading toward a warm gold graduation cap, an educational opportunity and scholarship metaphor.
 
-### news/technology-open-day
 
-- Main: `public/assets/news/technology-open-day.jpg`
-- Small: `public/assets/news/technology-open-day-small.jpg`
-- Original output: `/Users/serulien/.codex/generated_images/01a14d1c-817c-7942-8d43-6bf353fe4636/exec-822a3453-f0eb-4a67-947c-6e6f0c333d95.png`
 
-Subject: An inviting small technology exhibition display with three stations: a laptop, a glowing connected-node sculpture, and a small friendly abstract robot form; a discovery and open day concept, no people.
 
-### news/digital-skills-workshop
-
-- Main: `public/assets/news/digital-skills-workshop.jpg`
-- Small: `public/assets/news/digital-skills-workshop-small.jpg`
-- Original output: `/Users/serulien/.codex/generated_images/01a14d1c-817c-7942-8d43-6bf353fe4636/exec-216da3f9-9511-4a8a-889a-6f80c6b1a622.png`
-
-Subject: A welcoming desk with a blue laptop, a cream notebook, a pencil and three simple floating tool cards; an approachable practical digital skills workshop concept.
-
-### news/student-projects
-
-- Main: `public/assets/news/student-projects.jpg`
-- Small: `public/assets/news/student-projects-small.jpg`
-- Original output: `/Users/serulien/.codex/generated_images/01a14d1c-817c-7942-8d43-6bf353fe4636/exec-f8f4c87b-40c6-45d9-b0b0-42311e5cd4e7.png`
-
-Subject: Three finished student project displays arranged on a low gallery pedestal: a responsive website window, a small bar-chart dashboard and a glowing connected-node model; an educational project showcase.
-
-### news/knowledge-sharing
-
-- Main: `public/assets/news/knowledge-sharing.jpg`
-- Small: `public/assets/news/knowledge-sharing-small.jpg`
-- Original output: `/Users/serulien/.codex/generated_images/01a14d1c-817c-7942-8d43-6bf353fe4636/exec-77f5ba34-7c8c-4ab3-b8a2-10a0f1e5bbe7.png`
-
-Subject: A round cream collaborative table seen from a gentle isometric angle, three blue laptops and an open book connected by subtle golden arcs; a volunteer knowledge-sharing concept, no people.
-
-### news/education-partnership
-
-- Main: `public/assets/news/education-partnership.jpg`
-- Small: `public/assets/news/education-partnership-small.jpg`
-- Original output: `/Users/serulien/.codex/generated_images/01a14d1c-817c-7942-8d43-6bf353fe4636/exec-24222db7-6546-47a9-98ca-905101a1783c.png`
-
-Subject: Two elegant blue and cream curved bridge forms meeting over an open book with a small gold connection piece in the middle; a simple thoughtful education partnership metaphor.
-
-### news/careers-technology
-
-- Main: `public/assets/news/careers-technology.jpg`
-- Small: `public/assets/news/careers-technology-small.jpg`
-- Original output: `/Users/serulien/.codex/generated_images/01a14d1c-817c-7942-8d43-6bf353fe4636/exec-936ade00-792d-443a-8cb7-9de890383193.png`
-
-Subject: A clean blue pathway gently branching toward three small stations: a code window, a data chart and a glowing neural node, with an inviting open doorway in the distance; career exploration in technology.
 
 ### services/landing-page
 

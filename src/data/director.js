@@ -6,7 +6,7 @@ export const director = {
   name: t('Цогтбаатарын Энхтуяа', 'Enkhtuya Tsogtbaatar'),
   role: t('Үүсгэн байгуулагч, гүйцэтгэх захирал', 'Founder & CEO'),
   bio: t(
-    'Гүйцэтгэх захирал Ц.Энхтуяа компьютерийн ухаан, өгөгдлийн шинжилгээ, хиймэл оюуны чиглэлээр 19 жил багшилж, судалгаа хийсэн туршлагатай. 2010 оноос Монгол Улсын Их Сургуульд багшилж байгаа бөгөөд Тайваньд гүн сургалтад суурилсан биометрик танилт, сансрын ионограмм боловсруулалтын олон улсын хамтарсан төслүүдэд ажилласан.',
+    'Гүйцэтгэх захирал Ц.Энхтуяа нь компьютерийн ухаан, өгөгдлийн шинжилгээ, хиймэл оюуны чиглэлээр 19 жил багшилж, судалгаа хийсэн туршлагатай. 2010 оноос Монгол Улсын Их Сургуульд багшилж байгаа бөгөөд Тайваньд гүн сургалтад суурилсан биометрик танилт, сансрын ионограмм боловсруулалтын олон улсын хамтарсан төслүүдэд ажилласан.',
     'CEO, Enkhtuya Tsogtbaatar, has spent 19 years teaching and researching computer science, data analysis and artificial intelligence. She has taught at the National University of Mongolia since 2010, and in Taiwan she worked on international joint projects in deep-learning-based biometrics and ionogram processing for space science.',
   ),
   stats: [

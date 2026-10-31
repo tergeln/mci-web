@@ -149,9 +149,19 @@ main p,
   .partners-heading { font-size: 11px; letter-spacing: 1px; margin-bottom: 18px; }
   .partners-strip .strip .tech-flow-group { gap: 24px; padding-right: 24px; }
   .partners-strip .strip .partner { width: 220px; min-width: 0; grid-template-columns: 56px minmax(0, 1fr); column-gap: 12px; }
-  .partners-strip .partner-logo { flex-basis: 56px; width: 56px; height: 56px; padding: 4px; }
-  .partners-strip .partner-logo img { width: 48px; height: 48px; }
-  .partners-strip .partner-logo--bid img { width: 148px; height: 105px; }
+  .partners-strip .strip .partner-logo { box-sizing: border-box; flex: none; width: 56px; min-width: 56px; height: 56px; padding: 4px; }
+  .partners-strip .strip .partner-logo img {
+    position: static;
+    inset: auto;
+    width: 48px;
+    height: 48px;
+    max-width: 100%;
+    max-height: 100%;
+    flex-shrink: 0;
+    object-fit: contain;
+    object-position: center;
+    transform: none;
+  }
   .partners-strip .strip .partner span { max-width: none; font-size: 13px; }
   #contact .contact-links { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   #contact h2 { font-size: 28px; }

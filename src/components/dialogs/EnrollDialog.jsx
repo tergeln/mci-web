@@ -31,7 +31,7 @@ export default function EnrollDialog({ request, onOpenClassroom }) {
     if (dialog && !dialog.open) dialog.showModal();
   }, [request]);
 
-  const course = homeCourses[selected];
+  const course = typeof selected === 'object' ? selected : homeCourses[selected];
   const isCourse = Boolean(course.open);
   const name = course.title[lang];
 

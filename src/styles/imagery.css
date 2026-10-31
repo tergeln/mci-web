@@ -27,16 +27,17 @@
   .about-picture--image>img{position:static;aspect-ratio:3/2;height:auto}
 }
 
-/* Preserve the existing course artwork area for the supplied slides. */
-#courses .course-art--slide>img{object-fit:contain;background:#1c1c1c}
-
-/* Hide the PDF's bottom white edge without changing the course card size. */
-#courses .course-art--slide{position:relative;overflow:hidden;background:#1c1c1c}
-#courses .course-art--slide>img{position:absolute;inset:auto 0;top:50%;width:100%;height:auto;transform:translateY(-50%);clip-path:inset(0 0 1.5% 0);object-fit:contain}
+/* Match the frame to each poster so there are no bands or clipped corners. */
+#courses .course-art.course-art--slide,
+.catalog-page .catalog-art.catalog-art--slide{position:relative;isolation:isolate;overflow:hidden;aspect-ratio:1200/664;height:auto;min-height:0;align-self:center;padding:0;background:#1c1c1c}
+#courses .course-art--slide>img,
+.catalog-page .catalog-art--slide>img{position:absolute;inset:0 auto auto 0;width:100%;height:auto;max-height:none;transform:none;object-fit:initial}
 #courses .card-body>p{width:100%;max-width:none;font-size:16px;line-height:1.7;text-align:left;text-justify:auto;margin-top:12px}
 @media(max-width:640px){#courses .card-body>p{font-size:14px}}
-
-/* Blue course artwork for the dark palette, preserving the original text. */
-:root[data-theme=dark] #courses .course-art--slide{isolation:isolate;background:#102b52}
-:root[data-theme=dark] #courses .course-art--slide>img{filter:hue-rotate(185deg) saturate(.85)}
-:root[data-theme=dark] #courses .course-art--slide::after{content:'';position:absolute;inset:0;background:#0a2347;mix-blend-mode:screen;pointer-events:none}
+:root[data-theme=dark] #courses .course-art--slide,
+:root[data-theme=dark] .catalog-page .catalog-art--slide{background:#102b52}
+:root[data-theme=dark] #courses .course-art--slide>img,
+:root[data-theme=dark] .catalog-page .catalog-art--slide>img{filter:hue-rotate(185deg) saturate(.85)}
+:root[data-theme=dark] #courses .course-art--slide::after,
+:root[data-theme=dark] .catalog-page .catalog-art--slide::after{content:'';position:absolute;inset:0;background:#0a2347;mix-blend-mode:screen;pointer-events:none}
+.catalog-page .catalog-art.catalog-art--slide{width:100%;align-self:stretch}

@@ -126,3 +126,9 @@ body p,body small,body label,body input,body textarea,body select,body button,bo
 
 /* Use the same serif face for Latin and Cyrillic within mixed-language headings. */
 :root{--font-display:Georgia,serif;--font-display-simple:serif}
+
+/* Close controls show only their glyph, including when a dialog autofocuses. */
+button.icon-btn,button.icon-btn:focus,button.icon-btn:focus-visible,
+dialog .dialog-top>button,dialog .dialog-top>button:focus,dialog .dialog-top>button:focus-visible,
+#closeChat,#closeChat:focus,#closeChat:focus-visible,
+#cartDialog .collection-close,#cartDialog .collection-close:focus,#cartDialog .collection-close:focus-visible{outline:none!important;border:0!important;box-shadow:none!important;background:transparent!important}

@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ApiState from '../../components/ApiState/ApiState';
 import { useLang } from '../../context/LanguageContext';
@@ -37,7 +38,7 @@ export default function NewsDetailPage() {
                 {t('Загварын жишээ · Энэ мэдээний бодит мэдээлэл хараахан ороогүй.', 'Sample story · Real details have not been added yet.')}
               </p>
             )}
-            {story.coverImage ? <StoryPhoto image={story.coverImage} lang={lang} cover /> : <div className="story-art" aria-hidden="true">{story.number}</div>}
+            {story.coverImage || story.gallery?.length ? <StoryGallery key={story.id} images={[story.coverImage, ...(story.gallery ?? [])].filter(Boolean)} /> : <div className="story-art" aria-hidden="true">{story.number}</div>}
             <p>{story.summary[lang]}</p>
             <h2>{t('Ажлын тухай', 'About this initiative')}</h2>
             {(story.body?.[lang] ??
@@ -54,13 +55,6 @@ export default function NewsDetailPage() {
                 />
               ))}
             </dl>
-            {story.gallery?.length ? <>
-              <h2>{t('Онцлох зургууд', 'Photo highlights')}</h2>
-              <div className="story-gallery">{story.gallery.map((image) => <StoryPhoto key={image.src} image={image} lang={lang} />)}</div>
-            </> : story.isSample !== false && <>
-              <h2>{t('Үр дүн ба онцлох агшнууд', 'Results and highlights')}</h2>
-              <p>{t('Бодит үр дүн, оролцогчдын сэтгэгдэл болон гэрэл зургуудыг энд нэмнэ.', 'Verified outcomes, participant reflections and photographs will appear here.')}</p>
-            </>}
             <Link className="btn secondary" to="/news">{t('Бүх мэдээ рүү буцах', 'Back to all stories')}</Link>
           </>
         )}
@@ -69,11 +63,46 @@ export default function NewsDetailPage() {
   );
 }
 
-function StoryPhoto({ image, lang, cover = false }) {
-  return <figure className={`story-photo${cover ? ' story-cover' : ''}`}>
-    <ContentImage image={image} sizes={cover ? '(max-width: 980px) calc(100vw - 40px), 932px' : '(max-width: 640px) calc(100vw - 40px), 454px'} loading={cover ? 'eager' : 'lazy'} />
-    {image.caption?.[lang] && <figcaption>{image.caption[lang]}</figcaption>}
-  </figure>;
+function StoryGallery({ images }) {
+  const { t } = useLang();
+  const trackRef = useRef(null);
+  const [active, setActive] = useState(0);
+  const multiple = images.length > 1;
+  const goTo = (index) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const next = Math.max(0, Math.min(images.length - 1, index));
+    track.scrollTo({ left: next * track.clientWidth, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+  };
+
+  return <section className="story-carousel" aria-label={t('Мэдээний зургууд', 'Story photos')} aria-roledescription={t('Зургийн цомог', 'Carousel')}>
+    <div className="story-carousel-frame">
+      <div className="story-carousel-track" ref={trackRef} tabIndex={multiple ? 0 : undefined}
+        aria-label={t('Зургуудыг хажуу тийш гүйлгэж үзээрэй', 'Swipe horizontally to browse photos')}
+        onScroll={(event) => {
+          const track = event.currentTarget;
+          setActive(Math.round(track.scrollLeft / track.clientWidth));
+        }}
+        onKeyDown={(event) => {
+          if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+            event.preventDefault();
+            goTo(active + (event.key === 'ArrowRight' ? 1 : -1));
+          }
+        }}>
+        {images.map((image, index) => <figure className="story-carousel-slide" key={image.src} role="group" aria-roledescription={t('Зураг', 'Slide')} aria-label={`${index + 1} / ${images.length}`}>
+          <ContentImage image={image} sizes="(max-width: 640px) calc(100vw - 40px), 640px" loading={index === 0 ? 'eager' : 'lazy'} />
+        </figure>)}
+      </div>
+      {multiple && <>
+        <span className="story-carousel-count" aria-live="polite" aria-atomic="true">{active + 1} / {images.length}</span>
+        <button className="story-carousel-arrow story-carousel-prev" type="button" disabled={active === 0} onClick={() => goTo(active - 1)} aria-label={t('Өмнөх зураг', 'Previous photo')}>‹</button>
+        <button className="story-carousel-arrow story-carousel-next" type="button" disabled={active === images.length - 1} onClick={() => goTo(active + 1)} aria-label={t('Дараах зураг', 'Next photo')}>›</button>
+      </>}
+    </div>
+    {multiple && <div className="story-carousel-dots" aria-label={t('Зураг сонгох', 'Choose photo')}>
+      {images.map((image, index) => <button key={image.src} type="button" aria-label={t(`${index + 1}-р зураг`, `Photo ${index + 1}`)} aria-current={active === index ? 'true' : undefined} onClick={() => goTo(index)}><span /></button>)}
+    </div>}
+  </section>;
 }
 
 function DetailRow({ label, value }) {

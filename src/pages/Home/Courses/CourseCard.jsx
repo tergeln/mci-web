@@ -1,4 +1,5 @@
 import Tr from '../../../components/Tr/Tr';
+import { courseButtonLabel } from '../../../data/courses';
 import useReveal from '../../../hooks/useReveal';
 import CourseArt from './CourseArt';
 import { useLang } from '../../../context/LanguageContext';
@@ -13,8 +14,7 @@ export default function CourseCard({ course, index, onSelect }) {
         <p><Tr text={course.text} /></p>
         <div className="meta"><Tr text={course.meta} /></div>
         <div className="card-bottom">
-          <strong><Tr text={course.status} /></strong>
-          <button data-course={index} onClick={onSelect}><Tr text={course.button} /></button>
+          <button data-course={index} onClick={onSelect}><Tr text={courseButtonLabel} /></button>
         </div>
       </div>
     </article>

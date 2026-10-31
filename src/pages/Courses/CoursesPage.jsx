@@ -1,30 +1,23 @@
 import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import Tr from '../../components/Tr/Tr';
 import ApiState from '../../components/ApiState/ApiState';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useApi from '../../hooks/useApi';
 import { getCourses } from '../../api/courses';
 import { catalogFilters } from '../../data/catalog';
+import { courseButtonLabel } from '../../data/courses';
 import './courses.css';
 import ContentImage from '../../components/ContentImage/ContentImage';
 import { useLang } from '../../context/LanguageContext';
+import EnrollDialog from '../../components/dialogs/EnrollDialog';
+import ClassroomDialog from '../../components/dialogs/ClassroomDialog';
 
-// API-аас ирсэн status-ыг дэлгэцийн текст болгоно.
-const STATUS = {
-  open: { mn: 'Бүртгэл нээлттэй', en: 'Enrollment open' },
-  waitlist: { mn: 'Удахгүй', en: 'Coming soon' },
-  planned: { mn: 'Удахгүй', en: 'Coming soon' },
-};
-const CTA = {
-  open: { mn: 'Сургалт авах', en: 'Take this course' },
-  waitlist: { mn: 'Хүлээлгийн жагсаалт', en: 'Join waitlist' },
-};
-const PLANNED = { mn: 'Төлөвлөж буй чиглэл · Элсэлт нээгдээгүй', en: 'Planned track · Not open yet' };
 const ART_TEXT = ['{ }', 'SQL', '✧'];
 
 export default function CoursesPage() {
   const { t } = useLang();
+  const [enrollRequest, setEnrollRequest] = useState(null);
+  const [classroomRequest, setClassroomRequest] = useState(null);
   const [filter, setFilter] = useState('all');
   const [query, setQuery] = useState('');
   const searchRef = useRef(null);
@@ -43,10 +36,6 @@ export default function CoursesPage() {
     <>
       <main className="catalog-page wrap">
         <div className="eyebrow"><Tr mn="СУРАЛЦАХ ЗАМАА СОНГО" en="CHOOSE YOUR PATH" /></div>
-        <h1><Tr mn="Бүх сургалтууд" en="Explore courses" /></h1>
-        <p className="catalog-intro">
-          <Tr mn="Өөрийн зорилго, түвшинд тохирох чиглэлээ сонгоорой." en="Find a learning path for your goals and level." />
-        </p>
         <div className="catalog-search">
           <label htmlFor="course-search">{t('Сургалт хайх', 'Search courses')}</label>
           <div className="catalog-search-field">
@@ -68,18 +57,15 @@ export default function CoursesPage() {
           <div id="catalog-results" className="catalog-grid">
             {results.map((c, i) => (
               <article key={c.id} className="catalog-card">
-                <div className={`catalog-art catalog-art-${i % 3}${c.image ? ' catalog-art--image' : ''}`} aria-hidden={c.image ? undefined : true}>
+                <div className={`catalog-art catalog-art-${i % 3}${c.image ? ' catalog-art--image' : ''}${c.image?.slide ? ' catalog-art--slide' : ''}`} aria-hidden={c.image ? undefined : true}>
                   {c.image ? <ContentImage image={c.image} sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 900px) 45vw, 370px" /> : ART_TEXT[i % 3]}
                 </div>
                 <div className="catalog-body">
-                  <small><Tr text={STATUS[c.status] ?? STATUS.waitlist} /></small>
                   <h3><Tr text={c.title} /></h3>
                   <p><Tr text={c.description} /></p>
-                  {CTA[c.status] ? (
-                    <Link className="btn" to={`/?course=${c.id}#courses`}><Tr text={CTA[c.status]} /></Link>
-                  ) : (
-                    <span className="planned-note"><Tr text={PLANNED} /></span>
-                  )}
+                  <button className="btn" type="button" onClick={() => setEnrollRequest((previous) => ({ course: { ...c, open: c.status === 'open' }, id: (previous?.id ?? 0) + 1 }))}>
+                    <Tr text={courseButtonLabel} />
+                  </button>
                 </div>
               </article>
             ))}
@@ -91,6 +77,8 @@ export default function CoursesPage() {
           </div>
         )}
       </main>
+      <EnrollDialog request={enrollRequest} onOpenClassroom={() => setClassroomRequest((previous) => ({ id: (previous?.id ?? 0) + 1 }))} />
+      <ClassroomDialog request={classroomRequest} />
     </>
   );
 }

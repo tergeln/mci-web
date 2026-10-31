@@ -1,7 +1,7 @@
 // Mock "өгөгдлийн сан". Backend бэлэн болоход энэ хавтас хэрэггүй болно.
 // Өгөгдлийн хэлбэр docs/API.md-тэй яг таарах ёстой.
 import { ApiError } from '../client';
-import { courseImages, newsImages } from '../../assets/siteImages';
+import { courseImages } from '../../assets/siteImages';
 
 export const courses = [
   {
@@ -51,19 +51,6 @@ export const courses = [
   },
 ];
 
-const sample = (number, category, title, summary) => ({
-  id: String(Number(number)),
-  number,
-  category,
-  title,
-  summary,
-  publishedAt: null,
-  details: { date: null, location: null, partners: null },
-  body: null,
-  isSample: true,
-  coverImage: newsImages[number],
-});
-
 export const news = [
   {
     id: '1', number: '01', isSample: false, publishedAt: null,
@@ -76,11 +63,21 @@ export const news = [
     },
     details: { date: null, location: { mn: 'Хусхан төгөл', en: 'Hushkhan Tugul' }, partners: { mn: 'Хушхан брэнд', en: 'HUSHKHAN' } },
     coverImage: {
+      src: '/assets/news/khush-tugul/group-photo.jpg', srcSet: '/assets/news/khush-tugul/group-photo-small.jpg 768w, /assets/news/khush-tugul/group-photo.jpg 1284w',
+      width: 1284, height: 963, position: 'center 70%',
+      alt: { mn: 'Мод тарих ажилд оролцсон хамт олны хамтын зураг', en: 'Group photo of the tree-planting participants' },
+    },
+    gallery: [
+      {
+        src: '/assets/news/khush-tugul/event-talk.jpg', srcSet: '/assets/news/khush-tugul/event-talk-small.jpg 768w, /assets/news/khush-tugul/event-talk.jpg 1500w',
+        width: 1500, height: 2000,
+        alt: { mn: 'Хусхан төгөлд мод тарих арга хэмжээний үеэр үг хэлж буй агшин', en: 'A speech during the tree-planting event at Hushkhan Tugul' },
+      },
+      {
       src: '/assets/news/khush-tugul/saplings.jpg', width: 4032, height: 3024,
       alt: { mn: 'Мод тарихаар бэлтгэсэн хоёр суулгац', en: 'Two saplings prepared for planting' },
       caption: { mn: 'Мод тарихаар бэлтгэсэн суулгацууд.', en: 'Saplings prepared for planting.' },
     },
-    gallery: [
       {
         src: '/assets/news/khush-tugul/planting-team.jpg', width: 3072, height: 4096,
         alt: { mn: 'Хусхан төгөлд мод тарих талбай руу явж буй оролцогчид', en: 'Participants heading to the planting site at Hushkhan Tugul' },
@@ -178,16 +175,7 @@ export const news = [
       })),
     ],
   },
-  sample('04', { mn: 'Сургалт · Жишээ', en: 'Learning · Sample' }, { mn: 'Дижитал ур чадварын сургалт', en: 'Digital skills workshop' },
-    { mn: 'Сургалтын сэдэв, хамрагдсан оролцогчид, бүтээлүүдийг энд танилцуулна.', en: 'Present workshop topics, participants and their work here.' }),
-  sample('05', { mn: 'Төсөл · Жишээ', en: 'Projects · Sample' }, { mn: 'Суралцагчдын бүтээлийн өдөр', en: 'Student project showcase' },
-    { mn: 'Суралцагчдын төсөл, шийдэл болон туршлагыг энд хуваалцана.', en: 'Share student projects, solutions and experiences here.' }),
-  sample('06', { mn: 'Сайн дурын ажил · Жишээ', en: 'Volunteering · Sample' }, { mn: 'Мэдлэгээ хуваалцах сайн дурын өдөр', en: 'Volunteer knowledge sharing' },
-    { mn: 'Сайн дурын оролцоо, хамтын ажлын түүхийг энд нийтэлнэ.', en: 'Publish volunteer stories and collaborative activities here.' }),
-  sample('07', { mn: 'Хамтын ажиллагаа · Жишээ', en: 'Partnerships · Sample' }, { mn: 'Боловсролын төлөөх хамтын ажиллагаа', en: 'Partnerships for education' },
-    { mn: 'Хамтарсан санаачилгын зорилго, явц болон үр дүнг энд танилцуулна.', en: 'Introduce joint initiatives, their progress and outcomes here.' }),
-  sample('08', { mn: 'Уулзалт · Жишээ', en: 'Events · Sample' }, { mn: 'Мэргэжил сонголт ба технологийн ирээдүй', en: 'Careers and the future of technology' },
-    { mn: 'Зөвлөгөө, ярилцлага болон уулзалтын гол санаануудыг энд хуваалцана.', en: 'Share career advice, conversations and event takeaways here.' }),
+
 ];
 
 // Бүртгэл, төлбөр хуудас дахин ачаалахад арилна (санах ойд л хадгалагдана).

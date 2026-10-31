@@ -1,222 +1,107 @@
 // Generated decorative image assets. Course and news content is served through src/api/.
 export const courseImages = {
   "vip-course": {
-    "src": "/assets/courses/vip-course.webp",
-    "width": 720,
-    "height": 394,
+    "src": "/assets/courses/vip-course-slide.svg",
+    "width": 1200,
+    "height": 674,
     "alt": {
-      "mn": "Хиймэл оюун, өгөгдөл, хөгжүүлэлтийг холбосон дүрслэл",
-      "en": "Illustration connecting AI, data and development"
+      "mn": "VIP цогц сургалт",
+      "en": "VIP Complete Course"
     },
-    "generated": true
+    "slide": true
   },
   "data-analysis": {
-    "src": "/assets/courses/data-analysis.webp",
-    "width": 720,
-    "height": 394,
+    "src": "/assets/courses/data-analysis-slide.svg",
+    "width": 1200,
+    "height": 674,
     "alt": {
-      "mn": "Баганан график, өгөгдлийн самбарын дүрслэл",
-      "en": "Illustration of an analytics dashboard and charts"
+      "mn": "Өгөгдлийн шинжилгээ ба Power BI",
+      "en": "Data Analysis & Power BI"
     },
-    "generated": true
+    "slide": true
   },
   "computer-skills": {
-    "src": "/assets/courses/computer-skills.webp",
-    "width": 715,
-    "height": 394,
+    "src": "/assets/courses/computer-skills-slide.svg",
+    "width": 1200,
+    "height": 674,
     "alt": {
-      "mn": "Компьютер, гар, хулгана болон файлуудын дүрслэл",
-      "en": "Illustration of a computer, keyboard, mouse and files"
+      "mn": "Компьютерийн хэрэглээ",
+      "en": "Computer Skills"
     },
-    "generated": true
+    "slide": true
   },
   "python-programming": {
-    "src": "/assets/courses/python-programming.jpg",
-    "srcSet": "/assets/courses/python-programming-small.jpg 768w, /assets/courses/python-programming.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
+    "src": "/assets/courses/python-programming-slide.svg",
+    "width": 1200,
+    "height": 674,
     "alt": {
-      "mn": "Python программчлалын код, логикийн дүрслэл",
-      "en": "Concept illustration of Python coding and logic"
+      "mn": "Python программчлал",
+      "en": "Python Programming"
     },
-    "generated": true
+    "slide": true
   },
   "web-development": {
-    "src": "/assets/courses/web-development.jpg",
-    "srcSet": "/assets/courses/web-development-small.jpg 768w, /assets/courses/web-development.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
+    "src": "/assets/courses/web-development-slide.svg",
+    "width": 1200,
+    "height": 674,
     "alt": {
-      "mn": "Компьютер, таблет, утсанд зохицох вэбсайтын дүрслэл",
-      "en": "Illustration of responsive web development across devices"
+      "mn": "Вэб хөгжүүлэлт",
+      "en": "Web Development"
     },
-    "generated": true
+    "slide": true
   },
   "sql-databases": {
-    "src": "/assets/courses/sql-databases.jpg",
-    "srcSet": "/assets/courses/sql-databases-small.jpg 768w, /assets/courses/sql-databases.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
+    "src": "/assets/courses/sql-databases-slide.svg",
+    "width": 1200,
+    "height": 674,
     "alt": {
-      "mn": "Холбогдсон өгөгдлийн сан, хүснэгтүүдийн дүрслэл",
-      "en": "Illustration of linked databases and structured data"
+      "mn": "SQL ба өгөгдлийн сан",
+      "en": "SQL & Databases"
     },
-    "generated": true
+    "slide": true
   },
   "ai-rag-systems": {
-    "src": "/assets/courses/ai-rag-systems.jpg",
-    "srcSet": "/assets/courses/ai-rag-systems-small.jpg 768w, /assets/courses/ai-rag-systems.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
+    "src": "/assets/courses/ai-rag-systems-slide.svg",
+    "width": 1200,
+    "height": 674,
     "alt": {
-      "mn": "Баримт бичиг, хайлт, AI туслахын холбоосын дүрслэл",
-      "en": "Illustration of documents connected to a retrieval-based AI assistant"
+      "mn": "AI & RAG системүүд",
+      "en": "AI & RAG Systems"
     },
-    "generated": true
+    "slide": true
   },
   "machine-learning": {
-    "src": "/assets/courses/machine-learning.jpg",
-    "srcSet": "/assets/courses/machine-learning-small.jpg 768w, /assets/courses/machine-learning.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
+    "src": "/assets/courses/machine-learning-slide.svg",
+    "width": 1200,
+    "height": 674,
     "alt": {
-      "mn": "Өгөгдөл боловсруулж буй мэдрэлийн сүлжээний дүрслэл",
-      "en": "Illustration of a neural network processing data"
+      "mn": "AI & Deep Learning",
+      "en": "AI & Deep Learning"
     },
-    "generated": true
+    "slide": true
   },
   "cybersecurity": {
-    "src": "/assets/courses/cybersecurity.jpg",
-    "srcSet": "/assets/courses/cybersecurity-small.jpg 768w, /assets/courses/cybersecurity.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
+    "src": "/assets/courses/cybersecurity-slide.svg",
+    "width": 1200,
+    "height": 674,
     "alt": {
-      "mn": "Бамбай, цоож, цахим хамгаалалтын дүрслэл",
-      "en": "Illustration of a shield and lock for digital security"
+      "mn": "Мэдээллийн аюулгүй байдал",
+      "en": "Information Security"
     },
-    "generated": true
-  }
-};
-
-export const newsImages = {
-  "02": {
-    "src": "/assets/news/scholarships.jpg",
-    "srcSet": "/assets/news/scholarships-small.jpg 768w, /assets/news/scholarships.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
-    "alt": {
-      "mn": "Тэтгэлэг, суралцах боломжийг илэрхийлсэн дүрслэл",
-      "en": "Concept illustration of scholarships and learning opportunities"
-    },
-    "generated": true,
-    "caption": {
-      "mn": "AI-ээр үүсгэсэн дүрслэл.",
-      "en": "AI-generated illustration."
-    }
-  },
-  "03": {
-    "src": "/assets/news/technology-open-day.jpg",
-    "srcSet": "/assets/news/technology-open-day-small.jpg 768w, /assets/news/technology-open-day.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
-    "alt": {
-      "mn": "Технологитой танилцах нээлттэй өдрийн дүрслэл",
-      "en": "Concept illustration of a technology open day"
-    },
-    "generated": true,
-    "caption": {
-      "mn": "AI-ээр үүсгэсэн дүрслэл.",
-      "en": "AI-generated illustration."
-    }
-  },
-  "04": {
-    "src": "/assets/news/digital-skills-workshop.jpg",
-    "srcSet": "/assets/news/digital-skills-workshop-small.jpg 768w, /assets/news/digital-skills-workshop.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
-    "alt": {
-      "mn": "Дижитал ур чадварын сургалтын ажлын ширээний дүрслэл",
-      "en": "Concept illustration of a digital skills workshop desk"
-    },
-    "generated": true,
-    "caption": {
-      "mn": "AI-ээр үүсгэсэн дүрслэл.",
-      "en": "AI-generated illustration."
-    }
-  },
-  "05": {
-    "src": "/assets/news/student-projects.jpg",
-    "srcSet": "/assets/news/student-projects-small.jpg 768w, /assets/news/student-projects.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
-    "alt": {
-      "mn": "Суралцагчдын вэбсайт, тайлан, AI төслийн үзэсгэлэнгийн дүрслэл",
-      "en": "Concept illustration of a student project showcase"
-    },
-    "generated": true,
-    "caption": {
-      "mn": "AI-ээр үүсгэсэн дүрслэл.",
-      "en": "AI-generated illustration."
-    }
-  },
-  "06": {
-    "src": "/assets/news/knowledge-sharing.jpg",
-    "srcSet": "/assets/news/knowledge-sharing-small.jpg 768w, /assets/news/knowledge-sharing.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
-    "alt": {
-      "mn": "Хамтын ширээ, ном, компьютероор мэдлэг хуваалцах дүрслэл",
-      "en": "Concept illustration of collaborative knowledge sharing"
-    },
-    "generated": true,
-    "caption": {
-      "mn": "AI-ээр үүсгэсэн дүрслэл.",
-      "en": "AI-generated illustration."
-    }
-  },
-  "07": {
-    "src": "/assets/news/education-partnership.jpg",
-    "srcSet": "/assets/news/education-partnership-small.jpg 768w, /assets/news/education-partnership.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
-    "alt": {
-      "mn": "Боловсролын хамтын ажиллагааг илэрхийлсэн гүүр, номын дүрслэл",
-      "en": "Concept illustration of a partnership for education"
-    },
-    "generated": true,
-    "caption": {
-      "mn": "AI-ээр үүсгэсэн дүрслэл.",
-      "en": "AI-generated illustration."
-    }
-  },
-  "08": {
-    "src": "/assets/news/careers-technology.jpg",
-    "srcSet": "/assets/news/careers-technology-small.jpg 768w, /assets/news/careers-technology.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
-    "alt": {
-      "mn": "Технологийн мэргэжлийн сонголтуудыг илэрхийлсэн замын дүрслэл",
-      "en": "Concept illustration of technology career pathways"
-    },
-    "generated": true,
-    "caption": {
-      "mn": "AI-ээр үүсгэсэн дүрслэл.",
-      "en": "AI-generated illustration."
-    }
+    "slide": true
   }
 };
 
 export const serviceImages = {
   "01": {
-    "src": "/assets/services/landing-page.jpg",
-    "srcSet": "/assets/services/landing-page-small.jpg 768w, /assets/services/landing-page.jpg 1536w",
+    "src": "/assets/services/landing-reference.webp",
+    "srcSet": "/assets/services/landing-reference-small.webp 768w, /assets/services/landing-reference.webp 1536w",
     "width": 1536,
-    "height": 1024,
+    "height": 997,
     "alt": {
-      "mn": "Нэг хуудаст вэбсайтын дүрслэл",
-      "en": "Concept illustration of a landing page"
-    },
-    "generated": true
+      "mn": "Magic Code AI танилцуулга вебсайтын загвар",
+      "en": "Magic Code AI landing page design"
+    }
   },
   "02": {
     "src": "/assets/services/business-website.jpg",
