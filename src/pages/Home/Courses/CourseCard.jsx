@@ -10,11 +10,12 @@ export default function CourseCard({ course, index, onSelect }) {
     <article ref={ref} className={className} aria-label={course.title[lang]}>
       <CourseArt course={course} />
       <div className="card-body">
+        {(course.managed || !course.slide) && <h3><Tr text={course.title} /></h3>}
         <p><Tr text={course.text} /></p>
         <div className="meta"><Tr text={course.meta} /></div>
         <div className="card-bottom">
           <strong><Tr text={course.status} /></strong>
-          <button data-course={index} onClick={onSelect}><Tr text={course.button} /></button>
+          <button disabled={course.statusCode === 'planned'} data-course={index} onClick={onSelect}><Tr text={course.button} /></button>
         </div>
       </div>
     </article>

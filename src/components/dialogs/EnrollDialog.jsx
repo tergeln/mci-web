@@ -31,8 +31,9 @@ export default function EnrollDialog({ request, onOpenClassroom }) {
     if (dialog && !dialog.open) dialog.showModal();
   }, [request]);
 
-  const course = homeCourses[selected];
-  const isCourse = Boolean(course.open);
+  const course = (selected && typeof selected === 'object' ? selected : homeCourses[selected]) || homeCourses[0];
+  const isCourse = Boolean(course.open || course.status === 'open');
+  const closed = course.status === 'planned';
   const name = course.title[lang];
 
   const finish = (isWaitlist) => {
@@ -85,7 +86,7 @@ export default function EnrollDialog({ request, onOpenClassroom }) {
     <dialog id="enrollDialog" ref={dialogRef} onClick={closeOnBackdrop}>
       <div className="dialog-top">
         <h3 id="dialogTitle">
-          {isCourse ? t('Сургалтад бүртгүүлэх', 'Course enrollment') : t('Хүлээлгийн жагсаалт', 'Join the waitlist')}
+          {closed ? t('Төлөвлөсөн сургалт', 'Planned course') : isCourse ? t('Сургалтад бүртгүүлэх', 'Course enrollment') : t('Хүлээлгийн жагсаалт', 'Join the waitlist')}
         </h3>
         <button className="icon-btn" aria-label={t('Хаах', 'Close')} onClick={() => dialogRef.current.close()}>×</button>
       </div>
@@ -102,17 +103,17 @@ export default function EnrollDialog({ request, onOpenClassroom }) {
           <label htmlFor="phone"><Tr mn="Утасны дугаар" en="Phone number" /></label>
           <input id="phone" name="phone" type="tel" autoComplete="tel" required pattern="[+0-9 \(\)\-]{8,20}" />
           {errorBox}
-          <button className="btn full" id="enrollSubmit" disabled={busy}>
+          <button className="btn full" id="enrollSubmit" disabled={busy || closed}>
             {busy
               ? t('Илгээж байна', 'Sending')
-              : isCourse ? t('Төлбөр рүү үргэлжлүүлэх', 'Continue to payment') : t('Жагсаалтад нэгдэх', 'Join waitlist')}
+              : closed ? t('Элсэлт нээгдээгүй', 'Enrollment not open') : isCourse ? t('Төлбөр рүү үргэлжлүүлэх', 'Continue to payment') : t('Жагсаалтад нэгдэх', 'Join waitlist')}
           </button>
         </form>
       </div>
       <div id="paymentStep" hidden={step !== 'payment'}>
         <div id="paymentSummary">
           <div className="summary-row"><span>{t('Сургалт', 'Course')}</span><strong>{name}</strong></div>
-          <div className="summary-row"><span>{t('Төлбөр', 'Tuition')}</span><strong>{t('Баталгаажуулах', 'To be confirmed')}</strong></div>
+          <div className="summary-row"><span>{t('Төлбөр', 'Tuition')}</span><strong>{course.price == null ? t('Баталгаажуулах', 'To be confirmed') : `${course.price.toLocaleString()} ₮`}</strong></div>
         </div>
         <div className="demo">
           <Tr

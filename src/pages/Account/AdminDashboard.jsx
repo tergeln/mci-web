@@ -1,21 +1,28 @@
 import { useId, useState } from 'react';
-import { Link, Navigate, useLocation } from 'react-router-dom';
-import { demoUsers, useAuth } from '../../context/AuthContext';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { useLang } from '../../context/LanguageContext';
 import ApiState from '../../components/ApiState/ApiState';
 import useApi from '../../hooks/useApi';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
-import { getCourses } from '../../api/courses';
-import { getNews } from '../../api/news';
+import { getAdminActivity, getAdminContent } from '../../api/admin';
+import AdminContentManager from './AdminContentManager';
+import AdminRecordsManager from './AdminRecordsManager';
+import AdminUsers from './AdminUsers';
+import { textOf } from './adminTools';
 import { enrollmentAnalytics } from './adminAnalytics';
+import WorkspaceHeading from './WorkspaceHeading';
 import './admin.css';
 
-const localized = (value, lang) => typeof value === 'string' ? value : value?.[lang] || value?.mn || value?.en || '—';
-const COURSE_STATUS = {
-  open: ['Бүртгэл нээлттэй', 'Enrollment open'],
-  waitlist: ['Хүлээлгийн жагсаалт', 'Waitlist'],
-  planned: ['Төлөвлөсөн', 'Planned'],
-};
+const ADMIN_TABS = [
+  { id: 'overview', mn: 'Тойм', en: 'Overview' },
+  { id: 'courses', mn: 'Сургалтууд', en: 'Courses' },
+  { id: 'enrollments', mn: 'Элсэлтүүд', en: 'Enrollments' },
+  { id: 'orders', mn: 'Захиалгууд', en: 'Orders' },
+  { id: 'news', mn: 'Мэдээлэл', en: 'Content' },
+  { id: 'users', mn: 'Хэрэглэгчид', en: 'Users' },
+  { id: 'activity', mn: 'Үйлдлийн түүх', en: 'Activity' },
+];
 
 function EnrollmentChart({ timeline, locale, t }) {
   const gradient = useId();
@@ -51,28 +58,19 @@ function EnrollmentChart({ timeline, locale, t }) {
 }
 
 function AdminWorkspace() {
-  const { records, updateStatus, logout } = useAuth();
+  const { records, logout } = useAuth();
   const { lang, t } = useLang();
   const [days, setDays] = useState(30);
-  const [query, setQuery] = useState('');
-  const [status, setStatus] = useState('all');
-  const [category, setCategory] = useState('all');
-  const [notice, setNotice] = useState('');
-  const courseApi = useApi((signal) => getCourses({ signal }), []);
-  const newsApi = useApi((signal) => getNews({ signal }), []);
-  const courses = courseApi.data || [];
-  const news = newsApi.data || [];
+  const [activeTab, setActiveTab] = useState('overview');
+  const courseApi = useApi((signal) => getAdminContent('courses', { signal }), []);
+  const newsApi = useApi((signal) => getAdminContent('news', { signal }), []);
+  const activityApi = useApi((signal) => getAdminActivity({ signal }), []);
+  const courses = (courseApi.data || []).filter((course) => !course.deletedAt);
   const locale = lang === 'mn' ? 'mn-MN' : 'en-US';
   const analytics = enrollmentAnalytics(records, courses, days);
   const categories = [...new Set(courses.map((course) => course.category))];
   const categoryCounts = categories.map((name) => ({ name, count: courses.filter((course) => course.category === name).length }));
   const categoryMax = Math.max(1, ...categoryCounts.map((item) => item.count));
-  const filteredCourses = courses.filter((course) => category === 'all' || course.category === category);
-  const filteredRecords = analytics.selected.filter((record) => {
-    const person = demoUsers.find((candidate) => candidate.id === record.userId);
-    return (status === 'all' || record.status === status) &&
-      `${record.id} ${record.items.join(' ')} ${person?.name || ''} ${person?.email || ''}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase());
-  }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const metrics = [
     { label: t('Нийт сургалт', 'Total courses'), value: courseApi.data ? courses.length : '—', detail: t('Сургалтын каталогоос', 'From the course catalog'), icon: 'courses' },
     { label: t('Сургалтын бүртгэл', 'Enrollments'), value: analytics.selected.length, detail: t(`Сүүлийн ${days} хоногт`, `In the last ${days} days`), icon: 'enrollments' },
@@ -81,22 +79,34 @@ function AdminWorkspace() {
   ];
   return <>
 
-    <main className="account-page admin-page wrap">
-      <div className="admin-heading">
-        <div><div className="eyebrow">MAGIC CODE · ADMIN</div><h1>{t('Удирдлагын самбар', 'Admin dashboard')}</h1><p>{t('Сургалт, элсэлт, мэдээллээ нэг дороос хянаарай.', 'Monitor courses, enrollments and content in one place.')}</p></div>
-        <button className="btn secondary" onClick={logout}>{t('Гарах', 'Log out')} ↗</button>
-      </div>
+    <main className="account-page workspace-page admin-page wrap">
+      <WorkspaceHeading
+        eyebrow="MAGIC CODE · ADMIN"
+        title={t('Удирдлагын самбар', 'Admin dashboard')}
+        description={t('Сургалт, элсэлт, мэдээллээ нэг дороос хянаарай.', 'Monitor courses, enrollments and content in one place.')}
+        onLogout={logout}
+      />
       <div className="admin-toolbar">
-        <nav className="admin-sections" aria-label={t('Удирдлагын хэсгүүд', 'Dashboard sections')}>
-          <a href="#admin-overview">{t('Тойм', 'Overview')}</a><a href="#admin-courses">{t('Сургалтууд', 'Courses')}</a><a href="#admin-enrollments">{t('Элсэлтүүд', 'Enrollments')}</a><a href="#admin-news">{t('Мэдээлэл', 'Content')}</a>
-        </nav>
+        <div className="admin-sections" role="tablist" aria-label={t('Удирдлагын хэсгүүд', 'Dashboard sections')}>
+          {ADMIN_TABS.map((tab, index) => <button key={tab.id} id={`admin-tab-${tab.id}`} type="button" role="tab" aria-selected={activeTab === tab.id} aria-controls={`admin-${tab.id}`} tabIndex={activeTab === tab.id ? 0 : -1} onClick={() => setActiveTab(tab.id)} onKeyDown={(event) => {
+            let next;
+            if (event.key === 'ArrowRight') next = (index + 1) % ADMIN_TABS.length;
+            else if (event.key === 'ArrowLeft') next = (index + ADMIN_TABS.length - 1) % ADMIN_TABS.length;
+            else if (event.key === 'Home') next = 0;
+            else if (event.key === 'End') next = ADMIN_TABS.length - 1;
+            else return;
+            event.preventDefault();
+            setActiveTab(ADMIN_TABS[next].id);
+            event.currentTarget.parentElement.querySelectorAll('[role="tab"]')[next].focus({ preventScroll: true });
+          }}>{t(tab.mn, tab.en)}</button>)}
+        </div>
         <label className="admin-period">{t('Хугацаа', 'Period')}<select value={days} onChange={(event) => setDays(Number(event.target.value))}>
           {[7, 30, 90].map((value) => <option value={value} key={value}>{t(`Сүүлийн ${value} хоног`, `Last ${value} days`)}</option>)}
         </select></label>
       </div>
-      <div className="admin-demo-note"><span className="admin-note-dot" /><p>{t('Demo тойм · Элсэлтийн тоо энэ хөтөч дээрх бүртгэлээс тооцогдоно. Бодит төлбөрийн мэдээлэл холбогдоогүй.', 'Demo overview · Enrollment statistics come from records in this browser. Live payment data is not connected.')}</p></div>
+      <div className="admin-demo-note"><span className="admin-note-dot" /><p>{t('Demo удирдлага · Өөрчлөлтүүд энэ хөтөч дээр хадгалагдана. Серверийн өгөгдлийн сантай холбогдоогүй.', 'Demo management · Changes are saved in this browser. A shared server database is not connected.')}</p></div>
 
-      <section id="admin-overview" className="admin-overview-section" aria-label={t('Үндсэн үзүүлэлтүүд', 'Key metrics')}>
+      <section id="admin-overview" className="admin-overview-section" role="tabpanel" aria-labelledby="admin-tab-overview" tabIndex={0} hidden={activeTab !== 'overview'}>
         <div className="admin-metrics">{metrics.map((metric, index) => <div className="account-card admin-metric" key={metric.icon}>
           <div className="admin-metric-top"><span>{metric.label}</span><span className={`admin-metric-icon admin-metric-icon--${index}`} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{index === 0 ? <><path d="M4 5h6a3 3 0 0 1 3 3v12a4 4 0 0 0-4-2H4zM20 5h-4a3 3 0 0 0-3 3M20 5v13h-3" /></> : index === 1 ? <><rect x="5" y="5" width="14" height="16" rx="2" /><path d="M9 3v4m6-4v4M9 12h6m-6 4h4" /></> : index === 2 ? <><circle cx="9" cy="8" r="3" /><path d="M3 20v-2a6 6 0 0 1 12 0v2m1-15a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 4v2" /></> : <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>}</svg></span></div>
           <strong>{metric.value}</strong><small>{metric.detail}</small>
@@ -115,30 +125,26 @@ function AdminWorkspace() {
         </div>
       </section>
 
-      <section id="admin-courses" className="account-card admin-panel">
-        <div className="admin-card-heading"><div><h2>{t('Сургалтуудын тойм', 'Course overview')}</h2><p>{t('Төлөв болон сонгосон хугацааны элсэлтийг харьцуулах', 'Compare course status and enrollments in the selected period')}</p></div><label className="admin-category-filter"><span className="admin-sr-only">{t('Сургалтын чиглэл', 'Course category')}</span><select value={category} onChange={(event) => setCategory(event.target.value)}><option value="all">{t('Бүх чиглэл', 'All categories')}</option>{categories.map((name) => <option key={name}>{name}</option>)}</select></label></div>
-        <ApiState loading={courseApi.loading} error={courseApi.error} onRetry={courseApi.reload} />
-        {courseApi.data && <div className="admin-table-scroll"><table className="admin-table"><caption className="admin-sr-only">{t('Сургалт, төлөв болон элсэлтийн тоо', 'Courses, status and enrollment counts')}</caption><thead><tr><th scope="col">{t('Сургалтын нэр', 'Course')}</th><th scope="col">{t('Чиглэл', 'Category')}</th><th scope="col">{t('Төлөв', 'Status')}</th><th scope="col">{t('Элсэлт', 'Enrollments')}</th></tr></thead><tbody>{filteredCourses.map((course) => {
-          const count = analytics.courseCounts.find((item) => item.id === course.id)?.count || 0;
-          const courseStatus = COURSE_STATUS[course.status];
-          return <tr key={course.id}><th scope="row">{localized(course.title, lang)}</th><td><span className="admin-category-tag">{course.category}</span></td><td><span className={`admin-status admin-status--${course.status === 'open' ? 'open' : 'planned'}`}>{courseStatus ? t(...courseStatus) : course.status}</span></td><td><div className="admin-course-count"><strong>{count}</strong><span><i style={{ width: `${count / Math.max(1, analytics.selected.length) * 100}%` }} /></span></div></td></tr>;
-        })}</tbody></table>{!filteredCourses.length && <p className="admin-empty-inline">{t('Энэ чиглэлд сургалт алга.', 'No courses in this category.')}</p>}</div>}
+      <section id="admin-courses" className="account-card admin-panel" role="tabpanel" aria-labelledby="admin-tab-courses" tabIndex={0} hidden={activeTab !== 'courses'}>
+        <AdminContentManager type="courses" api={courseApi} />
       </section>
-
-      <section id="admin-enrollments" className="account-card admin-panel">
-        <div className="admin-card-heading"><div><h2>{t('Элсэлтийн хүсэлтүүд', 'Enrollment requests')}</h2><p>{t('Хүсэлтүүдээ шалгаж, төлөвийг шинэчлээрэй.', 'Review enrollment requests and update their status.')}</p></div><span className="admin-result-count">{filteredRecords.length} {t('бүртгэл', 'records')}</span></div>
-        <div className="admin-record-filters"><label>{t('Хайх', 'Search')}<input type="search" placeholder={t('Сургалт, нэр, имэйл…', 'Course, name, email…')} value={query} onChange={(event) => setQuery(event.target.value)} /></label><label>{t('Төлөв', 'Status')}<select value={status} onChange={(event) => setStatus(event.target.value)}><option value="all">{t('Бүх төлөв', 'All statuses')}</option><option value="new">{t('Шинэ', 'New')}</option><option value="done">{t('Шийдвэрлэсэн', 'Completed')}</option></select></label></div>
-        <p role="status" className="admin-feedback">{notice}</p>
-        {filteredRecords.length ? <div className="admin-table-scroll"><table className="admin-table"><caption className="admin-sr-only">{t('Сургалтын хүсэлтүүд', 'Course enrollment requests')}</caption><thead><tr><th scope="col">{t('Суралцагч', 'Learner')}</th><th scope="col">{t('Сургалт', 'Course')}</th><th scope="col">{t('Огноо', 'Date')}</th><th scope="col">{t('Төлөв', 'Status')}</th></tr></thead><tbody>{filteredRecords.map((record) => {
-          const person = demoUsers.find((candidate) => candidate.id === record.userId);
-          return <tr key={record.id}><th scope="row">{person?.name || record.userId}<small>{person?.email || `#${record.id.slice(0, 8)}`}</small></th><td>{[...new Set(record.items)].join(', ')}</td><td className="admin-date">{new Date(record.createdAt).toLocaleDateString(locale)}</td><td><select aria-label={t(`${person?.name || record.userId} — хүсэлтийн төлөв`, `${person?.name || record.userId} — request status`)} value={record.status} onChange={(event) => { updateStatus(record.id, event.target.value); setNotice(t('Хүсэлтийн төлөв шинэчлэгдлээ.', 'Request status updated.')); }}><option value="new">{t('Шинэ', 'New')}</option><option value="done">{t('Шийдвэрлэсэн', 'Completed')}</option></select></td></tr>;
-        })}</tbody></table></div> : <div className="admin-empty"><span aria-hidden="true">↗</span><h3>{t('Элсэлтийн хүсэлт алга', 'No enrollment requests')}</h3><p>{query || status !== 'all' ? t('Хайлтын үг эсвэл төлөвийн шүүлтүүрээ өөрчлөөрэй.', 'Try another search or status filter.') : t('Сонгосон хугацаанд хүсэлт бүртгэгдээгүй байна. Шинэ demo элсэлт энд харагдана.', 'No requests in the selected period. New demo enrollments will appear here.')}</p></div>}
+      <section id="admin-enrollments" className="account-card admin-panel" role="tabpanel" aria-labelledby="admin-tab-enrollments" tabIndex={0} hidden={activeTab !== 'enrollments'}>
+        <AdminRecordsManager type="course" days={days} />
       </section>
-
-      <section id="admin-news" className="account-card admin-panel">
-        <div className="admin-card-heading"><div><h2>{t('Мэдээ, мэдээлэл', 'News & content')}</h2><p>{t('Сайт дээр харагдаж буй мэдээллийн жагсаалт', 'Content currently available on the website')}</p></div><Link className="text-link" to="/news">{t('Мэдээ харах ↗', 'View news ↗')}</Link></div>
-        <ApiState loading={newsApi.loading} error={newsApi.error} onRetry={newsApi.reload} />
-        {newsApi.data && <div className="admin-news-list">{news.map((item) => <Link className="admin-news-item" to={`/news/${encodeURIComponent(item.id)}`} key={item.id}><span className="admin-news-symbol" aria-hidden="true">↗</span><div><small>{localized(item.category, lang)}</small><h3>{localized(item.title, lang)}</h3></div><span className="admin-news-date">{item.publishedAt ? new Date(item.publishedAt).toLocaleDateString(locale) : item.isSample === false ? t('Огноо нэмэгдээгүй', 'Date not provided') : t('Жишээ мэдээ', 'Sample content')}</span></Link>)}{!news.length && <p className="admin-empty-inline">{t('Мэдээ бүртгэгдээгүй байна.', 'No news available yet.')}</p>}</div>}
+      <section id="admin-orders" className="account-card admin-panel" role="tabpanel" aria-labelledby="admin-tab-orders" tabIndex={0} hidden={activeTab !== 'orders'}>
+        <AdminRecordsManager type="order" days={days} />
+      </section>
+      <section id="admin-news" className="account-card admin-panel" role="tabpanel" aria-labelledby="admin-tab-news" tabIndex={0} hidden={activeTab !== 'news'}>
+        <AdminContentManager type="news" api={newsApi} />
+      </section>
+      <section id="admin-users" className="account-card admin-panel" role="tabpanel" aria-labelledby="admin-tab-users" tabIndex={0} hidden={activeTab !== 'users'}>
+        <AdminUsers />
+      </section>
+      <section id="admin-activity" className="account-card admin-panel" role="tabpanel" aria-labelledby="admin-tab-activity" tabIndex={0} hidden={activeTab !== 'activity'}>
+        <div className="admin-card-heading"><div><h2>{t('Үйлдлийн түүх', 'Activity log')}</h2><p>{t('Мэдээ, сургалтын сүүлийн 150 өөрчлөлт', 'The latest 150 story and course changes')}</p></div></div>
+        <ApiState loading={activityApi.loading} error={activityApi.error} onRetry={activityApi.reload} />
+        <ul className="admin-activity-list">{activityApi.data?.map((entry) => <li key={entry.id}><div><strong>{textOf(entry.title, lang)}</strong><span>{({ create: t('Нэмсэн', 'Created'), update: t('Зассан', 'Edited'), delete: t('Устгасан', 'Deleted'), restore: t('Сэргээсэн', 'Restored'), published: t('Нийтэлсэн', 'Published'), draft: t('Ноорог болгосон', 'Moved to draft'), archived: t('Архивласан', 'Archived') })[entry.action]}</span></div><time dateTime={entry.at}>{new Date(entry.at).toLocaleString(locale)}</time></li>)}</ul>
+        {activityApi.data?.length === 0 && <p className="admin-empty-inline">{t('Одоогоор өөрчлөлт хийгдээгүй байна.', 'No changes yet.')}</p>}
       </section>
     </main>
   </>;

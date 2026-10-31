@@ -25,7 +25,8 @@ export default function App() {
       <MainNavbar cartCount={0} onCartClick={openCart} />
       <Suspense fallback={null}>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage key="login" />} />
+          <Route path="/register" element={<LoginPage key="register" mode="register" />} />
           <Route path="/account" element={<AccountPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/" element={<Home />} />

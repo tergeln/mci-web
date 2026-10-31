@@ -59,6 +59,11 @@ export async function request(path, { method = 'GET', body, signal, mock } = {})
 }
 
 const MESSAGES = {
+  forbidden: ['Энэ үйлдэлд админ эрх шаардлагатай.', 'Administrator access is required.'],
+  storage_error: ['Хадгалж чадсангүй. Хөтчийн хадгалах зай, зөвшөөрлийг шалгана уу.', 'Could not save. Check browser storage space and permissions.'],
+  corrupt_storage: ['Хадгалсан мэдээллийг уншиж чадсангүй. Өмнөх мэдээллийг дарж бичээгүй.', 'Saved data could not be read. Existing data has not been overwritten.'],
+  body_required: ['Нийтлэхийн өмнө мэдээний дэлгэрэнгүйг хоёр хэлээр оруулна уу.', 'Add the story body in both languages before publishing.'],
+  invalid_image: ['Зургийн зөв холбоос эсвэл зураг файл сонгоно уу.', 'Choose a valid image URL or image file.'],
   validation_error: ['Мэдээллээ шалгаад дахин оролдоно уу.', 'Please check your details and try again.'],
   not_found: ['Хайсан зүйл олдсонгүй.', 'We could not find what you were looking for.'],
   enrollment_closed: ['Энэ сургалтын бүртгэл одоогоор хаалттай байна.', 'Enrollment for this course is currently closed.'],

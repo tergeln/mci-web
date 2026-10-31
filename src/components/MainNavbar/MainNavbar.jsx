@@ -8,8 +8,6 @@ import Tr from '../Tr/Tr';
 import PouchIcon from './PouchIcon';
 import BrandLogo from '../BrandLogo/BrandLogo';
 
-const hoverCapable = () => window.matchMedia('(hover:hover) and (pointer:fine)').matches;
-
 export default function MainNavbar({ cartCount, onCartClick }) {
   const { pathname, hash } = useLocation();
   const { lang, t, toggleLang } = useLang();
@@ -17,10 +15,9 @@ export default function MainNavbar({ cartCount, onCartClick }) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef(null);
   const menuRef = useRef(null);
-  const timer = useRef(0);
+  const headerRef = useRef(null);
 
   const setMenu = (value) => {
-    clearTimeout(timer.current);
     setOpen(value);
   };
   const navigateSection = (target) => {
@@ -29,22 +26,13 @@ export default function MainNavbar({ cartCount, onCartClick }) {
   };
 
   useEffect(() => {
-    clearTimeout(timer.current);
     setOpen(false);
   }, [pathname, hash]);
-  const enter = () => {
-    if (!hoverCapable()) return;
-    clearTimeout(timer.current);
-    if (!open) timer.current = setTimeout(() => setOpen(true), 180);
-  };
-  const leave = () => {
-    if (hoverCapable()) {
-      clearTimeout(timer.current);
-      timer.current = setTimeout(() => setOpen(false), 240);
-    }
-  };
 
   useEffect(() => {
+    const onPointerDown = (e) => {
+      if (!headerRef.current?.contains(e.target)) setOpen(false);
+    };
     const onKey = (e) => {
       if (e.key === 'Escape') {
         setMenu(false);
@@ -52,21 +40,19 @@ export default function MainNavbar({ cartCount, onCartClick }) {
       }
     };
     document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onPointerDown);
     return () => {
       document.removeEventListener('keydown', onKey);
-      clearTimeout(timer.current);
+      document.removeEventListener('pointerdown', onPointerDown);
     };
   }, []);
 
-  const onBlur = () => {
-    setTimeout(() => {
-      const active = document.activeElement;
-      if (menuRef.current && !menuRef.current.contains(active) && active !== triggerRef.current) setMenu(false);
-    }, 0);
+  const onBlur = (event) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
   };
 
   return (
-    <header className={`main-header${open ? ' menu-open' : ''}`} onBlur={onBlur}>
+    <header ref={headerRef} className={`main-header${open ? ' menu-open' : ''}`} onBlur={onBlur}>
       <div className="wrap">
         <Link className="brand" to="/#home" onClick={() => navigateSection('#home')} aria-label="Magic Code AI">
           <BrandLogo />
@@ -78,16 +64,18 @@ export default function MainNavbar({ cartCount, onCartClick }) {
           aria-label={t('Үндсэн цэс', 'Main navigation')}
           aria-hidden={!open}
           inert={open ? undefined : ''}
-          onPointerEnter={enter}
-          onPointerLeave={leave}
-          onFocus={() => setMenu(true)}
         >
-          {navLinks.map((link) => (
+          {navLinks.map((link) => link.action === 'products' ? (
+            <button key={link.hash} type="button" className="nav-action" onClick={() => { setMenu(false); onCartClick(); }}>
+              <Tr text={link} />
+            </button>
+          ) : (
             <Link key={link.hash} to={`/${link.hash}`} onClick={() => navigateSection(link.hash)}>
               <Tr text={link} />
             </Link>
           ))}
           <AccountLink onClick={() => setMenu(false)} />
+
         </nav>
         <div className="tools">
           <button id="themeToggle" aria-label={t('Өдрийн болон шөнийн горим солих', 'Switch light or dark theme')} onClick={toggleTheme}>
@@ -119,12 +107,11 @@ export default function MainNavbar({ cartCount, onCartClick }) {
             aria-label={open ? t('Цэс хаах', 'Close menu') : t('Цэс нээх', 'Open menu')}
             aria-expanded={open}
             aria-controls="nav"
-            onPointerEnter={enter}
-            onPointerLeave={leave}
-            onClick={() => setMenu(!open)}
+            onClick={() => setOpen((previous) => !previous)}
           >
             <span className="menu-icon" aria-hidden="true"><span /><span /><span /></span>
           </button>
+
         </div>
       </div>
     </header>

@@ -2,6 +2,8 @@ import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLang } from '../../context/LanguageContext';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import { getCourse } from '../../api/courses';
+import { errorMessage } from '../../api/client';
 import { homeCourses } from '../../data/courses';
 import Footer from '../../components/Footer/Footer';
 import Chatbot from '../../components/Chatbot/Chatbot';
@@ -30,6 +32,7 @@ export default function Home() {
   const [chatOpen, setChatOpen] = useState(false);
   const [enrollRequest, setEnrollRequest] = useState(null);
   const [classroomRequest, setClassroomRequest] = useState(null);
+  const [courseError, setCourseError] = useState('');
 
   useDocumentTitle(t('Magic Code AI — Суралц. Бүтээ. Хөгж.', 'Magic Code AI — Learn. Build. Become.'));
 
@@ -40,8 +43,14 @@ export default function Home() {
   // Хуучин `/?course=0|1|2` холбоосууд ч ажиллана.
   const requested = searchParams.get('course');
   useEffect(() => {
-    const index = /^[0-2]$/.test(requested ?? '') ? Number(requested) : homeCourses.findIndex((c) => c.id === requested);
-    if (index !== -1) openCourse(index);
+    if (!requested) return;
+    const controller = new AbortController();
+    const courseId = /^[0-2]$/.test(requested) ? homeCourses[Number(requested)].id : requested;
+    setCourseError('');
+    getCourse(courseId, { signal: controller.signal }).then((course) => openCourse(course), (error) => {
+      if (error.name !== 'AbortError') setCourseError(errorMessage(error, t));
+    });
+    return () => controller.abort();
   }, [requested, openCourse]);
 
   return (
@@ -56,6 +65,7 @@ export default function Home() {
       <ChapterIndex />
       <main>
         <Hero />
+        {courseError && <p className="wrap account-error" role="alert">{courseError}</p>}
         <CoursesSection onSelectCourse={openCourse} />
         <AboutSection />
         <Activities />

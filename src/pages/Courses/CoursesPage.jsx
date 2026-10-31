@@ -75,6 +75,8 @@ export default function CoursesPage() {
                   <small><Tr text={STATUS[c.status] ?? STATUS.waitlist} /></small>
                   <h3><Tr text={c.title} /></h3>
                   <p><Tr text={c.description} /></p>
+                  {(c.duration?.mn || c.level?.mn) && <p>{[c.duration?.mn && t(c.duration.mn, c.duration.en), c.level?.mn && t(c.level.mn, c.level.en)].filter(Boolean).join(' · ')}</p>}
+                  {c.price != null && <p><strong>{c.price.toLocaleString()} ₮</strong></p>}
                   {CTA[c.status] ? (
                     <Link className="btn" to={`/?course=${c.id}#courses`}><Tr text={CTA[c.status]} /></Link>
                   ) : (
