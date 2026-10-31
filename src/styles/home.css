@@ -106,7 +106,7 @@
 #chat #closeChat{display:grid;place-items:center;width:32px;height:32px;flex-shrink:0;border:1px solid #E8D5A333;border-radius:50%;background:#ffffff08;color:#F5EDDA;line-height:1}
 #chat #closeChat:hover{background:#ffffff18}
 #chat .messages{padding:20px 18px;gap:14px;max-height:330px;min-height:150px;overflow-y:auto;min-width:0;scrollbar-width:thin;scrollbar-color:#B89B5E77 transparent}
-#chat .bubble{max-width:91%;justify-self:start;border:1px solid #DCE2EB;background:linear-gradient(135deg,#FFFFFF,#EDF1F8);box-shadow:0 3px 8px #030e2105;border-radius:16px 16px 16px 4px;padding:13px 15px;font-size:14px;line-height:1.65;font-weight:400;color:#23314B;text-align:left;overflow-wrap:anywhere}
+#chat .bubble{max-width:91%;justify-self:start;border:1px solid #DCE2EB;background:linear-gradient(135deg,#FFFFFF,#EDF1F8);box-shadow:0 3px 8px #030e2105;border-radius:16px 16px 16px 4px;padding:13px 15px;font-size:14px;line-height:1.65;font-weight:400;color:#23314B;text-align:left;overflow-wrap:anywhere;white-space:pre-wrap}
 #chat .bubble.user{justify-self:end;margin-left:20px;border-color:#253D5E;background:linear-gradient(135deg,#142840,#2A4262);color:#F5EDDA;border-radius:16px 16px 4px 16px}
 #chat .quick{gap:7px;flex-wrap:wrap;padding:0 18px 16px}
 #chat .quick button{border:1px solid #B89B5E66;border-radius:99px;background:linear-gradient(135deg,#F8F1DF,#E8D9B7);color:#514022;font-size:12px;padding:7px 12px;font-weight:400}
