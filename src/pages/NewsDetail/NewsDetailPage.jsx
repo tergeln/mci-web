@@ -40,13 +40,11 @@ export default function NewsDetailPage() {
             {story.coverImage ? <StoryPhoto image={story.coverImage} lang={lang} cover /> : <div className="story-art" aria-hidden="true">{story.number}</div>}
             <p>{story.summary[lang]}</p>
             <h2>{t('Ажлын тухай', 'About this initiative')}</h2>
-            <p>
-              {story.body?.[lang] ??
-                t(
-                  'Энэ хэсэгт тухайн ажлын зорилго, хэрхэн зохион байгуулсан, хамтран оролцсон хүмүүсийн тухай дэлгэрэнгүй мэдээллийг нийтэлнэ.',
-                  'This section will describe the initiative’s purpose, how it was organised and the people involved.',
-                )}
-            </p>
+            {(story.body?.[lang] ??
+              t(
+                'Энэ хэсэгт тухайн ажлын зорилго, хэрхэн зохион байгуулсан, хамтран оролцсон хүмүүсийн тухай дэлгэрэнгүй мэдээллийг нийтэлнэ.',
+                'This section will describe the initiative’s purpose, how it was organised and the people involved.',
+              )).split('\n\n').map((paragraph, i) => <p className="story-body" key={i}>{paragraph}</p>)}
             <dl>
               {detailRows.filter(([key]) => story.isSample !== false || story.details?.[key]?.[lang]).map(([key, mn, en]) => (
                 <DetailRow

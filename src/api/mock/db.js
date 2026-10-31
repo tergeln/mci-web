@@ -93,10 +93,88 @@ export const news = [
       },
     ],
   },
-  sample('02', { mn: 'Боловсрол · Жишээ', en: 'Education · Sample' }, { mn: 'Суралцах боломжийг дэмжих тэтгэлэг', en: 'Scholarships for learning' },
-    { mn: 'Тэтгэлгийн зорилго, хамрах хүрээ, оролцох нөхцөлийг энд танилцуулна.', en: 'Introduce the scholarship’s purpose, scope and eligibility here.' }),
-  sample('03', { mn: 'Хамт олон · Жишээ', en: 'Community · Sample' }, { mn: 'Технологитой танилцах нээлттэй өдөр', en: 'Technology open day' },
-    { mn: 'Нээлттэй уулзалтын хөтөлбөр, онцлох агшнуудыг энд нийтэлнэ.', en: 'Publish the open day programme and highlights here.' }),
+  {
+    id: '2', number: '02', isSample: false, publishedAt: '2025-10-24T00:00:00.000Z',
+    category: { mn: 'Нийгмийн хариуцлага · Эмэгтэйчүүдийн бизнес', en: 'Social responsibility · Women in business' },
+    title: { mn: 'Эмэгтэйчүүдийн бизнесийг дэмжих нь – ирээдүйд хийж буй хөрөнгө оруулалт', en: 'Supporting women’s businesses is an investment in the future' },
+    summary: {
+      mn: 'МЗБЭЭХ-ны бизнес эрхлэгч 7 эмэгтэйд тус бүр 1,000,000₮, нийт 7,000,000₮-ийн үнэ бүхий вэб сайт хийлгэх эрхийн бичиг гардууллаа.',
+      en: 'We presented seven women entrepreneurs from the Mongolian Young Businesswomen’s Association with website vouchers worth ₮1,000,000 each, ₮7,000,000 in total.',
+    },
+    body: {
+      mn: '🌸 ЭМЭГТЭЙЧҮҮДИЙН БИЗНЕСИЙГ ДЭМЖИХ НЬ – ИРЭЭДҮЙД ХИЙЖ БУЙ ХӨРӨНГӨ ОРУУЛАЛТ 🌸\n\nMagic Code AI компанийн зүгээс нийгмийн хариуцлагынхаа хүрээнд МЗБЭЭХ-ныхоо бизнес эрхлэгч 7 эмэгтэйг дэмжин, тус бүр 1,000,000₮, нийт 7,000,000₮-ийн үнэ бүхий вэб сайт хийлгэх эрхийн бичиг гардууллаа😊🤗\n\nБид эмэгтэйчүүдийн бизнесийг дижитал орчинд хөгжүүлэх, үйл ажиллагааг нь өргөжүүлэх, шинэ боломжуудыг нээхэд хувь нэмрээ оруулж байгаадаа баяртай байна.\n\n❤️ Сайн үйлс бүхэн дэлгэрэх болтугай! 🌷\n\n✨ Magic Code AI\nMindful Technology – Ухаалаг технологи, ухамсарт хөгжил.\n\n#MagicCodeAI #SocialResponsibility #WomenEmpowerment #DigitalTransformation #WomenInBusiness',
+      en: '🌸 SUPPORTING WOMEN’S BUSINESSES IS AN INVESTMENT IN THE FUTURE 🌸\n\nAs part of its social responsibility, Magic Code AI supported seven women entrepreneurs from the Mongolian Young Businesswomen’s Association, presenting each with a website voucher worth ₮1,000,000, ₮7,000,000 in total 😊🤗\n\nWe are glad to help women grow their businesses online, expand their operations and open up new opportunities.\n\n❤️ May every good deed spread! 🌷\n\n✨ Magic Code AI\nMindful Technology – smart technology, mindful growth.\n\n#MagicCodeAI #SocialResponsibility #WomenEmpowerment #DigitalTransformation #WomenInBusiness',
+    },
+    details: {
+      date: { mn: '2025.10.24', en: '24 October 2025' },
+      location: null,
+      partners: { mn: 'Монголын залуу бизнес эрхлэгч эмэгтэйчүүдийн холбоо (МЗБЭЭХ)', en: 'Mongolian Young Businesswomen’s Association' },
+    },
+    coverImage: {
+      src: '/assets/news/women-business/certificates.jpg', srcSet: '/assets/news/women-business/certificates-small.jpg 768w, /assets/news/women-business/certificates.jpg 1600w',
+      width: 1600, height: 900, position: 'center 30%',
+      alt: { mn: '1,000,000₮-ийн эрхийн бичиг барьсан бизнес эрхлэгч эмэгтэйчүүд', en: 'Women entrepreneurs holding ₮1,000,000 website vouchers' },
+      caption: { mn: 'Вэб сайт хийлгэх эрхийн бичгийг гардууллаа.', en: 'Presenting the website vouchers.' },
+    },
+    gallery: [
+      {
+        src: '/assets/news/women-business/group-photo.jpg', srcSet: '/assets/news/women-business/group-photo-small.jpg 768w, /assets/news/women-business/group-photo.jpg 1600w', width: 1600, height: 900,
+        alt: { mn: 'МЗБЭЭХ-ны “Good Morning” арга хэмжээний оролцогчдын хамтын зураг', en: 'Group photo of participants at the association’s Good Morning event' },
+        caption: { mn: 'МЗБЭЭХ-ны “Good Morning” арга хэмжээний оролцогчид.', en: 'Participants at the association’s Good Morning event.' },
+      },
+      {
+        src: '/assets/news/women-business/event-screen.jpg', srcSet: '/assets/news/women-business/event-screen-small.jpg 768w, /assets/news/women-business/event-screen.jpg 1600w', width: 1600, height: 922,
+        alt: { mn: 'МЗБЭЭХ-ны “Good Morning” арга хэмжээний дэлгэц', en: 'Screen for the association’s Good Morning women’s event' },
+        caption: { mn: '“Good Morning” эмэгтэйчүүдийн арга хэмжээ.', en: 'The Good Morning women’s event.' },
+      },
+      ...['award-1', 'award-2', 'award-3'].map((name) => ({
+        src: `/assets/news/women-business/${name}.jpg`, srcSet: `/assets/news/women-business/${name}-small.jpg 640w, /assets/news/women-business/${name}.jpg 900w`, width: 900, height: 1600,
+        alt: { mn: 'Тайзан дээр эрхийн бичиг гардуулж буй агшин', en: 'A voucher being presented on stage' },
+        caption: { mn: 'Эрхийн бичиг гардуулах агшин.', en: 'Presenting a voucher on stage.' },
+      })),
+    ],
+  },
+  {
+    id: '3', number: '03', isSample: false, publishedAt: '2026-05-22T00:00:00.000Z',
+    category: { mn: 'Эрдэм шинжилгээ · Хурал', en: 'Research · Conference' },
+    title: { mn: '“Монголын Мэдээллийн Технологи-2026” эрдэм шинжилгээний хурал😊', en: '“Mongolian Information Technology 2026” research conference😊' },
+    summary: {
+      mn: '“Монголын Мэдээллийн Технологи-2026” эрдэм шинжилгээний хуралд оролцлоо.',
+      en: 'We took part in the “Mongolian Information Technology 2026” research conference.',
+    },
+    body: {
+      mn: '“Монголын Мэдээллийн Технологи-2026” эрдэм шинжилгээний хурал 2026 оны 5-р сарын 22-нд Үндэсний батлан хамгаалахын их сургуульд боллоо. Хурлын нээлт, илтгэлүүд, постер танилцуулга болон хуралд оролцсон агшнуудыг хүргэж байна.',
+      en: 'The “Mongolian Information Technology 2026” research conference took place on 22 May 2026 at the National Defense University of Mongolia. These photographs show the opening, presentations, poster sessions and moments from the conference.',
+    },
+    details: {
+      date: { mn: '2026.05.22', en: '22 May 2026' },
+      location: { mn: 'Үндэсний батлан хамгаалахын их сургууль', en: 'National Defense University of Mongolia' },
+      partners: null,
+    },
+    coverImage: {
+      src: '/assets/news/it-conference-2026/opening.jpg', srcSet: '/assets/news/it-conference-2026/opening-small.jpg 768w, /assets/news/it-conference-2026/opening.jpg 1600w',
+      width: 1600, height: 1200, position: 'center 45%',
+      alt: { mn: '“Монголын Мэдээллийн Технологи-2026” хурлын нээлт', en: 'Opening of the Mongolian Information Technology 2026 conference' },
+      caption: { mn: 'Хурлын нээлт.', en: 'The conference opening.' },
+    },
+    gallery: [
+      {
+        src: '/assets/news/it-conference-2026/presentation.jpg', srcSet: '/assets/news/it-conference-2026/presentation-small.jpg 768w, /assets/news/it-conference-2026/presentation.jpg 1600w', width: 1600, height: 1200,
+        alt: { mn: 'Хурлын танхимд илтгэл тавьж буй агшин', en: 'A presentation in the conference hall' },
+        caption: { mn: 'Хурлын илтгэлүүд.', en: 'Conference presentations.' },
+      },
+      {
+        src: '/assets/news/it-conference-2026/ai-cybersecurity.jpg', srcSet: '/assets/news/it-conference-2026/ai-cybersecurity-small.jpg 640w, /assets/news/it-conference-2026/ai-cybersecurity.jpg 1200w', width: 1200, height: 1600,
+        alt: { mn: '“Convergence of AI and Cybersecurity” урилгат илтгэлийн дэлгэц', en: 'Screen showing the invited address “Convergence of AI and Cybersecurity”' },
+        caption: { mn: '“Convergence of AI and Cybersecurity” урилгат илтгэл.', en: 'Invited address: “Convergence of AI and Cybersecurity”.' },
+      },
+      ...['poster-1', 'poster-2'].map((name, i) => ({
+        src: `/assets/news/it-conference-2026/${name}.jpg`, srcSet: `/assets/news/it-conference-2026/${name}-small.jpg 640w, /assets/news/it-conference-2026/${name}.jpg ${i ? 1120 : 1139}w`, width: i ? 1120 : 1139, height: 1600,
+        alt: { mn: 'Хурлын эрдэм шинжилгээний постер', en: 'A research poster at the conference' },
+        caption: { mn: 'Эрдэм шинжилгээний постер.', en: 'Research poster.' },
+      })),
+    ],
+  },
   sample('04', { mn: 'Сургалт · Жишээ', en: 'Learning · Sample' }, { mn: 'Дижитал ур чадварын сургалт', en: 'Digital skills workshop' },
     { mn: 'Сургалтын сэдэв, хамрагдсан оролцогчид, бүтээлүүдийг энд танилцуулна.', en: 'Present workshop topics, participants and their work here.' }),
   sample('05', { mn: 'Төсөл · Жишээ', en: 'Projects · Sample' }, { mn: 'Суралцагчдын бүтээлийн өдөр', en: 'Student project showcase' },

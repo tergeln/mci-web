@@ -1,10 +1,9 @@
 // Generated decorative image assets. Course and news content is served through src/api/.
 export const courseImages = {
   "vip-course": {
-    "src": "/assets/courses/vip-course.jpg",
-    "srcSet": "/assets/courses/vip-course-small.jpg 768w, /assets/courses/vip-course.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
+    "src": "/assets/courses/vip-course.webp",
+    "width": 720,
+    "height": 394,
     "alt": {
       "mn": "Хиймэл оюун, өгөгдөл, хөгжүүлэлтийг холбосон дүрслэл",
       "en": "Illustration connecting AI, data and development"
@@ -12,10 +11,9 @@ export const courseImages = {
     "generated": true
   },
   "data-analysis": {
-    "src": "/assets/courses/data-analysis.jpg",
-    "srcSet": "/assets/courses/data-analysis-small.jpg 768w, /assets/courses/data-analysis.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
+    "src": "/assets/courses/data-analysis.webp",
+    "width": 720,
+    "height": 394,
     "alt": {
       "mn": "Баганан график, өгөгдлийн самбарын дүрслэл",
       "en": "Illustration of an analytics dashboard and charts"
@@ -23,10 +21,9 @@ export const courseImages = {
     "generated": true
   },
   "computer-skills": {
-    "src": "/assets/courses/computer-skills.jpg",
-    "srcSet": "/assets/courses/computer-skills-small.jpg 768w, /assets/courses/computer-skills.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
+    "src": "/assets/courses/computer-skills.webp",
+    "width": 715,
+    "height": 394,
     "alt": {
       "mn": "Компьютер, гар, хулгана болон файлуудын дүрслэл",
       "en": "Illustration of a computer, keyboard, mouse and files"

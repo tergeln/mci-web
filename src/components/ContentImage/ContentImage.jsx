@@ -10,6 +10,7 @@ export default function ContentImage({ image, className, loading = 'lazy', sizes
     alt={decorative ? '' : image.alt?.[lang] || image.alt?.mn || image.alt?.en || ''}
     width={image.width}
     height={image.height}
+    style={image.position ? { objectPosition: image.position } : undefined}
     loading={loading}
     decoding="async"
   />;

@@ -2,7 +2,7 @@
 const t = (mn, en) => ({ mn, en });
 
 export const director = {
-  photo: { src: '/assets/about/director-enkhtuya.jpg', width: 185, height: 215 },
+  photo: { src: '/assets/about/director-enkhtuya.jpg', width: 600, height: 697 },
   name: t('Цогтбаатарын Энхтуяа', 'Enkhtuya Tsogtbaatar'),
   role: t('Үүсгэн байгуулагч, гүйцэтгэх захирал', 'Founder & CEO'),
   bio: t(
