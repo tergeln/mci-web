@@ -104,26 +104,24 @@ export const serviceImages = {
     }
   },
   "02": {
-    "src": "/assets/services/business-website.jpg",
-    "srcSet": "/assets/services/business-website-small.jpg 768w, /assets/services/business-website.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
+    "src": "/assets/services/business-reference.webp",
+    "srcSet": "/assets/services/business-reference-small.webp 768w, /assets/services/business-reference.webp 1066w",
+    "width": 1066,
+    "height": 610,
     "alt": {
-      "mn": "Байгууллагын олон хуудаст вэбсайтын дүрслэл",
-      "en": "Concept illustration of a business website"
-    },
-    "generated": true
+      "mn": "Хөгжмийн платформын бизнес вэбсайтын загвар",
+      "en": "Music platform business website design"
+    }
   },
   "03": {
-    "src": "/assets/services/ecommerce.jpg",
-    "srcSet": "/assets/services/ecommerce-small.jpg 768w, /assets/services/ecommerce.jpg 1536w",
-    "width": 1536,
-    "height": 1024,
+    "src": "/assets/services/ecommerce-reference.webp",
+    "srcSet": "/assets/services/ecommerce-reference-small.webp 768w, /assets/services/ecommerce-reference.webp 1216w",
+    "width": 1216,
+    "height": 802,
     "alt": {
-      "mn": "Онлайн дэлгүүр, бүтээгдэхүүн, төлбөрийн хэсгийн дүрслэл",
-      "en": "Concept illustration of an online shop and checkout"
-    },
-    "generated": true
+      "mn": "Үүргэвчний онлайн дэлгүүрийн загвар",
+      "en": "Backpack ecommerce website design"
+    }
   }
 };
 

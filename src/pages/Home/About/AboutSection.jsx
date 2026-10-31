@@ -14,7 +14,6 @@ export default function AboutSection() {
       <div className="wrap">
         <div ref={headRef} className={headClass}>
           <div className="eyebrow"><Tr mn="БИДНИЙ ТУХАЙ" en="OUR STORY" /></div>
-          <h2><Tr mn="Технологийг ойртуулж,<br><em>боломжийг нээнэ.</em>" en="Making technology<br><em>feel possible.</em>" /></h2>
         </div>
       </div>
       <div className="wrap about-grid">

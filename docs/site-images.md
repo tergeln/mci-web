@@ -89,29 +89,13 @@ Subject: A substantial frosted blue protective shield with a small solid gold pa
 
 
 
-### services/landing-page
+### Service website previews
 
-- Main: `public/assets/services/landing-page.jpg`
-- Small: `public/assets/services/landing-page-small.jpg`
-- Original output: `/Users/serulien/.codex/generated_images/01a14d1c-817c-7942-8d43-6bf353fe4636/exec-19722c59-ce43-4fb5-be4a-321cb8069f81.png`
+User-supplied website designs, stored as responsive WebP images:
 
-Subject: A polished desktop website browser window paired with one mobile screen, a clear hero block, image area and two small content sections; a simple elegant small business landing page, no letters.
-
-### services/business-website
-
-- Main: `public/assets/services/business-website.jpg`
-- Small: `public/assets/services/business-website-small.jpg`
-- Original output: `/Users/serulien/.codex/generated_images/01a14d1c-817c-7942-8d43-6bf353fe4636/exec-c6924cca-4c75-4898-aa75-9761ed32356f.png`
-
-Subject: An organized group of three polished website browser panels suggesting a company overview, a booking calendar and a content page, supported by modest blue architectural blocks; a professional business website concept.
-
-### services/ecommerce
-
-- Main: `public/assets/services/ecommerce.jpg`
-- Small: `public/assets/services/ecommerce-small.jpg`
-- Original output: `/Users/serulien/.codex/generated_images/01a14d1c-817c-7942-8d43-6bf353fe4636/exec-77ff13f4-0e42-4110-bd57-378d95080a17.png`
-
-Subject: An elegant online store browser panel containing neat product cards for a plain bag, a small ceramic vessel and a folded shirt, with a compact mobile checkout card and a small shopping bag; no letters or logos.
+- Landing page: `public/assets/services/landing-reference.webp` and `landing-reference-small.webp`.
+- Business website: `public/assets/services/business-reference.webp` and `business-reference-small.webp`.
+- Ecommerce: `public/assets/services/ecommerce-reference.webp` and `ecommerce-reference-small.webp`.
 
 ### about/learning-space
 
