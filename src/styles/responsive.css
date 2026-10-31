@@ -165,7 +165,7 @@ main p,
   .catalog-filters { gap: 8px; }
   .catalog-filters button { min-height: 44px; padding: 10px 14px; }
   .account-page, .catalog-page, .news-page { padding-top: calc(104px + env(safe-area-inset-top, 0px)); padding-bottom: 48px; }
-  .account-page h1, .catalog-page h1, .story-page h1 { font-size: clamp(28px, 7.5vw, 36px); line-height: 1.2; }
+  .account-page h1, .catalog-page h1 { font-size: clamp(28px, 7.5vw, 36px); line-height: 1.2; }
   .catalog-body h3, .news-page .impact-card h3 { font-size: 24px; }
   .news-page .section-head h2 { font-size: clamp(28px, 7.5vw, 34px); }
   .catalog-intro, .login-intro p, .news-page .section-head p { font-size: 14px; }

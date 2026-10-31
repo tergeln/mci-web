@@ -66,7 +66,10 @@ export default function ParticleUniverse({ onResult }) {
   useEffect(() => {
     const RM = reducedMotion();
     let compact = window.innerWidth <= 900;
-    const N = 7000;
+    const cores = navigator.hardwareConcurrency || 8;
+    const memory = navigator.deviceMemory || 8;
+    const lowPower = cores <= 4 || memory <= 4;
+    const N = lowPower ? (compact ? 1800 : 2800) : (compact ? 3200 : 5500);
 
     const canvas = document.createElement('canvas');
     canvas.id = 'pg';
@@ -147,7 +150,7 @@ export default function ParticleUniverse({ onResult }) {
     const size = () => {
       compact = window.innerWidth <= 900;
       material.size = compact ? 0.032 : 0.05;
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compact ? 1.5 : 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lowPower ? 1 : compact ? 1.25 : 1.5));
       renderer.setSize(window.innerWidth, window.innerHeight, false);
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -187,7 +190,7 @@ export default function ParticleUniverse({ onResult }) {
     let lastFrame = 0;
     const loop = (now = 0) => {
       raf = requestAnimationFrame(loop);
-      if (document.hidden || (compact && now - lastFrame < 1000 / 30)) return;
+      if (document.hidden || now - lastFrame < (RM ? 1000 / 15 : 1000 / 30)) return;
       lastFrame = now;
       const L = go ? (compact ? 0.088 : 0.045) : 0;
       const target = T[ti];

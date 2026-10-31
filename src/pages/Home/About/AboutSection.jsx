@@ -34,12 +34,6 @@ export default function AboutSection() {
           </div>
         </figure>
         <div ref={copyRef} className={copyClass}>
-          <p>
-            <Tr
-              mn="Magic Code AI бол программчлал, өгөгдөл, хиймэл оюуныг бодитоор туршиж суралцах орон зай. Бид онолыг практиктай холбож, суралцагч бүрийг өөрийн санааг бүтээл болгоход чиглүүлнэ."
-              en="Magic Code AI is a space to explore programming, data and artificial intelligence. We connect concepts with practice and help learners turn their own ideas into things that work."
-            />
-          </p>
           <p><Tr text={director.bio} /></p>
           <dl className="about-director-stats">
             {director.stats.map((stat) => (

@@ -37,8 +37,8 @@ export default function Hero() {
           <h1><Tr mn="Санаагаа<br>бүтээл болго." en="Turn ideas<br>into reality." /></h1>
           <p>
             <Tr
-              mn="Таны бизнест зориулсан веб хөгжүүлэлт, программчлал, өгөгдөл болон хиймэл оюуны сургалтыг бид санал болгож байна."
-              en="We offer web development for your business and training in programming, data and artificial intelligence."
+              mn="Magic Code AI бол программчлал, өгөгдөл, хиймэл оюуныг бодитоор туршиж суралцах орон зай. Бид онолыг практиктай холбож, суралцагч бүрийг өөрийн санааг бүтээл болгоход чиглүүлнэ."
+              en="Magic Code AI is a space to explore programming, data and artificial intelligence. We connect concepts with practice and help learners turn their own ideas into things that work."
             />
           </p>
           <div className="actions">

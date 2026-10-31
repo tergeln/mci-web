@@ -10,7 +10,7 @@ import './news.css';
 export default function NewsPage() {
   const { t } = useLang();
   const { data: stories, loading, error, reload } = useApi((signal) => getNews({ signal }), []);
-  useDocumentTitle(t('Бидний хийсэн ажлууд — Magic Code AI', 'Our community work — Magic Code AI'));
+  useDocumentTitle(t('Нийгэмд чиглэсэн ажлууд', 'Our Community Work'));
 
   return (
     <>

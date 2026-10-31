@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLang } from '../../context/LanguageContext';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
@@ -7,7 +7,6 @@ import Footer from '../../components/Footer/Footer';
 import Chatbot from '../../components/Chatbot/Chatbot';
 import EnrollDialog from '../../components/dialogs/EnrollDialog';
 import ClassroomDialog from '../../components/dialogs/ClassroomDialog';
-import ParticleUniverse from '../../components/canvas/ParticleUniverse';
 import Universe2D from '../../components/canvas/Universe2D';
 import Loader from './Loader';
 import ScrollProgress from './ScrollProgress';
@@ -21,6 +20,8 @@ import Activities from './Activities';
 import Contact from './Contact';
 import LiveStrip from './LiveStrip';
 import '../../styles/home.css';
+
+const ParticleUniverse = lazy(() => import('../../components/canvas/ParticleUniverse'));
 
 export default function Home() {
   const { t } = useLang();
@@ -46,7 +47,9 @@ export default function Home() {
   return (
     <>
       <Universe2D active={glReady === false} />
-      <ParticleUniverse onResult={setGlReady} />
+      <Suspense fallback={null}>
+        <ParticleUniverse onResult={setGlReady} />
+      </Suspense>
       <Loader />
       <ScrollProgress />
       <CursorGlow />

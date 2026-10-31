@@ -102,11 +102,11 @@ export const news = [
       en: 'We presented seven women entrepreneurs from the Mongolian Young Businesswomen’s Association with website vouchers worth ₮1,000,000 each, ₮7,000,000 in total.',
     },
     body: {
-      mn: '🌸 ЭМЭГТЭЙЧҮҮДИЙН БИЗНЕСИЙГ ДЭМЖИХ НЬ – ИРЭЭДҮЙД ХИЙЖ БУЙ ХӨРӨНГӨ ОРУУЛАЛТ 🌸\n\nMagic Code AI компанийн зүгээс нийгмийн хариуцлагынхаа хүрээнд МЗБЭЭХ-ныхоо бизнес эрхлэгч 7 эмэгтэйг дэмжин, тус бүр 1,000,000₮, нийт 7,000,000₮-ийн үнэ бүхий вэб сайт хийлгэх эрхийн бичиг гардууллаа😊🤗\n\nБид эмэгтэйчүүдийн бизнесийг дижитал орчинд хөгжүүлэх, үйл ажиллагааг нь өргөжүүлэх, шинэ боломжуудыг нээхэд хувь нэмрээ оруулж байгаадаа баяртай байна.\n\n❤️ Сайн үйлс бүхэн дэлгэрэх болтугай! 🌷\n\n✨ Magic Code AI\nMindful Technology – Ухаалаг технологи, ухамсарт хөгжил.\n\n#MagicCodeAI #SocialResponsibility #WomenEmpowerment #DigitalTransformation #WomenInBusiness',
-      en: '🌸 SUPPORTING WOMEN’S BUSINESSES IS AN INVESTMENT IN THE FUTURE 🌸\n\nAs part of its social responsibility, Magic Code AI supported seven women entrepreneurs from the Mongolian Young Businesswomen’s Association, presenting each with a website voucher worth ₮1,000,000, ₮7,000,000 in total 😊🤗\n\nWe are glad to help women grow their businesses online, expand their operations and open up new opportunities.\n\n❤️ May every good deed spread! 🌷\n\n✨ Magic Code AI\nMindful Technology – smart technology, mindful growth.\n\n#MagicCodeAI #SocialResponsibility #WomenEmpowerment #DigitalTransformation #WomenInBusiness',
+      mn: ' ЭМЭГТЭЙЧҮҮДИЙН БИЗНЕСИЙГ ДЭМЖИХ НЬ – ИРЭЭДҮЙД ХИЙЖ БУЙ ХӨРӨНГӨ ОРУУЛАЛТ \n\nMagic Code AI компанийн зүгээс нийгмийн хариуцлагынхаа хүрээнд МЗБЭЭХ-ныхоо бизнес эрхлэгч 7 эмэгтэйг дэмжин, тус бүр 1,000,000₮, нийт 7,000,000₮-ийн үнэ бүхий вэб сайт хийлгэх эрхийн бичиг гардууллаа\n\nБид эмэгтэйчүүдийн бизнесийг дижитал орчинд хөгжүүлэх, үйл ажиллагааг нь өргөжүүлэх, шинэ боломжуудыг нээхэд хувь нэмрээ оруулж байгаадаа баяртай байна.\n\n Сайн үйлс бүхэн дэлгэрэх болтугай! \n\n Magic Code AI\nMindful Technology – Ухаалаг технологи, ухамсарт хөгжил.',
+      en: ' SUPPORTING WOMEN’S BUSINESSES IS AN INVESTMENT IN THE FUTURE \n\nAs part of its social responsibility, Magic Code AI supported seven women entrepreneurs from the Mongolian Young Businesswomen’s Association, presenting each with a website voucher worth ₮1,000,000, ₮7,000,000 in total \n\nWe are glad to help women grow their businesses online, expand their operations and open up new opportunities.\n\n May every good deed spread! \n\n✨ Magic Code AI\nMindful Technology – smart technology, mindful growth.'
     },
     details: {
-      date: { mn: '2025.10.24', en: '24 October 2025' },
+      date: { mn: '2026.10.24', en: '24 October 2026' },
       location: null,
       partners: { mn: 'Монголын залуу бизнес эрхлэгч эмэгтэйчүүдийн холбоо (МЗБЭЭХ)', en: 'Mongolian Young Businesswomen’s Association' },
     },
@@ -137,7 +137,10 @@ export const news = [
   {
     id: '3', number: '03', isSample: false, publishedAt: '2026-05-22T00:00:00.000Z',
     category: { mn: 'Эрдэм шинжилгээ · Хурал', en: 'Research · Conference' },
-    title: { mn: '“Монголын Мэдээллийн Технологи-2026” эрдэм шинжилгээний хурал😊', en: '“Mongolian Information Technology 2026” research conference😊' },
+    title: {
+      mn: '“Монголын Мэдээллийн Технологи-2026” эрдэм шинжилгээний хурал',
+      en: '“Mongolian Information Technology 2026” research conference'
+    },
     summary: {
       mn: '“Монголын Мэдээллийн Технологи-2026” эрдэм шинжилгээний хуралд оролцлоо.',
       en: 'We took part in the “Mongolian Information Technology 2026” research conference.',
