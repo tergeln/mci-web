@@ -1,12 +1,19 @@
-import { ApiError } from './client';
+import { ApiError, USE_MOCK, request } from './client';
 import { chatSystemPrompt } from '../data/chat';
 
 const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-3.5-flash-lite';
 
-/** Gemini API-аас chatbot-ийн хариу авна. */
+/**
+ * Chatbot-ийн хариу авна.
+ * - VITE_USE_MOCK=false: backend-ийн POST /api/chat (Gemini key зөвхөн серверт байна).
+ * - Mock горим (локал хөгжүүлэлт): өмнөх шигээ Gemini-г шууд дуудна (VITE_GEMINI_API_KEY хэрэгтэй).
+ */
 export function sendChatMessage({ message, lang, history = [] }) {
+  if (!USE_MOCK) {
+    return request('/chat', { method: 'POST', body: { message, lang, history: history.slice(-10) } });
+  }
   return generateGeminiReply({ message, lang, history });
 }
 
