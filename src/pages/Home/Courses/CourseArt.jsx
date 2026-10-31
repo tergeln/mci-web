@@ -8,9 +8,9 @@ export default function CourseArt({ course }) {
   const { lang } = useLang();
   const code = courseCodeArt[lang];
   return (
-    <div className={`course-art ${course.art}${course.image ? ' course-art--image' : ''}`}>
+    <div className={`course-art ${course.art}${course.image ? ' course-art--image' : ''}${course.slide ? ' course-art--slide' : ''}`}>
       {course.image && <ContentImage image={course.image} sizes="(max-width: 640px) calc(100vw - 40px), 550px" />}
-      <span className="tag"><Tr text={course.tag} /></span>
+      {!course.slide && <span className="tag"><Tr text={course.tag} /></span>}
       {!course.image && course.kind === 'code' && (
         <div className="art-code">
           {code.lines.map((line) => (

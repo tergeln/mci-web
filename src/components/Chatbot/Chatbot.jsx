@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLang } from '../../context/LanguageContext';
-import reducedMotion from '../../hooks/reducedMotion';
 import { chatGreeting, quickQuestions } from '../../data/chat';
 import { sendChatMessage } from '../../api/chat';
 import { errorMessage } from '../../api/client';
-import createBurst from './magicBurst';
 import getChatViewport from './chatViewport';
+
+// Preview the new mascot only in the local development server.
+const mascotImage = import.meta.env.DEV
+  ? '/src/assets/chatbot-hedgehog.png'
+  : '/assets/chatbot-wizard.png';
 
 // open/onOpenChange-ийг Home барина (Contact хэсгийн товч мөн chat-ийг нээдэг).
 export default function Chatbot({ open, onOpenChange }) {
@@ -14,18 +17,11 @@ export default function Chatbot({ open, onOpenChange }) {
   const panelRef = useRef(null);
   const inputRef = useRef(null);
   const messagesRef = useRef(null);
-  const pending = useRef(false);
   const replying = useRef(false);
   const nextId = useRef(0);
-  const timers = useRef([]);
-  const burstRef = useRef(null);
   const prevOpen = useRef(open);
   const prevLang = useRef(lang);
   const [messages, setMessages] = useState([]);
-
-  const later = (fn, ms) => {
-    timers.current.push(setTimeout(fn, ms));
-  };
 
   // inert атрибутыг React 18 prop-оор дэмждэггүй тул ref-ээр тавина.
   useEffect(() => {
@@ -108,41 +104,6 @@ export default function Chatbot({ open, onOpenChange }) {
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onOpenChange]);
 
-  useEffect(
-    () => () => {
-      timers.current.forEach(clearTimeout);
-      if (burstRef.current) burstRef.current.remove();
-    },
-    [],
-  );
-
-  const openWithMagic = () => {
-    if (pending.current) return;
-    if (reducedMotion()) {
-      onOpenChange(true);
-      return;
-    }
-    pending.current = true;
-    const button = toggleRef.current;
-    const panel = panelRef.current;
-    const burst = createBurst(button.getBoundingClientRect());
-    burstRef.current = burst;
-    document.body.append(burst);
-    button.classList.add('magic-casting');
-    later(() => {
-      onOpenChange(true);
-      panel.classList.remove('magic-opening');
-      void panel.offsetWidth;
-      panel.classList.add('magic-opening');
-      pending.current = false;
-    }, 380);
-    later(() => button.classList.remove('magic-casting'), 520);
-    later(() => {
-      burst.remove();
-      panel.classList.remove('magic-opening');
-    }, 1700);
-  };
-
   // POST /api/chat. Хариу ирэх хүртэл "…" бөмбөлөг харуулж, ирэхээр нь солино.
   const ask = async (question) => {
     if (replying.current) return;
@@ -177,14 +138,14 @@ export default function Chatbot({ open, onOpenChange }) {
         ref={toggleRef}
         aria-label={t('Шидэт туслахыг нээх', 'Open magic assistant')}
         aria-expanded={open}
-        onClick={() => (open ? onOpenChange(false) : openWithMagic())}
+        onClick={() => onOpenChange(!open)}
       >
-        <span className="chat-robot-portrait" aria-hidden="true" />
+        <span className="chat-robot-portrait" aria-hidden="true" style={{ backgroundImage: `url("${mascotImage}")` }} />
       </button>
       <aside className="chat" id="chat" ref={panelRef} hidden={!open} aria-label="Magic Code assistant">
         <div className="chat-head">
           <div className="bot-avatar">
-            <img src="/assets/chatbot-wizard.png" alt="" width="48" height="48" />
+            <img src={mascotImage} alt="" width="48" height="48" />
           </div>
           <div>
             <strong>{t('Шидэт туслах', 'Magic assistant')}</strong>

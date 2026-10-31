@@ -63,33 +63,13 @@
 @keyframes robot-hovering{0%,100%{transform:translateY(-3px) rotateY(-9deg) rotateX(3deg)}50%{transform:translateY(-11px) rotateY(7deg) rotateX(-3deg)}}
 @media(prefers-reduced-motion:reduce){#chatToggle .chat-robot-portrait{animation:none;transform:none;transition:none}}
 
-/* style block #24 (magic-chat-opening) */
-.magic-burst{position:fixed;width:1px;height:1px;z-index:99;pointer-events:none}
-.magic-burst::before{content:'';position:absolute;inset:-65px;border-radius:50%;background:radial-gradient(circle,#fff3cde6 0%,#E8D5A380 20%,#65D9FF55 42%,transparent 70%);animation:magic-flash .65s ease-out both}
-.magic-burst::after{content:'';position:absolute;inset:-28px;border:2px solid #E8D5A3;border-radius:50%;box-shadow:0 0 18px #7DD3FC88;animation:magic-ring .75s ease-out both}
-.magic-spark{position:absolute;color:var(--spark-color);font-size:var(--spark-size);line-height:1;text-shadow:0 0 9px currentColor;animation:magic-scatter .9s ease-out both}
-#chat.magic-opening{transform-origin:bottom right;animation:magic-chat-reveal .55s cubic-bezier(.16,1,.3,1) both}
-#chatToggle.magic-casting .chat-robot-portrait{animation:magic-wand-cast .5s ease-in-out both}
-@keyframes magic-flash{0%{transform:scale(.2);opacity:0}25%{opacity:1}100%{transform:scale(2);opacity:0}}
-@keyframes magic-ring{from{transform:scale(.3);opacity:1}to{transform:scale(4);opacity:0}}
-@keyframes magic-scatter{0%{transform:translate(0,0) scale(.2);opacity:0}15%{opacity:1}100%{transform:translate(var(--spark-x),var(--spark-y)) rotate(var(--spark-rotation)) scale(.2);opacity:0}}
-@keyframes magic-chat-reveal{from{opacity:0;transform:translateY(22px) scale(.87);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
-@keyframes magic-wand-cast{0%,100%{transform:rotate(0)}40%{transform:translateY(-12px) rotate(-12deg) scale(1.08)}}
-@media(prefers-reduced-motion:reduce){.magic-burst{display:none}#chat.magic-opening,#chatToggle.magic-casting .chat-robot-portrait{animation:none}}
-
-/* style block #25 (separate-magic-sparks) */
-.magic-burst::before,.magic-burst::after{content:none;display:none}
-.magic-spark{text-shadow:0 0 4px currentColor;animation-duration:.8s}
-
-/* style block #26 (visible-magic-sparks) */
-.magic-burst{z-index:1000;overflow:visible}
-.magic-spark{display:block;font-family:Arial,sans-serif;font-weight:700;text-align:center;text-shadow:0 0 3px currentColor,0 0 8px currentColor;animation:visible-spark-flight 1.5s cubic-bezier(.12,.6,.25,1) both}
-@keyframes visible-spark-flight{0%{transform:translate(0,0) scale(.5);opacity:0}8%{opacity:1}55%{opacity:1}100%{transform:translate(var(--spark-x),var(--spark-y)) rotate(var(--spark-rotation)) scale(.4);opacity:0}}
-
-/* style block #27 (robot-chat-visibility) */
-#chatToggle{opacity:1;scale:1;transform-origin:center bottom;transition:scale .35s cubic-bezier(.2,.8,.2,1),opacity .25s,visibility 0s}
-#chatToggle[aria-expanded=true],#chatToggle[aria-expanded=true]:hover{scale:.12;opacity:0;visibility:hidden;pointer-events:none;transition:scale .35s cubic-bezier(.4,0,.8,.2),opacity .3s,visibility 0s .35s}
-@media(prefers-reduced-motion:reduce){#chatToggle,#chatToggle[aria-expanded=true]{transition:none}}
+/* Fade the mascot in place when opening the chat. */
+#chatToggle,#chatToggle:hover{opacity:1;scale:1;visibility:visible;transform:none;transition:opacity .5s ease,visibility 0s}
+#chatToggle .chat-robot-portrait,#chatToggle:hover .chat-robot-portrait{animation:none;transform:none;scale:1;rotate:0;image-rendering:pixelated}
+#chatToggle[aria-expanded=true],#chatToggle[aria-expanded=true]:hover{opacity:0;visibility:hidden;transform:none;pointer-events:none;transition:opacity .5s ease,visibility 0s .5s}
+#chat:not([hidden]){animation:chat-slide-open .45s cubic-bezier(.22,1,.36,1) both}
+@keyframes chat-slide-open{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){#chatToggle,#chatToggle:hover{transition:none}#chat:not([hidden]){animation:none}}
 
 /* style block #28 (chat-lower-position) */
 #chat{bottom:calc(48px + env(safe-area-inset-bottom,0px))}

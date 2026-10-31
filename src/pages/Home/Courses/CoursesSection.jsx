@@ -15,7 +15,7 @@ export default function CoursesSection({ onSelectCourse }) {
       <div className="wrap">
         <div ref={headRef} className={headClass}>
           <div>
-            <div className="eyebrow"><Tr mn="ӨӨРТ ТОХИРОХ ЗАМАА СОНГО" en="FIND YOUR STARTING POINT" /></div>
+            <div className="eyebrow"><Tr mn="ӨӨРТ ТОХИРОХ ЗАМАА СОНГООРОЙ" en="FIND YOUR STARTING POINT" /></div>
             <h2><Tr mn="Шинэ ур чадвар.<br><em>Шинэ боломж.</em>" en="New skills.<br><em>New possibilities.</em>" /></h2>
           </div>
           <p>
@@ -28,7 +28,7 @@ export default function CoursesSection({ onSelectCourse }) {
         <ApiState loading={loading} error={error} onRetry={reload} />
         <div className="courses">
           {homeCourses.map((course, i) => (
-            <CourseCard key={course.title.en} course={{ ...course, image: courses?.find((item) => item.id === course.id)?.image }} index={i} onSelect={() => onSelectCourse(i)} />
+            <CourseCard key={course.title.en} course={{ ...course, image: course.image ?? courses?.find((item) => item.id === course.id)?.image }} index={i} onSelect={() => onSelectCourse(i)} />
           ))}
           <Link className="btn secondary courses-more" to="/courses">
             <Tr mn="Цааш үзэх" en="See all courses" />

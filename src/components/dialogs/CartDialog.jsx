@@ -21,15 +21,18 @@ export default function CartDialog({ request }) {
   useEffect(() => {
     if (!request) return;
     const dialog = dialogRef.current;
-    if (dialog && !dialog.open) dialog.showModal();
+    if (dialog && !dialog.open) {
+      dialog.showModal();
+      dialog.focus({ preventScroll: true });
+    }
   }, [request]);
 
   return (
-    <dialog id="cartDialog" className="collection-dialog" ref={dialogRef} onClick={closeOnBackdrop} aria-labelledby="collectionTitle" aria-describedby="collectionDescription">
+    <dialog id="cartDialog" className="collection-dialog" ref={dialogRef} onClick={closeOnBackdrop} tabIndex={-1} autoFocus aria-labelledby="collectionTitle" aria-describedby="collectionDescription">
       <div className="collection-ambient" aria-hidden="true" />
       <div className="collection-topline">
         <span><Tr mn="САГС" en="BAG" /></span>
-        <button className="collection-close" aria-label={t('Хаах', 'Close')} onClick={() => dialogRef.current.close()}>
+        <button className="collection-close" style={{ outline: 'none', border: 0, boxShadow: 'none', background: 'transparent' }} aria-label={t('Хаах', 'Close')} onClick={() => dialogRef.current.close()}>
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
         </button>
       </div>
