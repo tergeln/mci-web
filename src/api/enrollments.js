@@ -1,5 +1,6 @@
 import { ApiError, request } from './client';
 import { courses, enrollments, newId, notFound, payments } from './mock/db';
+import { recordStore } from './localRecords';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE = /^[+0-9 ()-]{8,20}$/;
@@ -33,6 +34,9 @@ export function createEnrollment({ courseId, name, email, phone }) {
         status: course.status === 'open' ? 'pending_payment' : 'waitlisted',
         createdAt: new Date().toISOString(),
       };
+      const account = JSON.parse(localStorage.getItem('mc-demo-accounts-v1') || '[]').find((user) => user.email === body.email.toLowerCase());
+      const userId = body.email.toLowerCase() === 'user@magiccode.mn' ? 'student' : account?.id || `guest:${body.email.toLowerCase()}`;
+      recordStore.add({ type: 'course', userId, items: [course.title.mn], courseId: course.id, name: body.name, email: body.email.toLowerCase(), phone: body.phone, enrollmentStatus: enrollment.status });
       enrollments.set(enrollment.id, { ...enrollment, email: body.email });
       return enrollment;
     },

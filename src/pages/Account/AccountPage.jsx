@@ -1,40 +1,111 @@
-import AccountDetails from './AccountDetails';
 import { useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
-import { demoUsers, useAuth } from '../../context/AuthContext';
+import { LearningProgress, AccountProfile } from './AccountDetails';
+import { useAuth } from '../../context/AuthContext';
 import { useLang } from '../../context/LanguageContext';
+import { errorMessage } from '../../api/client';
 import ClassroomDialog from '../../components/dialogs/ClassroomDialog';
 import { cartProducts } from '../../data/merch';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import WorkspaceHeading from './WorkspaceHeading';
+import WorkspaceTabs from './WorkspaceTabs';
 import './account.css';
-export default function AccountPage({ admin = false }) {
-  const { user, logout, records, addRecord, updateStatus } = useAuth();
+
+const LEARNER_TABS = [
+  { id: 'overview', mn: 'Тойм', en: 'Overview' },
+  { id: 'learning', mn: 'Миний сургалт', en: 'My learning' },
+  { id: 'products', mn: 'Дэлгүүр', en: 'Shop' },
+  { id: 'progress', mn: 'Суралцах явц', en: 'Progress' },
+  { id: 'profile', mn: 'Миний мэдээлэл', en: 'My profile' },
+  { id: 'history', mn: 'Түүх', en: 'History' },
+];
+
+function LearnerPanel({ id, activeTab, children }) {
+  return <div id={`learner-${id}`} className="learner-panel" role="tabpanel" aria-labelledby={`learner-tab-${id}`} tabIndex={0} hidden={activeTab !== id}>{children}</div>;
+}
+
+export default function AccountPage() {
+  const { user, logout, records, addRecord } = useAuth();
   const { t, lang } = useLang();
   const location = useLocation();
+  const [activeTab, setActiveTab] = useState('overview');
   const [request, setRequest] = useState(null);
   const [cart, setCart] = useState([]);
   const [notice, setNotice] = useState('');
+  const [noticeError, setNoticeError] = useState(false);
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [progressVersion, setProgressVersion] = useState(0);
   const [expandedRecord, setExpandedRecord] = useState(null);
-  useDocumentTitle(admin ? t('Удирдлага — Magic Code AI', 'Admin — Magic Code AI') : t('Миний хэсэг — Magic Code AI', 'My account — Magic Code AI'));
+  useDocumentTitle(t('Миний хэсэг — Magic Code AI', 'My account — Magic Code AI'));
   if (!user) return <Navigate to="/login" state={{ from: location.pathname }} replace />;
-  if (admin && user.role !== 'admin') return <Navigate to="/account" replace />;
-  const visible = admin ? records : records.filter((r) => r.userId === user.id);
-  const filtered = visible.filter((r) => (typeFilter === 'all' || r.type === typeFilter) && (statusFilter === 'all' || r.status === statusFilter) && `${r.id} ${r.items.join(' ')} ${demoUsers.find((u) => u.id === r.userId)?.email || ''}`.toLowerCase().includes(query.toLowerCase()));
-  const watch = () => setRequest((r) => ({ id: (r?.id || 0) + 1 }));
-  const enrolled = records.some((r) => r.userId === user.id && r.type === 'course');
-  return <><main className="account-page wrap">
-    <div className="account-heading"><div><div className="eyebrow">{admin ? 'MAGIC CODE · ADMIN' : 'MAGIC CODE · LEARNING SPACE'}</div><h1>{admin ? t('Удирдлагын хэсэг', 'Admin dashboard') : t('Сайн уу, суралцагч!', 'Hello, learner!')}</h1><p>{user.email} · {admin ? t('Админ эрх', 'Administrator') : t('Хэрэглэгчийн эрх', 'Student account')}</p></div><div className="account-actions">{user.role === 'admin' && <Link className="btn secondary" to={admin ? '/account' : '/admin'}>{admin ? t('Миний хэсэг', 'My account') : t('Удирдлага', 'Admin')}</Link>}<button className="btn secondary" onClick={logout}>{t('Гарах', 'Log out')}</button></div></div>
+
+  const visible = records.filter((record) => record.userId === user.id);
+  const filtered = visible.filter((record) => (typeFilter === 'all' || record.type === typeFilter) && (statusFilter === 'all' || record.status === statusFilter) && `${record.id} ${record.items.join(' ')}`.toLowerCase().includes(query.toLowerCase()));
+  const watch = () => setRequest((previous) => ({ id: (previous?.id || 0) + 1 }));
+  const enrolled = visible.some((record) => record.type === 'course' && record.status !== 'cancelled');
+  const statusName = (status) => status === 'done' ? t('Шийдвэрлэсэн', 'Completed') : status === 'cancelled' ? t('Цуцалсан', 'Cancelled') : t('Шинэ', 'New');
+  function openTab(id) {
+    setActiveTab(id);
+    document.getElementById(`learner-tab-${id}`)?.focus({ preventScroll: true });
+  }
+  function saveRecord(type, items, message) {
+    try { addRecord(type, items); setNotice(message); setNoticeError(false); return true; }
+    catch (error) { setNotice(errorMessage(error, t)); setNoticeError(true); return false; }
+  }
+
+  return <><main className="account-page workspace-page learner-page wrap">
+    <WorkspaceHeading
+      eyebrow="MAGIC CODE · LEARNING SPACE"
+      title={t('Сайн уу, суралцагч!', 'Hello, learner!')}
+      description={`${user.email} · ${t('Хэрэглэгчийн эрх', 'Student account')}`}
+      onLogout={logout}
+    />
+    <div className="workspace-tabs-bar"><WorkspaceTabs tabs={LEARNER_TABS} activeTab={activeTab} onChange={setActiveTab} prefix="learner" label={t('Суралцагчийн хэсгүүд', 'Learner dashboard sections')} /></div>
     <p className="account-note">{t('Demo орчин · Бодит төлбөр хийгдэхгүй. Мэдээлэл зөвхөн энэ хөтөч дээр хадгалагдана.', 'Demo environment · No real payments. Data is saved only in this browser.')}</p>
-    <div className="account-stats">{[[admin ? t('Demo хэрэглэгч', 'Demo accounts') : t('Миний сургалт', 'My courses'), admin ? demoUsers.length : Number(enrolled)], [t('Бүтээгдэхүүний захиалга', 'Product orders'), visible.filter((r) => r.type === 'order').length], [t('Сургалтын бүртгэл', 'Course enrollments'), visible.filter((r) => r.type === 'course').length]].map(([label, value]) => <div className="account-card" key={label}><small>{label}</small><strong>{value}</strong></div>)}</div>
-    {admin ? <section className="account-card account-section"><h2>{t('Хэрэглэгчид ба эрх', 'Accounts & roles')}</h2>{demoUsers.map((u) => <div className="account-row" key={u.id}><div><strong>{u.name}</strong><p>{u.email}</p><small>{t('Сургалт', 'Enrollments')}: {records.filter((r) => r.userId === u.id && r.type === 'course').length} · {t('Захиалга', 'Orders')}: {records.filter((r) => r.userId === u.id && r.type === 'order').length}</small></div><span className="account-badge">{u.role === 'admin' ? t('Админ', 'Admin') : t('Хэрэглэгч', 'User')}</span></div>)}</section> : <div className="account-columns"><section className="account-card account-section"><div className="eyebrow">01 · LEARN</div><h2>{t('Миний сургалт', 'My learning')}</h2><h3>{t('Өгөгдлийн шинжилгээ ба Power BI', 'Data Analysis & Power BI')}</h3><p>{t('4 нээлттэй жишээ хичээл · SQL, Python, Power BI', '4 public preview lessons · SQL, Python, Power BI')}</p><div className="account-actions"><button className="btn" onClick={watch}>{t('Хичээл үзэх ▶', 'Watch lessons ▶')}</button><button className="btn secondary" disabled={enrolled} onClick={() => { addRecord('course', ['Data Analysis & Power BI']); setNotice(t('Demo сургалтын бүртгэл амжилттай.', 'Demo enrollment created.')); }}>{enrolled ? t('✓ Бүртгэгдсэн', '✓ Enrolled') : t('Demo элсэлт', 'Demo enrollment')}</button></div><Link className="text-link" to="/courses">{t('Бүх сургалт үзэх →', 'Explore all courses →')}</Link></section>
-    <section className="account-card account-section"><div className="eyebrow">02 · PRODUCTS</div><h2>{t('Demo дэлгүүр', 'Demo shop')}</h2><p>{t('Жишээ бүтээгдэхүүн сонгож захиалгын урсгалыг туршаарай.', 'Select concept products to try the order flow.')}</p>{cartProducts.map((p, i) => <div className="account-row" key={p.en}><span>{p.emblem} {p[lang]}</span><button className="btn secondary" onClick={() => { setCart((c) => [...c, i]); setNotice(''); }}>+ {t('Нэмэх', 'Add')}</button></div>)}{cart.length > 0 && <div className="account-cart"><h3>{t('Миний сагс', 'My bag')}</h3>{cartProducts.map((p, i) => { const quantity = cart.filter((id) => id === i).length; return quantity > 0 && <div className="account-row" key={p.en}><span>{p[lang]}</span><div className="account-quantity"><button type="button" aria-label={`${p[lang]} −1`} onClick={() => setCart((previous) => { const next = [...previous]; next.splice(next.indexOf(i), 1); return next; })}>−</button><output aria-live="polite">{quantity}</output><button type="button" aria-label={`${p[lang]} +1`} onClick={() => setCart((previous) => [...previous, i])}>+</button></div></div>; })}<small>{t('Жишээ бүтээгдэхүүн · Үнэ тогтоогоогүй, төлбөр авахгүй.', 'Concept products · No payment required.')}</small></div>}<div className="account-actions"><button className="btn" disabled={!cart.length} onClick={() => { addRecord('order', cart.map((i) => cartProducts[i][lang])); setCart([]); setNotice(t('Demo захиалга үүслээ. Доорх түүхээс харна уу.', 'Demo order created. See your history below.')); }}>{t('Demo захиалах', 'Place demo order')} ({cart.length})</button><button className="btn secondary" disabled={!cart.length} onClick={() => setCart([])}>{t('Цэвэрлэх', 'Clear')}</button></div></section></div>}
-    {!admin && <AccountDetails key={`${user.id}-${progressVersion}`} onWatch={watch} />}
-    {admin && <div className="account-card account-section admin-overview"><h2>{t('Ажлын тойм', 'Activity overview')}</h2><div className="account-columns"><div><strong>{visible.filter((r) => r.status === 'new').length} {t('шинэ хүсэлт', 'new requests')}</strong><p>{t('Шинэ хүсэлтүүдийн дэлгэрэнгүйг шалгаад шийдвэрлэсэн төлөвт шилжүүлээрэй.', 'Review new requests and mark them completed.')}</p><button className="btn secondary" onClick={() => { setStatusFilter('new'); setTypeFilter('all'); setQuery(''); document.getElementById('account-history')?.scrollIntoView({ behavior: 'smooth' }); }}>{t('Шинэ хүсэлт харах →', 'Review new requests →')}</button></div><div><strong>{visible.filter((r) => r.status === 'done').length} {t('шийдвэрлэсэн', 'completed')}</strong><p>{t('Тоонууд demo үйлдлээс шинэчлэгдэнэ. Захиалга бүрийн бүтээгдэхүүн, тоо ширхэг, огноо, төлөвийг шалгах боломжтой.', 'Counts update from demo activity. Review products, quantities, dates and status for each order.')}</p></div></div></div>}
-    <p role="status" className="account-feedback">{notice}</p>
-    <section id="account-history" className="account-card account-section"><h2>{admin ? t('Захиалга ба сургалтын бүртгэл', 'Orders & enrollments') : t('Миний бүртгэл, захиалгын түүх', 'My enrollment & order history')}</h2><div className="account-filters"><label>{t('Хайх', 'Search')}<input type="search" placeholder={t('Нэр, дугаар, имэйл…', 'Item, ID, email…')} value={query} onChange={(e) => setQuery(e.target.value)} /></label><label>{t('Төрөл', 'Type')}<select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}><option value="all">{t('Бүгд', 'All')}</option><option value="order">{t('Захиалга', 'Orders')}</option><option value="course">{t('Сургалт', 'Enrollments')}</option></select></label><label>{t('Төлөв', 'Status')}<select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}><option value="all">{t('Бүгд', 'All')}</option><option value="new">{t('Шинэ', 'New')}</option><option value="done">{t('Шийдвэрлэсэн', 'Completed')}</option></select></label></div><p>{t('Илэрц', 'Results')}: {filtered.length}</p>{!filtered.length && <p className="account-empty">{t('Тохирох бүртгэл, захиалга олдсонгүй.', 'No matching enrollments or orders.')}</p>}{filtered.map((r) => <div className="account-record" key={r.id}><div className="account-row"><div><strong>{r.type === 'course' ? t('Сургалт', 'Course') : t('Захиалга', 'Order')} · {[...new Set(r.items)].join(', ')}</strong><p>{admin && `${demoUsers.find((u) => u.id === r.userId)?.email || '—'} · `}{new Date(r.createdAt).toLocaleDateString(lang === 'mn' ? 'mn-MN' : 'en-US')} · #{r.id.slice(0, 8)}</p></div>{admin ? <select aria-label={t('Төлөв өөрчлөх', 'Change status')} value={r.status} onChange={(e) => updateStatus(r.id, e.target.value)}><option value="new">{t('Шинэ', 'New')}</option><option value="done">{t('Шийдвэрлэсэн', 'Completed')}</option></select> : <span className="account-badge">{r.status === 'done' ? t('Шийдвэрлэсэн', 'Completed') : t('Шинэ', 'New')}</span>}</div><button className="text-link account-help" aria-expanded={expandedRecord === r.id} onClick={() => setExpandedRecord(expandedRecord === r.id ? null : r.id)}>{expandedRecord === r.id ? t('Хураах ↑', 'Collapse ↑') : t('Дэлгэрэнгүй ↓', 'View details ↓')}</button>{expandedRecord === r.id && <div className="account-record-detail"><p>{t('Бүртгэлийн дугаар', 'Reference')}: {r.id}</p><p>{t('Үүссэн огноо', 'Created')}: {new Date(r.createdAt).toLocaleString(lang === 'mn' ? 'mn-MN' : 'en-US')}</p>{[...new Set(r.items)].map((item) => <div className="account-row" key={item}><span>{item}</span><strong>× {r.items.filter((x) => x === item).length}</strong></div>)}<small>{t('Demo бүртгэл · Бодит төлбөрийн баримт биш.', 'Demo record · No real payment receipt.')}</small></div>}</div>)}</section>
-  </main><ClassroomDialog key={user.id} request={request} onProgress={() => setProgressVersion((v) => v + 1)} /></>;
+    <p role="status" className={`account-feedback${noticeError ? ' account-error' : ''}`}>{notice}</p>
+
+    <LearnerPanel id="overview" activeTab={activeTab}>
+      <div className="account-stats">{[
+        [t('Миний сургалт', 'My courses'), Number(enrolled)],
+        [t('Бүтээгдэхүүний захиалга', 'Product orders'), visible.filter((record) => record.type === 'order').length],
+        [t('Сургалтын бүртгэл', 'Course enrollments'), visible.filter((record) => record.type === 'course').length],
+      ].map(([label, value]) => <div className="account-card" key={label}><small>{label}</small><strong>{value}</strong></div>)}</div>
+      <div className="account-card account-section learner-shortcuts"><h2>{t('Үргэлжлүүлэн суралцъя', 'Keep learning')}</h2><p>{t('Сургалтаа нээж, суралцах явцаа шалгаарай.', 'Open your lessons and review your learning progress.')}</p><div className="account-actions"><button className="btn" onClick={() => openTab('learning')}>{t('Миний сургалт →', 'My learning →')}</button><button className="btn secondary" onClick={() => openTab('progress')}>{t('Суралцах явц →', 'View progress →')}</button></div></div>
+    </LearnerPanel>
+
+    <LearnerPanel id="learning" activeTab={activeTab}>
+      <section className="account-card account-section"><div className="eyebrow">01 · LEARN</div><h2>{t('Миний сургалт', 'My learning')}</h2><h3>{t('Өгөгдлийн шинжилгээ ба Power BI', 'Data Analysis & Power BI')}</h3><p>{t('4 нээлттэй жишээ хичээл · SQL, Python, Power BI', '4 public preview lessons · SQL, Python, Power BI')}</p>
+        <div className="account-actions"><button className="btn" onClick={watch}>{t('Хичээл үзэх ▶', 'Watch lessons ▶')}</button><button className="btn secondary" disabled={enrolled} onClick={() => saveRecord('course', ['Data Analysis & Power BI'], t('Demo сургалтын бүртгэл амжилттай.', 'Demo enrollment created.'))}>{enrolled ? t('✓ Бүртгэгдсэн', '✓ Enrolled') : t('Demo элсэлт', 'Demo enrollment')}</button></div>
+        <Link className="text-link" to="/courses">{t('Бүх сургалт үзэх →', 'Explore all courses →')}</Link>
+      </section>
+    </LearnerPanel>
+
+    <LearnerPanel id="products" activeTab={activeTab}>
+      <section className="account-card account-section"><div className="eyebrow">02 · PRODUCTS</div><h2>{t('Demo дэлгүүр', 'Demo shop')}</h2><p>{t('Жишээ бүтээгдэхүүн сонгож захиалгын урсгалыг туршаарай.', 'Select concept products to try the order flow.')}</p>
+        {cartProducts.map((product, index) => <div className="account-row" key={product.en}><span>{product.emblem} {product[lang]}</span><button className="btn secondary" onClick={() => { setCart((previous) => [...previous, index]); setNotice(''); }}>+ {t('Нэмэх', 'Add')}</button></div>)}
+        {cart.length > 0 && <div className="account-cart"><h3>{t('Миний сагс', 'My bag')}</h3>{cartProducts.map((product, index) => {
+          const quantity = cart.filter((id) => id === index).length;
+          return quantity > 0 && <div className="account-row" key={product.en}><span>{product[lang]}</span><div className="account-quantity"><button type="button" aria-label={`${product[lang]} −1`} onClick={() => setCart((previous) => { const next = [...previous]; next.splice(next.indexOf(index), 1); return next; })}>−</button><output aria-live="polite">{quantity}</output><button type="button" aria-label={`${product[lang]} +1`} onClick={() => setCart((previous) => [...previous, index])}>+</button></div></div>;
+        })}<small>{t('Жишээ бүтээгдэхүүн · Үнэ тогтоогоогүй, төлбөр авахгүй.', 'Concept products · No payment required.')}</small></div>}
+        <div className="account-actions"><button className="btn" disabled={!cart.length} onClick={() => { if (saveRecord('order', cart.map((index) => cartProducts[index][lang]), t('Demo захиалга үүслээ. Түүх табаас харна уу.', 'Demo order created. See the History tab.'))) setCart([]); }}>{t('Demo захиалах', 'Place demo order')} ({cart.length})</button><button className="btn secondary" disabled={!cart.length} onClick={() => setCart([])}>{t('Цэвэрлэх', 'Clear')}</button></div>
+      </section>
+    </LearnerPanel>
+
+    <LearnerPanel id="progress" activeTab={activeTab}><LearningProgress key={`${user.id}-${progressVersion}`} onWatch={watch} /></LearnerPanel>
+    <LearnerPanel id="profile" activeTab={activeTab}><AccountProfile key={user.id} /></LearnerPanel>
+
+    <LearnerPanel id="history" activeTab={activeTab}>
+      <section id="account-history" className="account-card account-section"><h2>{t('Миний бүртгэл, захиалгын түүх', 'My enrollment & order history')}</h2>
+        <div className="account-filters"><label>{t('Хайх', 'Search')}<input type="search" placeholder={t('Нэр, дугаар…', 'Item, ID…')} value={query} onChange={(event) => setQuery(event.target.value)} /></label><label>{t('Төрөл', 'Type')}<select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}><option value="all">{t('Бүгд', 'All')}</option><option value="order">{t('Захиалга', 'Orders')}</option><option value="course">{t('Сургалт', 'Enrollments')}</option></select></label><label>{t('Төлөв', 'Status')}<select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}><option value="all">{t('Бүгд', 'All')}</option>{['new', 'done', 'cancelled'].map((status) => <option key={status} value={status}>{statusName(status)}</option>)}</select></label></div>
+        <p>{t('Илэрц', 'Results')}: {filtered.length}</p>
+        {!filtered.length && <p className="account-empty">{t('Тохирох бүртгэл, захиалга олдсонгүй.', 'No matching enrollments or orders.')}</p>}
+        {filtered.map((record) => <div className="account-record" key={record.id}><div className="account-row"><div><strong>{record.type === 'course' ? t('Сургалт', 'Course') : t('Захиалга', 'Order')} · {[...new Set(record.items)].join(', ')}</strong><p>{new Date(record.createdAt).toLocaleDateString(lang === 'mn' ? 'mn-MN' : 'en-US')} · #{record.id.slice(0, 8)}</p></div><span className="account-badge">{statusName(record.status)}</span></div>
+          <button className="text-link account-help" aria-expanded={expandedRecord === record.id} onClick={() => setExpandedRecord(expandedRecord === record.id ? null : record.id)}>{expandedRecord === record.id ? t('Хураах ↑', 'Collapse ↑') : t('Дэлгэрэнгүй ↓', 'View details ↓')}</button>
+          {expandedRecord === record.id && <div className="account-record-detail"><p>{t('Бүртгэлийн дугаар', 'Reference')}: {record.id}</p><p>{t('Үүссэн огноо', 'Created')}: {new Date(record.createdAt).toLocaleString(lang === 'mn' ? 'mn-MN' : 'en-US')}</p>{[...new Set(record.items)].map((item) => <div className="account-row" key={item}><span>{item}</span><strong>× {record.items.filter((value) => value === item).length}</strong></div>)}<small>{t('Demo бүртгэл · Бодит төлбөрийн баримт биш.', 'Demo record · No real payment receipt.')}</small></div>}
+        </div>)}
+      </section>
+    </LearnerPanel>
+  </main><ClassroomDialog key={user.id} request={request} onProgress={() => setProgressVersion((version) => version + 1)} /></>;
 }

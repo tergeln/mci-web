@@ -9,7 +9,7 @@
 /* style block #2 */
 /* Keep the fixed navigation and opening title inside every viewport. */
 html{scroll-padding-top:calc(100px + env(safe-area-inset-top,0px))}header{height:calc(80px + env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px)}header .wrap{height:80px;min-width:0;gap:18px}header .brand{flex:0 1 220px;min-width:0;max-width:220px;line-height:1.1}header .brand img{max-width:100%;height:auto;object-fit:contain}header .brand>span:last-child{white-space:nowrap}header #nav{flex-shrink:0;white-space:nowrap}header .tools{flex-shrink:0;margin-left:auto;gap:12px}header .tools button{flex-shrink:0}.hero{min-height:100svh;height:auto;padding:calc(155px + env(safe-area-inset-top,0px)) 0 150px;align-items:center}.hero>div:first-child{width:100%;min-width:0}.hero h1{font-size:clamp(52px,min(8.5vw,13vh),126px);line-height:1.08;margin:0;padding-top:.06em;max-width:10.2em;overflow:visible}.hero h1 em{padding-left:.65em}.hero p{margin-top:26px}.hero .skill-pills{max-width:580px}#skillInfo{bottom:98px;right:28px;width:270px}.products.lv-products{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}.lv-products .product-art{height:380px;min-height:0;padding:22px;background:#fff!important;overflow:hidden}.lv-products .product-art img{width:100%;height:100%;object-fit:contain;display:block;mix-blend-mode:multiply;transition:transform .5s}.lv-products .product-art:hover img{transform:scale(1.05)}.lv-products .product-info{align-items:start;gap:12px}.lv-products .product-info h3{font-size:28px}.lv-products .product-info p{font-size:13px}.lv-products .product-info a{font-size:22px;padding-top:2px}.merch-notice{font-size:13px;color:var(--muted);margin-top:26px}
-@media(max-width:1120px){header #nav{display:none}header #nav.open{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:20px;margin:0;padding:28px;background:var(--bg);border-bottom:1px solid var(--line);max-height:calc(100svh - 100px);overflow-y:auto}header #nav a{font-size:18px}header .mobile{display:block;border:0;background:none;color:var(--ink);font-size:22px}header .tools .btn{display:none}}
+@media(max-width:1120px){header #nav{display:none}header #nav.open{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:20px;margin:0;padding:28px;background:var(--bg);border-bottom:1px solid var(--line);max-height:calc(100svh - 100px);overflow-y:auto}header #nav :is(a,.nav-action){font-size:18px}header .mobile{display:block;border:0;background:none;color:var(--ink);font-size:22px}header .tools .btn{display:none}}
 @media(max-width:900px){.hero{padding-top:145px;padding-bottom:65px}#skillInfo{position:relative;bottom:auto;right:auto;width:100%;max-width:440px;margin-bottom:45px}.products.lv-products{gap:16px}.lv-products .product-art{height:300px;padding:12px}.lv-products .product-info h3{font-size:24px}}
 @media(max-width:600px){header{height:calc(72px + env(safe-area-inset-top,0px))}header .wrap{height:72px;padding-inline:16px;gap:8px}header .brand{flex-basis:150px;max-width:150px;font-size:18px}header .brand small{font-size:8px;letter-spacing:1px}header .tools{gap:6px}header #themeToggle{width:29px;height:29px;font-size:17px}header .language{font-size:11px;padding:4px}header .mobile{padding:4px;font-size:19px}.cart-count{width:17px;height:17px;font-size:9px}.hero{padding-top:calc(126px + env(safe-area-inset-top,0px));padding-bottom:40px;min-height:unset}.hero h1{font-size:clamp(40px,10.5vw,64px);line-height:1.12}.hero h1 em{padding-left:.2em}.hero p{font-size:17px}.hero .actions{flex-wrap:wrap}.hero .skill-pills{gap:7px}#skillInfo{margin-bottom:30px}.products.lv-products{grid-template-columns:1fr;gap:35px}.lv-products .product-art{height:420px;padding:24px}.lv-products .product-info h3{font-size:30px}}
 @media(max-height:650px) and (min-width:601px){.hero{padding-top:125px;min-height:760px}.hero h1{font-size:clamp(52px,7.5vw,94px)}#skillInfo{bottom:60px}}
@@ -68,10 +68,12 @@ header #cartBtn{display:inline-flex;align-items:center;gap:7px;padding:4px;borde
 
 /* style block #11 (navigation-contrast-fix) */
 header #nav{border-bottom:1px solid var(--nav-line);box-shadow:0 18px 30px var(--nav-shadow);color:var(--nav-ink)}
-header #nav a{color:var(--nav-ink)}
-header #nav a:hover,header #nav a:focus-visible{color:var(--nav-hover)}
+header #nav :is(a,.nav-action){color:var(--nav-ink)}
+header #nav :is(a,.nav-action):hover,header #nav :is(a,.nav-action):focus-visible{color:var(--nav-hover)}
 header #themeToggle{color:var(--nav-ink);border-color:var(--nav-line);background:var(--nav-control)}
-header #nav a:focus-visible{outline-color:var(--nav-hover)}
+header #nav :is(a,.nav-action):focus-visible{outline-color:var(--nav-hover)}
+
+header #nav .nav-action{border:0;background:transparent;font-family:inherit;font-weight:400;line-height:inherit;text-align:left}
 
 /* style block #12 (navigation-all-sizes) */
 .chapter-index{display:none!important}
@@ -79,10 +81,10 @@ header .wrap{max-width:none;width:100%;margin:0;padding-inline:clamp(16px,2.2vw,
 header .brand{flex:0 0 auto;width:auto;max-width:none}
 header .tools{margin-left:auto}
 header #nav,header #nav.open{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;gap:8px;margin:0;padding:20px clamp(16px,2.2vw,44px);background:var(--nav-bg);max-height:calc(100svh - 100px);overflow-y:auto;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
-header #nav{opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-12px);transition:opacity .32s ease,transform .4s cubic-bezier(.22,1,.36,1),visibility 0s .4s}
-header #nav.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition-delay:0s}
-header #nav a{display:block;padding:10px 14px;font-size:18px;border-radius:12px;transition:background .2s,color .2s,transform .3s}
-header #nav a:hover{background:var(--nav-control);transform:translateX(4px)}
+header #nav{opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-12px);clip-path:inset(0 0 100% 0);transition:opacity .32s ease,transform .4s cubic-bezier(.22,1,.36,1),clip-path .4s cubic-bezier(.22,1,.36,1),visibility 0s .4s}
+header #nav.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);clip-path:inset(0);transition-delay:0s}
+header #nav :is(a,.nav-action){display:block;padding:10px 14px;font-size:18px;border-radius:12px;transition:background .2s,color .2s,transform .3s}
+header #nav :is(a,.nav-action):hover{background:var(--nav-control);transform:translateX(4px)}
 header #menuBtn{display:grid;place-items:center;border:0;border-radius:50%;background:none;color:var(--nav-ink);width:36px;height:36px;padding:8px;transition:background .2s}
 header #menuBtn:hover,header #menuBtn[aria-expanded=true]{background:var(--nav-control)}
 .menu-icon{position:relative;display:block;width:20px;height:16px}
@@ -91,7 +93,7 @@ header #menuBtn:hover,header #menuBtn[aria-expanded=true]{background:var(--nav-c
 #menuBtn[aria-expanded=true] .menu-icon span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 #menuBtn[aria-expanded=true] .menu-icon span:nth-child(2){opacity:0;transform:scaleX(.4)}
 #menuBtn[aria-expanded=true] .menu-icon span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-@media(prefers-reduced-motion:reduce){header #nav,header #nav.open,header #nav a,.menu-icon span{transition:none}header #nav,header #nav a:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){header #nav,header #nav.open,header #nav :is(a,.nav-action),.menu-icon span{transition:none}header #nav,header #nav :is(a,.nav-action):hover{transform:none}}
 header .tools .btn{display:none}
 
 /* style block #13 (theme-icon-alignment) */
@@ -103,7 +105,7 @@ p,h1,h2,h3,h4,h5,h6,blockquote,label,small,.serif,.bubble,.demo{text-align:justi
 button,.btn,header,nav,.tag,.badge,.cart-count,.selection-emblem{text-align:center}
 
 /* style block #20 (menu-left-alignment) */
-header #nav,header #nav a{text-align:left}
+header #nav,header #nav :is(a,.nav-action){text-align:left}
 header #nav.open{align-items:stretch}
 
 /* style block #41 (impact-news-layout) */

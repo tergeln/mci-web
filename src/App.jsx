@@ -9,7 +9,6 @@ import ScrollManager from './components/ScrollManager/ScrollManager';
 
 const LoginPage = lazy(() => import('./pages/Account/LoginPage'));
 const AccountPage = lazy(() => import('./pages/Account/AccountPage'));
-const AdminDashboard = lazy(() => import('./pages/Account/AdminDashboard'));
 const Home = lazy(() => import('./pages/Home/Home'));
 const CoursesPage = lazy(() => import('./pages/Courses/CoursesPage'));
 const NewsPage = lazy(() => import('./pages/News/NewsPage'));
@@ -25,9 +24,9 @@ export default function App() {
       <MainNavbar cartCount={0} onCartClick={openCart} />
       <Suspense fallback={null}>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage key="login" />} />
+          <Route path="/register" element={<LoginPage key="register" mode="register" />} />
           <Route path="/account" element={<AccountPage />} />
-          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/" element={<Home />} />
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/news" element={<NewsPage />} />

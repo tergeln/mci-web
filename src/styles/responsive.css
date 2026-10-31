@@ -79,7 +79,7 @@ main p,
     max-height: calc(100dvh - var(--mobile-header-height) - env(safe-area-inset-top, 0px));
     overscroll-behavior: contain;
   }
-  header #nav a { display: flex; align-items: center; min-height: 48px; padding: 10px 12px; font-size: 15px; white-space: normal; }
+  header #nav :is(a,.nav-action) { display: flex; align-items: center; min-height: 48px; padding: 10px 12px; font-size: 15px; white-space: normal; }
   .subpage-header .news-back { flex: 1 1 auto; min-width: 0; margin-left: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
   header nav.account-dropdown { width: min(260px, calc(100vw - 32px)); max-height: calc(100dvh - 110px); overflow-y: auto; }
   .account-dropdown > a, .account-dropdown > button { min-height: 44px; }

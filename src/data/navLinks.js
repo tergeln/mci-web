@@ -3,13 +3,15 @@ export const navLinks = [
   { hash: '#about', mn: 'Бидний тухай', en: 'About us' },
   { hash: '#volunteering', mn: 'Бидний оролцоо', en: 'Our impact' },
   { hash: '#activities', mn: 'Үйл ажиллагаа', en: 'What we do' },
+  { hash: '#merch', action: 'products', mn: 'Бүтээгдэхүүн', en: 'Merch' },
   { hash: '#contact', mn: 'Холбоо барих', en: 'Contact' },
 ];
 
 export const chapterLinks = [
   { hash: '#home', mn: '01 / Эхлэл', en: '01 / Welcome' },
-  { hash: '#about', mn: '02 / Бидний тухай', en: '02 / About' },
-  { hash: '#activities', mn: '03 / Үйл ажиллагаа', en: '03 / Activities' },
-  { hash: '#courses', mn: '04 / Сургалт', en: '04 / Courses' },
-  { hash: '#contact', mn: '05 / Холбоо барих', en: '05 / Contact' },
+  { hash: '#courses', mn: '02 / Сургалт', en: '02 / Courses' },
+  { hash: '#about', mn: '03 / Бидний тухай', en: '03 / About' },
+  { hash: '#volunteering', mn: '04 / Бидний оролцоо', en: '04 / Our impact' },
+  { hash: '#activities', mn: '05 / Үйл ажиллагаа', en: '05 / Activities' },
+  { hash: '#contact', mn: '06 / Холбоо барих', en: '06 / Contact' },
 ];
