@@ -18,7 +18,7 @@
 .about-picture--image>img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:center}
 .about-picture--image .picture-note{position:absolute;z-index:1;bottom:16px;left:16px;right:16px;padding:14px 18px;border-radius:12px;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(8px)}
 #activities .service-image{aspect-ratio:3/2}
-#activities .service-image img{object-position:center;object-fit:contain}
+#activities .service-image img{object-position:center;object-fit:cover}
 @media(max-width:1000px) and (min-width:641px){#activities .service-image{aspect-ratio:auto;height:100%}}
 @media(max-width:640px){
   #courses .course-art--image .tag{top:12px;left:12px;font-size:9px;max-width:calc(100% - 24px)}

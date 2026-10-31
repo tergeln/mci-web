@@ -15,6 +15,7 @@ export default function Chatbot({ open, onOpenChange }) {
   const inputRef = useRef(null);
   const messagesRef = useRef(null);
   const replying = useRef(false);
+  const fullViewportRef = useRef({ height: window.innerHeight, width: window.innerWidth });
   const nextId = useRef(0);
   const prevOpen = useRef(open);
   const prevLang = useRef(lang);
@@ -40,8 +41,9 @@ export default function Chatbot({ open, onOpenChange }) {
     if (!open || !window.visualViewport) return;
     const viewport = window.visualViewport;
     const panel = panelRef.current;
-    let fullHeight = window.innerHeight;
-    let viewportWidth = window.innerWidth;
+    let fullHeight = Math.max(fullViewportRef.current.height, window.innerHeight);
+    let viewportWidth = fullViewportRef.current.width;
+    let scrollFrame;
     const sync = () => {
       if (window.innerWidth !== viewportWidth) {
         viewportWidth = window.innerWidth;
@@ -49,8 +51,9 @@ export default function Chatbot({ open, onOpenChange }) {
       } else {
         fullHeight = Math.max(fullHeight, window.innerHeight);
       }
+      fullViewportRef.current = { height: fullHeight, width: viewportWidth };
       const { height, bottom, keyboardOpen } = getChatViewport({
-        layoutHeight: window.innerHeight,
+        layoutHeight: document.documentElement.clientHeight,
         fullHeight,
         height: viewport.height,
         offsetTop: viewport.offsetTop,
@@ -60,6 +63,11 @@ export default function Chatbot({ open, onOpenChange }) {
       panel.style.setProperty('--chat-viewport-height', `${height}px`);
       panel.style.setProperty('--chat-viewport-bottom', `${bottom}px`);
       panel.dataset.keyboardOpen = String(keyboardOpen);
+      cancelAnimationFrame(scrollFrame);
+      scrollFrame = requestAnimationFrame(() => {
+        const messages = messagesRef.current;
+        if (messages) messages.scrollTop = messages.scrollHeight;
+      });
     };
     sync();
     viewport.addEventListener('resize', sync);
@@ -68,6 +76,7 @@ export default function Chatbot({ open, onOpenChange }) {
     panel.addEventListener('focusin', sync);
     panel.addEventListener('focusout', sync);
     return () => {
+      cancelAnimationFrame(scrollFrame);
       viewport.removeEventListener('resize', sync);
       viewport.removeEventListener('scroll', sync);
       window.removeEventListener('resize', sync);
@@ -91,7 +100,10 @@ export default function Chatbot({ open, onOpenChange }) {
   useEffect(() => {
     const el = messagesRef.current;
     el.scrollTop = el.scrollHeight;
-  }, [messages]);
+    const observer = new ResizeObserver(() => { el.scrollTop = el.scrollHeight; });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [messages, open]);
 
   useEffect(() => {
     const onKey = (e) => {

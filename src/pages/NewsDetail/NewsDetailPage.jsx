@@ -39,7 +39,6 @@ export default function NewsDetailPage() {
               </p>
             )}
             {story.coverImage || story.gallery?.length ? <StoryGallery key={story.id} images={[story.coverImage, ...(story.gallery ?? [])].filter(Boolean)} /> : <div className="story-art" aria-hidden="true">{story.number}</div>}
-            <p>{story.summary[lang]}</p>
             <h2>{t('Ажлын тухай', 'About this initiative')}</h2>
             {(story.body?.[lang] ??
               t(
@@ -90,7 +89,8 @@ function StoryGallery({ images }) {
           }
         }}>
         {images.map((image, index) => <figure className="story-carousel-slide" key={image.src} role="group" aria-roledescription={t('Зураг', 'Slide')} aria-label={`${index + 1} / ${images.length}`}>
-          <ContentImage image={image} sizes="(max-width: 640px) calc(100vw - 40px), 640px" loading={index === 0 ? 'eager' : 'lazy'} />
+          <ContentImage className="story-carousel-backdrop" image={image} sizes="(max-width: 640px) calc(100vw - 40px), 640px" loading={index === 0 ? 'eager' : 'lazy'} decorative />
+          <ContentImage className="story-carousel-photo" image={image} sizes="(max-width: 640px) calc(100vw - 40px), 640px" loading={index === 0 ? 'eager' : 'lazy'} />
         </figure>)}
       </div>
       {multiple && <>
