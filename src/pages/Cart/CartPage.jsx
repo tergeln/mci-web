@@ -8,7 +8,7 @@ import { createCourseOrder, reportBankTransfer, startQPay } from '../../api/comm
 import useApi from '../../hooks/useApi';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import ContentImage from '../../components/ContentImage/ContentImage';
-import { COURSE_PRICE } from '../../data/courseAccess';
+import { cartTotal, hasCoursePrice } from '../../data/coursePricing';
 import './cart.css';
 
 const statusLabel = (status, t) => ({
@@ -35,9 +35,10 @@ export default function CartPage() {
     const timer = window.setInterval(() => { if (document.visibilityState === 'visible') refresh(); }, 15000);
     return () => window.clearInterval(timer);
   }, [active?.id, active?.status, refresh]);
-  const items = (catalog || []).filter((course) => cart.includes(course.id)).map((course) => ({ ...course, price: Number.isFinite(course.price) && course.price > 0 ? course.price : COURSE_PRICE }));
-  const amountKnown = items.every((course) => Number.isFinite(course.price) && course.price > 0);
-  const money = (amount) => `${new Intl.NumberFormat('mn-MN').format(Number.isFinite(amount) ? amount : 0)}₮`;
+  const items = (catalog || []).filter((course) => cart.includes(course.id));
+  const total = cartTotal(items);
+  const amountKnown = total !== null;
+  const money = (amount) => hasCoursePrice(amount) ? `${new Intl.NumberFormat('mn-MN').format(amount)}₮` : t('Үнэ баталгаажихыг хүлээж байна', 'Price to be confirmed');
   useDocumentTitle(t('Миний сагс — Magic Code AI', 'My cart — Magic Code AI'), { noindex: true });
 
   async function run(action) {
@@ -88,7 +89,7 @@ export default function CartPage() {
         </article>)}
         <Link className="text-link" to="/courses">{t('Сургалт нэмж сонгох →', 'Explore more courses →')}</Link>
       </section>
-      <aside className="cart-panel cart-summary"><h2>{t('Захиалгын дүн', 'Summary')}</h2><p className="cart-access-note">{t('Сургалт бүр 3 сарын эрхтэй.', 'Each course includes 3 months of access.')}</p><div className="cart-summary-count"><span>{t('Сургалтын тоо', 'Courses')}</span><span>{items.length}</span></div><div className="cart-summary-total"><span>{t('Нийт төлөх', 'Total')}</span><strong>{amountKnown ? money(items.reduce((sum, course) => sum + course.price, 0)) : money(null)}</strong></div>
+      <aside className="cart-panel cart-summary"><h2>{t('Захиалгын дүн', 'Summary')}</h2><p className="cart-access-note">{t('Сургалт бүр 3 сарын эрхтэй.', 'Each course includes 3 months of access.')}</p><div className="cart-summary-count"><span>{t('Сургалтын тоо', 'Courses')}</span><span>{items.length}</span></div><div className="cart-summary-total"><span>{t('Нийт төлөх', 'Total')}</span><strong>{amountKnown ? money(total) : money(null)}</strong></div>
         {!user && <p>{t('Төлбөр рүү орохын өмнө нэвтрэх эсвэл бүртгүүлэх шаардлагатай.', 'Log in or sign up before checkout.')}</p>}
         {user ? <button className="btn" disabled={busy || loading || catalogLoading || !items.length || !!loadError || !!catalogError || items.length !== cart.length} onClick={checkout}>{busy ? t('Бэлдэж байна…', 'Preparing…') : t('Худалдаж авах', 'Checkout')}</button> : <><Link className={`btn${!items.length ? ' cart-disabled' : ''}`} to="/login" state={{ from: '/cart' }}>{t('Нэвтэрч үргэлжлүүлэх', 'Log in to continue')}</Link><Link className="text-link" to="/register" state={{ from: '/cart' }}>{t('Бүртгүүлэх', 'Create an account')}</Link></>}
       </aside>
