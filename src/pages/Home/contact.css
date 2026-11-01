@@ -27,3 +27,5 @@ main section#contact .contact-heading{font:500 14px/1.5 var(--font-body);letter-
 main section#contact .contact-email-group .contact-heading{margin:0 0 6px;font-size:12px}
 #contact .contact-email-group{min-width:0}
 #contact .contact-facebook svg{flex-shrink:0}
+
+main section#contact .contact-email-group .contact-heading{text-align:center}
