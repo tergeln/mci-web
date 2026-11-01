@@ -158,18 +158,6 @@ export default function ParticleUniverse({ onResult }) {
     window.addEventListener('resize', size);
     size();
 
-    const logoSlot = document.querySelector('#home .hero-particle-space');
-    // Cache document coordinates when layout changes; scrolling only changes the viewport offset.
-    let logoRegion = null;
-    const slotObserver = new ResizeObserver(() => {
-      if (!logoSlot) return;
-      const rect = logoSlot.getBoundingClientRect();
-      logoRegion = { left: rect.left + window.scrollX, top: rect.top + window.scrollY, width: rect.width, height: rect.height };
-    });
-    if (logoSlot) {
-      slotObserver.observe(logoSlot);
-      slotObserver.observe(logoSlot.parentElement);
-    }
     let ti = 0;
     let go = false;
     let mx = 0;
@@ -217,11 +205,8 @@ export default function ParticleUniverse({ onResult }) {
       points.rotation.y += (targetRotY - points.rotation.y) * 0.05;
       points.rotation.x += (targetRotX - points.rotation.x) * 0.04;
       camera.position.z = compact ? 9 : 9 - Math.min(Math.abs(vel) * 0.05, 2);
-      const slot = compact && ti === 0 && document.documentElement.classList.contains('hero-in-view') && logoRegion
-        ? { ...logoRegion, left: logoRegion.left - window.scrollX, top: logoRegion.top - window.scrollY } : null;
-      const region = slot && slot.width > 0 && slot.height > 0 ? slot : undefined;
       const layout = particleLayout({ width: window.innerWidth, height: window.innerHeight,
-        fov: camera.fov, distance: compact ? camera.position.z : 9, shape: ti, bounds: shapeBounds[ti], region });
+        fov: camera.fov, distance: compact ? camera.position.z : 9, shape: ti, bounds: shapeBounds[ti] });
       points.scale.setScalar(layout.scale);
       // Resize immediately into the compact viewport; desktop movement remains eased.
       if (compact) points.position.set(layout.x, layout.y, 0);
@@ -238,7 +223,6 @@ export default function ParticleUniverse({ onResult }) {
       cancelAnimationFrame(raf);
       clearTimeout(startTimer);
       observer.disconnect();
-      slotObserver.disconnect();
       window.removeEventListener('resize', size);
       window.removeEventListener('pointermove', onPointer);
       scene.remove(points);

@@ -1,19 +1,19 @@
 {
   "/assets/partners/hushkhan.png": {
     "src": "/assets/partners/hushkhan-96.webp",
-    "srcSet": "/assets/partners/hushkhan-96.webp 96w, /assets/partners/hushkhan-192.webp 192w, /assets/partners/hushkhan-288.webp 288w"
+    "srcSet": "/assets/partners/hushkhan-96.webp 96w, /assets/partners/hushkhan-128.webp 128w, /assets/partners/hushkhan-192.webp 192w, /assets/partners/hushkhan-288.webp 288w"
   },
   "/assets/partners/num.png": {
     "src": "/assets/partners/num-96.webp",
-    "srcSet": "/assets/partners/num-96.webp 96w, /assets/partners/num-192.webp 192w, /assets/partners/num-288.webp 288w"
+    "srcSet": "/assets/partners/num-96.webp 96w, /assets/partners/num-128.webp 128w, /assets/partners/num-192.webp 192w, /assets/partners/num-288.webp 288w"
   },
   "/assets/partners/young-women-entrepreneurs.png": {
     "src": "/assets/partners/young-women-entrepreneurs-96.webp",
-    "srcSet": "/assets/partners/young-women-entrepreneurs-96.webp 96w, /assets/partners/young-women-entrepreneurs-192.webp 192w, /assets/partners/young-women-entrepreneurs-288.webp 288w"
+    "srcSet": "/assets/partners/young-women-entrepreneurs-96.webp 96w, /assets/partners/young-women-entrepreneurs-128.webp 128w, /assets/partners/young-women-entrepreneurs-192.webp 192w, /assets/partners/young-women-entrepreneurs-288.webp 288w"
   },
   "/assets/chatbot-owl.png": {
     "src": "/assets/chatbot-owl-96.webp",
-    "srcSet": "/assets/chatbot-owl-96.webp 96w, /assets/chatbot-owl-192.webp 192w"
+    "srcSet": "/assets/chatbot-owl-96.webp 96w, /assets/chatbot-owl-128.webp 128w, /assets/chatbot-owl-160.webp 160w, /assets/chatbot-owl-192.webp 192w"
   },
   "/assets/about/director-enkhtuya.jpg": {
     "src": "/assets/about/director-enkhtuya-200.webp",

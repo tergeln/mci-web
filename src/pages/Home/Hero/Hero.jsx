@@ -45,7 +45,7 @@ export default function Hero() {
               en="Build skills in the technologies of tomorrow and find web development solutions for your business."
             />
           </p>
-          <div className="hero-particle-space" aria-hidden="true" />
+          <div className="hero-particle-space" aria-hidden="true"><img className="hero-mobile-mark" src="/assets/mobile-particle-logo.svg" width="400" height="250" alt="" /></div>
           <div className="actions">
             <a className="btn" href="#courses"><Tr mn="Сургалт үзэх" en="Explore courses" /></a>
             <a className="btn secondary" href="#activities"><Tr mn="Вэб захиалах" en="Order a website" /></a>

@@ -480,6 +480,9 @@ footer{background:transparent;border-top:0;padding-top:12px}
 
 /* Give the particle logo its own clear space on compact screens. */
 .hero-particle-space{display:none}
+.hero-mobile-mark{display:block;max-width:100%;width:400px;height:100%;object-fit:contain;margin:auto;animation:mobile-mark-sway 6s ease-in-out infinite}
+@keyframes mobile-mark-sway{50%{transform:translateY(-5px) rotate(1deg)}}
+@media(prefers-reduced-motion:reduce){#home .hero-particle-space{display:block;height:250px}.hero-mobile-mark{animation:none}}
 @media(max-width:900px){
   #home .hero-particle-space{display:block;width:100%;height:clamp(180px,30svh,280px);flex:0 0 auto}
   .hero-in-view.original-universe-ready #pg,.hero-in-view #universe{opacity:1;-webkit-mask-image:none;mask-image:none}

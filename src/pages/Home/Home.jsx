@@ -17,10 +17,12 @@ import Activities from './Activities';
 import Contact from './Contact';
 import LiveStrip from './LiveStrip';
 import '../../styles/home.css';
+import useLightweightVisuals from '../../hooks/useLightweightVisuals';
 
 const ParticleUniverse = lazy(() => import('../../components/canvas/ParticleUniverse'));
 
 export default function Home() {
+  const lightweight = useLightweightVisuals();
   const { t } = useLang();
   const [searchParams] = useSearchParams();
   const [glReady, setGlReady] = useState(null);
@@ -40,10 +42,10 @@ export default function Home() {
 
   return (
     <>
-      <Universe2D active={glReady === false} />
-      <Suspense fallback={null}>
+      <Universe2D active={!lightweight && glReady === false} />
+      {!lightweight && <Suspense fallback={null}>
         <ParticleUniverse onResult={setGlReady} />
-      </Suspense>
+      </Suspense>}
       <Loader />
       <ScrollProgress />
       <CursorGlow />
