@@ -8,6 +8,7 @@ import { createCourseOrder, reportBankTransfer, startQPay } from '../../api/comm
 import useApi from '../../hooks/useApi';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import ContentImage from '../../components/ContentImage/ContentImage';
+import { COURSE_PRICE } from '../../data/courseAccess';
 import './cart.css';
 
 const statusLabel = (status, t) => ({
@@ -34,9 +35,9 @@ export default function CartPage() {
     const timer = window.setInterval(() => { if (document.visibilityState === 'visible') refresh(); }, 15000);
     return () => window.clearInterval(timer);
   }, [active?.id, active?.status, refresh]);
-  const items = (catalog || []).filter((course) => cart.includes(course.id));
+  const items = (catalog || []).filter((course) => cart.includes(course.id)).map((course) => ({ ...course, price: Number.isFinite(course.price) && course.price > 0 ? course.price : COURSE_PRICE }));
   const amountKnown = items.every((course) => Number.isFinite(course.price) && course.price > 0);
-  const money = (amount) => Number.isFinite(amount) ? `${new Intl.NumberFormat('mn-MN').format(amount)}₮` : t('Үнэ баталгаажуулах', 'Price to be confirmed');
+  const money = (amount) => `${new Intl.NumberFormat('mn-MN').format(Number.isFinite(amount) ? amount : 0)}₮`;
   useDocumentTitle(t('Миний сагс — Magic Code AI', 'My cart — Magic Code AI'), { noindex: true });
 
   async function run(action) {
@@ -52,7 +53,6 @@ export default function CartPage() {
   });
   return <main className="cart-page wrap">
     <div className="eyebrow">MAGIC CODE · {t('МИНИЙ САГС', 'MY CART')}</div>
-    <h1>{t('Суралцах дараагийн алхам.', 'Your next step in learning.')}</h1>
     {error && <p className="form-error" role="alert">{error}</p>}
     {(loadError || catalogError) && <p role="alert">{t('Мэдээлэл авч чадсангүй.', 'Could not load information.')} <button className="text-link" onClick={() => { refresh(); reload(); }}>{t('Дахин оролдох', 'Retry')}</button></p>}
     {active ? <section className="cart-checkout">
@@ -84,7 +84,7 @@ export default function CartPage() {
         {!cart.length && <p>{t('Сагс хоосон байна. Суралцах сургалтаа сонгоорой.', 'Your cart is empty. Choose a course to begin.')}</p>}
         {items.map((course) => <article className="cart-item" key={course.id}>
           {course.image && <ContentImage image={course.image} sizes="140px" />}
-          <div><h3>{course.title[lang]}</h3><p>{money(course.price)} · {t('3 сарын эрх', '3 months access')}</p><button className="text-link" onClick={() => { try { removeCourse(course.id); } catch { setError(t('Сагс хадгалж чадсангүй.', 'Could not save your cart.')); } }}>{t('Хасах', 'Remove')}</button></div>
+          <div><h3>{course.title[lang]}</h3><p>{money(course.price)} · {t('3 сарын эрх', '3 months access')}</p><button className="text-link cart-remove" onClick={() => { try { removeCourse(course.id); } catch { setError(t('Сагс хадгалж чадсангүй.', 'Could not save your cart.')); } }}>{t('Хасах', 'Remove')}</button></div>
         </article>)}
         <Link className="text-link" to="/courses">{t('Сургалт нэмж сонгох →', 'Explore more courses →')}</Link>
       </section>
