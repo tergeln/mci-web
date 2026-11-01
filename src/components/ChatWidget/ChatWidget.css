@@ -128,7 +128,7 @@
 /* шувуу нуугдсан тул панел түүний байрыг эзэлнэ */
 .cw-open .cw-panel {
   bottom: 0;
-  height: min(640px, calc(100dvh - 120px));
+  height: min(450px, calc(100dvh - 120px));
 }
 @keyframes cw-reveal {
   from { opacity: 0; transform: translateY(12px) scale(0.97); }
