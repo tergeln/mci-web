@@ -5,6 +5,7 @@ import './styles/subpage.css';
 import { Route, Routes } from 'react-router-dom';
 import MainNavbar from './components/MainNavbar/MainNavbar';
 import CartDialog from './components/dialogs/CartDialog';
+import ChatWidget from './components/ChatWidget/ChatWidget';
 import ScrollManager from './components/ScrollManager/ScrollManager';
 
 const LoginPage = lazy(() => import('./pages/Account/LoginPage'));
@@ -36,6 +37,7 @@ export default function App() {
       </Suspense>
       <CartDialog request={cartRequest} />
       </AuthProvider>
+      <ChatWidget />
     </>
   );
 }
