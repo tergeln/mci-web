@@ -24,6 +24,8 @@ const ParticleUniverse = lazy(() => import('../../components/canvas/ParticleUniv
 export default function Home({ onIntroComplete }) {
   const lightweight = useLightweightVisuals();
   const mobile = useLightweightVisuals('(max-width:900px)');
+  const reducedMotion = useLightweightVisuals('(prefers-reduced-motion:reduce)');
+  const particlesEnabled = mobile ? !reducedMotion : !lightweight;
   const { t } = useLang();
   const [searchParams] = useSearchParams();
   const [glReady, setGlReady] = useState(null);
@@ -44,8 +46,8 @@ export default function Home({ onIntroComplete }) {
 
   return (
     <>
-      <Universe2D active={!lightweight && glReady === false} />
-      {!lightweight && introFinished && <Suspense fallback={null}>
+      <Universe2D active={particlesEnabled && glReady === false} />
+      {particlesEnabled && introFinished && <Suspense fallback={null}>
         <ParticleUniverse onResult={setGlReady} />
       </Suspense>}
 

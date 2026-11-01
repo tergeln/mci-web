@@ -206,7 +206,8 @@ export default function ParticleUniverse({ onResult }) {
       points.rotation.x += (targetRotX - points.rotation.x) * 0.04;
       camera.position.z = compact ? 9 : 9 - Math.min(Math.abs(vel) * 0.05, 2);
       const layout = particleLayout({ width: window.innerWidth, height: window.innerHeight,
-        fov: camera.fov, distance: compact ? camera.position.z : 9, shape: ti, bounds: shapeBounds[ti] });
+        fov: camera.fov, distance: compact ? camera.position.z : 9, shape: ti, bounds: shapeBounds[ti],
+        region: compact && ti === 0 ? document.querySelector('.hero-particle-space')?.getBoundingClientRect() : undefined });
       points.scale.setScalar(layout.scale);
       // Resize immediately into the compact viewport; desktop movement remains eased.
       if (compact) points.position.set(layout.x, layout.y, 0);
