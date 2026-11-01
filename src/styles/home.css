@@ -469,6 +469,8 @@ footer{background:transparent;border-top:0;padding-top:12px}
   .about-director-facts li{font-size:13px}
 }
 
+/* Match the course section headline typography. */
+#home .hero h1{font-family:var(--font-display);font-weight:400;font-style:normal;font-size:clamp(40px,6vw,84px);line-height:1.04;letter-spacing:-1px}
 #courses .card-bottom{justify-content:flex-end}
 #courses .card-bottom button{margin-left:auto;align-self:flex-end}
 
