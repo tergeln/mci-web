@@ -8,7 +8,7 @@ import { USE_MOCK, errorMessage } from '../../api/client';
 
 const PAYMENT_METHODS = ['qpay', 'bank'];
 
-// request = { course, id } – id нэмэгдэх бүрт dialog шинээр нээгдэнэ. `course` нь homeCourses-ийн индекс.
+// request.course accepts a home course index or a catalog course object.
 // `open` курс бүртгэл төлбөр, бусад нь хүлээлгийн жагсаалт. Эцсийн шийдвэрийг API-ийн status гаргана.
 export default function EnrollDialog({ request, onOpenClassroom }) {
   const { lang, t } = useLang();
@@ -89,9 +89,6 @@ export default function EnrollDialog({ request, onOpenClassroom }) {
         </h3>
         <button className="icon-btn" aria-label={t('Хаах', 'Close')} onClick={() => dialogRef.current.close()}>×</button>
       </div>
-      <div className="progress" id="progress">
-        {isCourse ? t('01 Бүртгэл 02 Төлбөр', '01 Register 02 Payment') : t('Сонирхлоо илэрхийлэх · Туршилт', 'Register your interest · Demo')}
-      </div>
       <div id="enrollStep" hidden={step !== 'form'}>
         <p className="muted" id="chosenCourse">{name}</p>
         <form id="enrollForm" onSubmit={onSubmit}>
@@ -154,7 +151,7 @@ export default function EnrollDialog({ request, onOpenClassroom }) {
             className="btn full"
             onClick={() => {
               dialogRef.current.close();
-              onOpenClassroom();
+              onOpenClassroom(course);
             }}
           >
             <Tr mn="Хичээл үзэх ▷" en="Watch lessons ▷" />

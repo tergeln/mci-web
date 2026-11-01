@@ -2,23 +2,28 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLang } from '../../context/LanguageContext';
 import { readStorage, writeStorage } from '../../hooks/useLocalStorage';
-import { courseLessons } from '../../data/lessons';
+import { learningCourses, getLearningCourse, lessonStorageKeys } from '../../data/lessons';
 
 export function LearningProgress({ onWatch }) {
   const { user } = useAuth();
   const { t } = useLang();
+  const [courseId, setCourseId] = useState('data-analysis');
+  const course = getLearningCourse(courseId);
+  const courseLessons = course.lessons;
+  const { progress: progressKey } = lessonStorageKeys(course.id, user.id);
   let completed = [];
   try {
-    const saved = JSON.parse(readStorage(`mc-lessons-v1-${user.id}`, '[]'));
+    const saved = JSON.parse(readStorage(progressKey, '[]'));
     if (Array.isArray(saved)) completed = courseLessons.filter((lesson) => saved.includes(lesson.id));
   } catch { /* Start with empty progress if saved data cannot be read. */ }
   return <section className="account-card account-section">
     <div className="eyebrow">03 · PROGRESS</div>
     <h2>{t('Суралцах явц', 'Learning progress')}</h2>
+    <label>{t('Сургалт', 'Course')}<select value={courseId} onChange={(event) => setCourseId(event.target.value)}>{learningCourses.map((item) => <option key={item.id} value={item.id}>{t(item.title.mn, item.title.en)}</option>)}</select></label>
     <p>{completed.length} / {courseLessons.length} {t('хичээл дууссан', 'lessons completed')} · {Math.round(completed.length / courseLessons.length * 100)}%</p>
     <progress className="account-progress" value={completed.length} max={courseLessons.length} aria-label={t('Хичээлийн явц', 'Lesson progress')} />
     {courseLessons.map((lesson, index) => <div className="account-row" key={lesson.id}><span>{completed.some((item) => item.id === lesson.id) ? '✓' : String(index + 1).padStart(2, '0')} · {t(lesson.mn, lesson.en)}</span></div>)}
-    <button className="btn" onClick={onWatch}>{t('Үргэлжлүүлэн сурах →', 'Continue learning →')}</button>
+    <button className="btn" onClick={() => onWatch(course.id)}>{t('Үргэлжлүүлэн сурах →', 'Continue learning →')}</button>
   </section>;
 }
 

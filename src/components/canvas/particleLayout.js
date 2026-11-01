@@ -1,10 +1,20 @@
 const X_OFFSET = [2.7, -2.7, 2.5, 0, 2.6, -2.6];
 
-export function particleLayout({ width, height, fov, distance, shape, bounds }) {
+export function particleLayout({ width, height, fov, distance, shape, bounds, region }) {
   const compact = width <= 900;
   const viewHeight = 2 * Math.tan(fov * Math.PI / 360) * distance;
   const viewWidth = viewHeight * width / height;
   if (!compact) return { compact, scale: 1, x: shape === 0 ? viewWidth / 4 : X_OFFSET[shape], y: 0 };
+
+  if (shape === 0 && region?.width > 0 && region?.height > 0) {
+    return {
+      compact,
+      scale: Math.min(1, viewWidth * (region.width / width) * .88 / bounds.width,
+        viewHeight * (region.height / height) * .8 / bounds.height),
+      x: ((region.left + region.width / 2) / width - .5) * viewWidth,
+      y: (.5 - (region.top + region.height / 2) / height) * viewHeight,
+    };
+  }
 
   // Fit the entire logo; rotating shapes use their bounding sphere for safe margins.
   const modelWidth = shape === 0 ? bounds.width : bounds.diameter;

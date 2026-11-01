@@ -4,9 +4,10 @@ import Tr from '../Tr/Tr';
 import { useLang } from '../../context/LanguageContext';
 import closeOnBackdrop from '../../hooks/dialogBackdrop';
 import { readStorage, writeStorage } from '../../hooks/useLocalStorage';
-import { courseLessons } from '../../data/lessons';
+import { getLearningCourse, lessonStorageKeys } from '../../data/lessons';
+import './classroom-dialog.css';
 
-function loadCompleted(key) {
+function loadCompleted(key, courseLessons) {
   try {
     const saved = JSON.parse(readStorage(key, '[]'));
     if (Array.isArray(saved)) return [...new Set(saved.filter((id) => courseLessons.some((l) => l.id === id)))];
@@ -16,27 +17,27 @@ function loadCompleted(key) {
   return [];
 }
 
-function loadLast(key) {
+function loadLast(key, courseLessons) {
   const last = Number(readStorage(key, ''));
   return Number.isInteger(last) && last >= 0 && last < courseLessons.length ? last : 0;
 }
 
 // request – id нэмэгдэх бүрт dialog нээгдэж, видеог ачаална.
 export default function ClassroomDialog({ request, onProgress }) {
-  const { t } = useLang();
   const { user } = useAuth();
-  const progressKey = `mc-lessons-v1-${user?.id || 'guest'}`;
-  const lastKey = `mc-last-lesson-${user?.id || 'guest'}`;
-  const dialogRef = useRef(null);
-  const [current, setCurrent] = useState(() => loadLast(lastKey));
-  const [completed, setCompleted] = useState(() => loadCompleted(progressKey));
-  const [videoId, setVideoId] = useState(null);
+  const course = getLearningCourse(request?.courseId ?? request?.course?.id);
+  if (!course) return null;
+  return <CourseClassroom key={`${user?.id || 'guest'}-${course.id}`} request={request} course={course} userId={user?.id || 'guest'} onProgress={onProgress} />;
+}
 
-  useEffect(() => {
-    setCurrent(loadLast(lastKey));
-    setCompleted(loadCompleted(progressKey));
-    setVideoId(null);
-  }, [lastKey, progressKey]);
+function CourseClassroom({ request, course, userId, onProgress }) {
+  const { t } = useLang();
+  const courseLessons = course.lessons;
+  const { progress: progressKey, last: lastKey } = lessonStorageKeys(course.id, userId);
+  const dialogRef = useRef(null);
+  const [current, setCurrent] = useState(() => loadLast(lastKey, courseLessons));
+  const [completed, setCompleted] = useState(() => loadCompleted(progressKey, courseLessons));
+  const [videoId, setVideoId] = useState(null);
 
   const lesson = courseLessons[current];
 
@@ -66,7 +67,7 @@ export default function ClassroomDialog({ request, onProgress }) {
       <div className="classroom-top">
         <div>
           <small>MAGIC CODE · LEARNING SPACE</small>
-          <h3><Tr mn="Өгөгдлийн шинжилгээ ба Power BI" en="Data Analysis & Power BI" /></h3>
+          <h3>{t(course.title.mn, course.title.en)}</h3>
         </div>
         <button type="button" className="icon-btn" id="closeClassroom" aria-label="Close lessons" onClick={() => dialogRef.current.close()}>×</button>
       </div>
@@ -75,7 +76,7 @@ export default function ClassroomDialog({ request, onProgress }) {
           <div className="lesson-video">
             <iframe
               id="lessonPlayer"
-              title="Course video"
+              title={t(lesson.mn, lesson.en)}
               src={videoId ? `https://www.youtube-nocookie.com/embed/${videoId}?rel=0` : undefined}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
@@ -110,7 +111,7 @@ export default function ClassroomDialog({ request, onProgress }) {
             {t('Дууссан: ', 'Completed: ')}
             {completed.length} / {courseLessons.length}
           </p>
-          <progress id="lessonProgressBar" value={completed.length} max={4} />
+          <progress id="lessonProgressBar" value={completed.length} max={courseLessons.length} />
           <div id="lessonList">
             {courseLessons.map((l, i) => (
               <button key={l.id} type="button" className="lesson-choice" aria-current={i === current ? 'true' : 'false'} onClick={() => play(i)}>

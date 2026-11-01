@@ -10,6 +10,7 @@ import useDocumentTitle from '../../hooks/useDocumentTitle';
 import WorkspaceHeading from './WorkspaceHeading';
 import WorkspaceTabs from './WorkspaceTabs';
 import './account.css';
+import { learningCourses } from '../../data/lessons';
 
 const LEARNER_TABS = [
   { id: 'overview', mn: 'Тойм', en: 'Overview' },
@@ -43,7 +44,7 @@ export default function AccountPage() {
 
   const visible = records.filter((record) => record.userId === user.id);
   const filtered = visible.filter((record) => (typeFilter === 'all' || record.type === typeFilter) && (statusFilter === 'all' || record.status === statusFilter) && `${record.id} ${record.items.join(' ')}`.toLowerCase().includes(query.toLowerCase()));
-  const watch = () => setRequest((previous) => ({ id: (previous?.id || 0) + 1 }));
+  const watch = (courseId = 'data-analysis') => setRequest((previous) => ({ courseId, id: (previous?.id || 0) + 1 }));
   const enrolled = visible.some((record) => record.type === 'course' && record.status !== 'cancelled');
   const statusName = (status) => status === 'done' ? t('Шийдвэрлэсэн', 'Completed') : status === 'cancelled' ? t('Цуцалсан', 'Cancelled') : t('Шинэ', 'New');
   function openTab(id) {
@@ -76,10 +77,13 @@ export default function AccountPage() {
     </LearnerPanel>
 
     <LearnerPanel id="learning" activeTab={activeTab}>
-      <section className="account-card account-section"><div className="eyebrow">01 · LEARN</div><h2>{t('Миний сургалт', 'My learning')}</h2><h3>{t('Өгөгдлийн шинжилгээ ба Power BI', 'Data Analysis & Power BI')}</h3><p>{t('4 нээлттэй жишээ хичээл · SQL, Python, Power BI', '4 public preview lessons · SQL, Python, Power BI')}</p>
-        <div className="account-actions"><button className="btn" onClick={watch}>{t('Хичээл үзэх ▶', 'Watch lessons ▶')}</button><button className="btn secondary" disabled={enrolled} onClick={() => saveRecord('course', ['Data Analysis & Power BI'], t('Demo сургалтын бүртгэл амжилттай.', 'Demo enrollment created.'))}>{enrolled ? t('✓ Бүртгэгдсэн', '✓ Enrolled') : t('Demo элсэлт', 'Demo enrollment')}</button></div>
-        <Link className="text-link" to="/courses">{t('Бүх сургалт үзэх →', 'Explore all courses →')}</Link>
-      </section>
+      {learningCourses.map((course) => <section className="account-card account-section" key={course.id}>
+        <div className="eyebrow">MAGIC CODE · LEARNING SPACE</div>
+        <h2>{t(course.title.mn, course.title.en)}</h2>
+        <p>{course.lessons.length} {t('нээлттэй жишээ видео хичээл', 'public preview video lessons')}</p>
+        <div className="account-actions"><button className="btn" onClick={() => watch(course.id)}>{t('Хичээл үзэх ▶', 'Watch lessons ▶')}</button></div>
+      </section>)}
+      <Link className="text-link" to="/courses">{t('Бүх сургалт үзэх →', 'Explore all courses →')}</Link>
     </LearnerPanel>
 
     <LearnerPanel id="products" activeTab={activeTab}>

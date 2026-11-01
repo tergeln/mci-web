@@ -40,3 +40,23 @@ test('resizing back to desktop restores full scale and the right-hand compositio
   assert.equal(desktop.scale, 1);
   assert.ok(desktop.x > 0);
 });
+
+
+test('compact logo fills the dedicated hero slot without covering the copy or actions', () => {
+  for (const [width, height] of [[320, 568], [390, 844], [768, 1024]]) {
+    const region = { left: 20, top: height * .4, width: width - 40, height: height * .3 };
+    const layout = particleLayout({ width, height, fov: 50, distance: 9, shape: 0, bounds, region });
+    const camera = new THREE.PerspectiveCamera(50, width / height, .1, 100);
+    camera.position.z = 9;
+    camera.updateMatrixWorld();
+    for (const yaw of [-.46, .46]) for (const vertex of logo) {
+      const projected = vertex.clone().multiplyScalar(layout.scale)
+        .applyEuler(new THREE.Euler(.125, yaw, 0))
+        .add(new THREE.Vector3(layout.x, layout.y, 0)).project(camera);
+      const x = (projected.x + 1) * width / 2;
+      const y = (1 - projected.y) * height / 2;
+      assert.ok(x >= region.left && x <= region.left + region.width);
+      assert.ok(y >= region.top && y <= region.top + region.height);
+    }
+  }
+});

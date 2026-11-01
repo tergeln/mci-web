@@ -3,12 +3,15 @@ import Tr from '../../../components/Tr/Tr';
 const partners = [
   { name: 'Хушхан брэнд', en: 'HUSHKHAN', logo: 'hushkhan' },
   { name: 'Монгол Улсын Их Сургууль', en: 'National University of Mongolia', logo: 'num' },
-  { name: 'БИД ББСБ', en: 'BID NBFI', logo: 'bid' },
-  { name: 'ХААН Банк', en: 'Khan Bank', logo: 'khan-bank' },
-  { name: 'Голомт Банк', en: 'Golomt Bank', logo: 'golomt' },
-  { name: 'Мэдээлэл технологийн үндэсний парк', en: 'IT Park Mongolia', logo: 'it-park' },
+  { name: 'БИД ББСБ', en: 'BID NBFI', logo: 'bid', active: false },
+  { name: 'ХААН Банк', en: 'Khan Bank', logo: 'khan-bank', active: false },
+  { name: 'Голомт Банк', en: 'Golomt Bank', logo: 'golomt', active: false },
+  { name: 'Мэдээлэл технологийн үндэсний парк', en: 'IT Park Mongolia', logo: 'it-park', active: false },
   { name: 'Монголын Залуу Бизнес Эрхлэгч Эмэгтэйчүүдийн Холбоо', en: 'Mongolian Young Women Entrepreneurs Association', logo: 'young-women-entrepreneurs' },
 ];
+
+// Keep temporarily hidden partners available for later reuse.
+const visiblePartners = partners.filter((partner) => partner.active !== false);
 
 export default function TechStrip() {
   return (
@@ -26,7 +29,7 @@ export default function TechStrip() {
         <div className="tech-flow-track">
           {[0, 1].map((group) => (
             <div key={group} className="tech-flow-group" aria-hidden={group ? true : undefined}>
-              {partners.map((partner) => (
+              {visiblePartners.map((partner) => (
                 <div className="partner" key={partner.logo}>
                   <div className={`partner-logo partner-logo--${partner.logo}`}><img src={`/assets/partners/${partner.logo}.png`} alt="" width="72" height="72" /></div>
                   <span><Tr mn={partner.name} en={partner.en} /></span>

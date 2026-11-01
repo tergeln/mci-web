@@ -77,7 +77,7 @@ export default function CoursesPage() {
           </div>
         )}
       </main>
-      <EnrollDialog request={enrollRequest} onOpenClassroom={() => setClassroomRequest((previous) => ({ id: (previous?.id ?? 0) + 1 }))} />
+      <EnrollDialog request={enrollRequest} onOpenClassroom={(course) => setClassroomRequest((previous) => ({ course, id: (previous?.id ?? 0) + 1 }))} />
       <ClassroomDialog request={classroomRequest} />
     </>
   );

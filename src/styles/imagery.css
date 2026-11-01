@@ -32,7 +32,7 @@
 .catalog-page .catalog-art.catalog-art--slide{position:relative;isolation:isolate;overflow:hidden;aspect-ratio:1200/664;height:auto;min-height:0;align-self:center;padding:0;background:#1c1c1c}
 #courses .course-art--slide>img,
 .catalog-page .catalog-art--slide>img{position:absolute;inset:0 auto auto 0;width:100%;height:auto;max-height:none;transform:none;object-fit:initial}
-#courses .card-body>p{width:100%;max-width:none;font-size:16px;line-height:1.7;text-align:left;text-justify:auto;margin-top:12px}
+#courses .card-body>p{width:100%;max-width:none;font-size:16px;line-height:1.7;text-align:justify;text-justify:inter-word;margin-top:12px}
 @media(max-width:640px){#courses .card-body>p{font-size:14px}}
 :root[data-theme=dark] #courses .course-art--slide,
 :root[data-theme=dark] .catalog-page .catalog-art--slide{background:#102b52}
@@ -41,3 +41,13 @@
 :root[data-theme=dark] #courses .course-art--slide::after,
 :root[data-theme=dark] .catalog-page .catalog-art--slide::after{content:'';position:absolute;inset:0;background:#0a2347;mix-blend-mode:screen;pointer-events:none}
 .catalog-page .catalog-art.catalog-art--slide{width:100%;align-self:stretch}
+
+/* Justify course descriptions and the director biography at every screen size. */
+#courses .card-body>p,
+.catalog-page .catalog-body>p,
+#about .about-grid .about-copy p{
+  text-align:justify;
+  text-align-last:left;
+  text-justify:inter-word;
+  word-spacing:normal;
+}

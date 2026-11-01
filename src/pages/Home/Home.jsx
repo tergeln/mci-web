@@ -34,7 +34,7 @@ export default function Home() {
   useDocumentTitle(t('Magic Code AI — Суралц. Бүтээ. Хөгж.', 'Magic Code AI — Learn. Build. Become.'));
 
   const openCourse = useCallback((course) => setEnrollRequest((r) => ({ course, id: (r ? r.id : 0) + 1 })), []);
-  const openClassroom = useCallback(() => setClassroomRequest((r) => ({ id: (r ? r.id : 0) + 1 })), []);
+  const openClassroom = useCallback((course) => setClassroomRequest((r) => ({ course, id: (r ? r.id : 0) + 1 })), []);
 
   // `/?course=data-analysis` – каталог хуудсаас орж ирэхэд тухайн курсийн dialog-ийг шууд нээнэ.
   // Хуучин `/?course=0|1|2` холбоосууд ч ажиллана.
