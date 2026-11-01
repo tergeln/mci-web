@@ -17,7 +17,7 @@
   --cw-input-bg: #ffffff;
   --cw-input-border: #d3dae5;
   --cw-send-bg: var(--gold-button-gradient, linear-gradient(135deg, #f8e6a3, #efd16e 55%, #e4be50));
-  --cw-send-text: #231d0e;
+  --cw-send-text: var(--gold-button-text, #231d0e);
   --cw-error-bg: #fdecec;
   --cw-error-text: #9b1c1c;
   position: fixed;
@@ -128,7 +128,7 @@
 /* шувуу нуугдсан тул панел түүний байрыг эзэлнэ */
 .cw-open .cw-panel {
   bottom: 0;
-  height: min(640px, calc(100dvh - 120px));
+  height: min(450px, calc(100dvh - 120px));
 }
 @keyframes cw-reveal {
   from { opacity: 0; transform: translateY(12px) scale(0.97); }

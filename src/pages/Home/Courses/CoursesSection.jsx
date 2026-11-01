@@ -28,10 +28,10 @@ export default function CoursesSection({ onSelectCourse }) {
         <ApiState loading={loading} error={error} onRetry={reload} />
         <div className="courses">
           {homeCourses.map((course, i) => (
-            <CourseCard key={course.title.en} course={{ ...course, image: course.image ?? courses?.find((item) => item.id === course.id)?.image }} index={i} onSelect={() => onSelectCourse(i)} />
+            <CourseCard key={course.title.en} course={{ ...course, price: courses?.find((item) => item.id === course.id)?.price, image: course.image ?? courses?.find((item) => item.id === course.id)?.image }} index={i} onSelect={() => onSelectCourse(i)} />
           ))}
-          <Link className="btn secondary courses-more" to="/courses">
-            <Tr mn="Цааш үзэх" en="See all courses" />
+          <Link className="text-link courses-more" to="/courses">
+            <Tr mn="Цааш үзэх" en="See all courses" /><span aria-hidden="true">→</span>
           </Link>
         </div>
       </div>
