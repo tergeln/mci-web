@@ -45,7 +45,7 @@ export default function CartPage() {
     const orderId = active.id;
     const timer = window.setInterval(() => {
       if (document.visibilityState !== 'visible') return;
-      Promise.resolve(qpay ? checkQPay(orderId) : null).catch(() => {}).finally(refresh);
+      Promise.resolve(qpay ? checkQPay(orderId) : null).catch(() => {}).finally(() => refresh());
     }, 15000);
     return () => window.clearInterval(timer);
   }, [active?.id, active?.status, qpay, refresh]);
@@ -94,7 +94,7 @@ export default function CartPage() {
           </div>}
           <p className="cart-note">{t('Төлбөр баталгаажсаны дараа хичээл үзэх эрх автоматаар нээгдэнэ. Шилжүүлсэн тухай мэдэгдэх нь төлбөр баталгаажсан гэсэн үг биш.', 'Lesson access unlocks after payment confirmation. Reporting a transfer does not confirm payment.')}</p>
         </>}
-        <button className="btn secondary" disabled={loading || busy} onClick={refresh}>{t('Төлбөрийн төлөв шалгах', 'Check payment status')}</button>
+        <button className="btn secondary" disabled={loading || busy} onClick={() => refresh()}>{t('Төлбөрийн төлөв шалгах', 'Check payment status')}</button>
       </div>
     </section> : <div className="cart-layout">
       <section className="cart-panel">
