@@ -7,6 +7,7 @@ import './pages/Account/account.css';
 import './styles/subpage.css';
 import { Route, Routes } from 'react-router-dom';
 import MainNavbar from './components/MainNavbar/MainNavbar';
+import ChatWidget from './components/ChatWidget/ChatWidget';
 import ScrollManager from './components/ScrollManager/ScrollManager';
 
 const CartPage = lazy(() => import('./pages/Cart/CartPage'));
@@ -43,6 +44,7 @@ function SiteRoutes() {
         </Routes>
       </Suspense>
       <ClassroomDialog request={classroomRequest} />
+      <ChatWidget />
     </>
   );
 }
