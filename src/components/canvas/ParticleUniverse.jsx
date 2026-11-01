@@ -158,7 +158,6 @@ export default function ParticleUniverse({ onResult }) {
     window.addEventListener('resize', size);
     size();
 
-    const logoSlot = document.querySelector('#home .hero-particle-space');
     let ti = 0;
     let go = false;
     let mx = 0;
@@ -206,10 +205,9 @@ export default function ParticleUniverse({ onResult }) {
       points.rotation.y += (targetRotY - points.rotation.y) * 0.05;
       points.rotation.x += (targetRotX - points.rotation.x) * 0.04;
       camera.position.z = compact ? 9 : 9 - Math.min(Math.abs(vel) * 0.05, 2);
-      const slot = compact && ti === 0 && document.documentElement.classList.contains('hero-in-view') ? logoSlot?.getBoundingClientRect() : null;
-      const region = slot && slot.width > 0 && slot.height > 0 ? slot : undefined;
       const layout = particleLayout({ width: window.innerWidth, height: window.innerHeight,
-        fov: camera.fov, distance: compact ? camera.position.z : 9, shape: ti, bounds: shapeBounds[ti], region });
+        fov: camera.fov, distance: compact ? camera.position.z : 9, shape: ti, bounds: shapeBounds[ti],
+        region: compact && ti === 0 ? document.querySelector('.hero-particle-space')?.getBoundingClientRect() : undefined });
       points.scale.setScalar(layout.scale);
       // Resize immediately into the compact viewport; desktop movement remains eased.
       if (compact) points.position.set(layout.x, layout.y, 0);

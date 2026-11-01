@@ -1,16 +1,22 @@
 import { useLang } from '../../context/LanguageContext';
+import { imageDelivery } from '../../assets/imageDelivery';
 
-export default function ContentImage({ image, className, loading = 'lazy', sizes = '100vw', decorative = false }) {
+export default function ContentImage({ image, className, loading = 'lazy', sizes = '100vw', decorative = false, fallbackWidth = 1600, fallbackHeight = 900 }) {
   const { lang } = useLang();
+  if (typeof image === 'string') image = { src: image };
+  image = imageDelivery(image);
+  const hasDimensions = Number.isFinite(Number(image.width)) && Number(image.width) > 0 && Number.isFinite(Number(image.height)) && Number(image.height) > 0;
+  const width = hasDimensions ? Number(image.width) : fallbackWidth;
+  const height = hasDimensions ? Number(image.height) : fallbackHeight;
   return <img
     className={className}
     src={image.src}
     srcSet={image.srcSet}
     sizes={image.srcSet ? sizes : undefined}
     alt={decorative ? '' : image.alt?.[lang] || image.alt?.mn || image.alt?.en || ''}
-    width={image.width}
-    height={image.height}
-    style={image.position ? { objectPosition: image.position } : undefined}
+    width={width}
+    height={height}
+    style={{ aspectRatio: `${width} / ${height}`, ...(image.position && { objectPosition: image.position }) }}
     loading={loading}
     decoding="async"
   />;

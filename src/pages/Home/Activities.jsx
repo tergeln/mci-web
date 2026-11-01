@@ -1,3 +1,4 @@
+import useNearViewport from '../../hooks/useNearViewport';
 import Tr from '../../components/Tr/Tr';
 import useReveal from '../../hooks/useReveal';
 import { getServices } from '../../api/services';
@@ -11,7 +12,7 @@ function ActivityCard({ activity }) {
   return (
     <article ref={ref} className={className}>
       <div className="service-image" aria-hidden="true">
-        {image ? <ContentImage image={image} sizes="(max-width: 640px) calc(100vw - 40px), 380px" decorative /> : activity.image && <img src={activity.image} alt="" loading="lazy" />}
+        {image && <ContentImage image={image} sizes="(max-width: 640px) calc(100vw - 40px), 380px" fallbackWidth={1200} fallbackHeight={800} decorative />}
       </div>
       <div className="service-content">
       <h3><Tr text={activity.title} /></h3>
@@ -29,10 +30,11 @@ function ActivityCard({ activity }) {
 }
 
 export default function Activities() {
-  const { data: activities, loading, error, reload } = useApi((signal) => getServices({ signal }), []);
+  const [sectionRef, enabled] = useNearViewport();
+  const { data: activities, loading, error, reload } = useApi((signal) => getServices({ signal }), [], enabled);
   const [headRef, headClass] = useReveal('section-head');
   return (
-    <section id="activities">
+    <section id="activities" ref={sectionRef}>
       <div className="wrap">
         <div ref={headRef} className={headClass}>
           <div>

@@ -5,11 +5,12 @@ import { useEffect, useState } from 'react';
  *   const { data, loading, error, reload } = useApi((signal) => getCourses({ signal }), []);
  * deps өөрчлөгдөхөд дахин татаж, өмнөх хүсэлтийг цуцална.
  */
-export default function useApi(fetcher, deps) {
+export default function useApi(fetcher, deps, enabled = true) {
   const [state, setState] = useState({ data: undefined, error: null, loading: true });
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    if (!enabled) return undefined;
     const controller = new AbortController();
     setState((s) => ({ data: s.data, error: null, loading: true }));
     fetcher(controller.signal).then(
@@ -20,7 +21,7 @@ export default function useApi(fetcher, deps) {
     );
     return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...deps, attempt]);
+  }, [...deps, attempt, enabled]);
 
   return { ...state, reload: () => setAttempt((n) => n + 1) };
 }
