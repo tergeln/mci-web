@@ -165,7 +165,8 @@ export default function Logo3D({
     } catch (e) {
       return undefined; // WebGL байхгүй төхөөрөмж
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const compact = window.matchMedia('(max-width:900px)').matches;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compact ? 1 : 2));
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.05;
@@ -236,7 +237,10 @@ export default function Logo3D({
       }
     };
 
+    let builtDepth;
     const build = (d) => {
+      if (builtDepth === d) return;
+      builtDepth = d;
       for (const child of [...logo.children]) {
         child.geometry.dispose();
         logo.remove(child);
@@ -249,7 +253,7 @@ export default function Logo3D({
           bevelThickness: 0.05,
           bevelSize: 0.03,
           bevelOffset: 0,
-          bevelSegments: 8,
+          bevelSegments: compact ? 2 : 8,
           curveSegments: 1,
           steps: 1,
         });
@@ -315,8 +319,11 @@ export default function Logo3D({
     let reportedReady = false;
     let raf = 0;
     let t0 = performance.now();
+    let lastRender = 0;
     const frame = (now) => {
       raf = requestAnimationFrame(frame);
+      if (compact && now - lastRender < 1000 / 30) return;
+      lastRender = now;
       const dt = Math.min(0.05, (now - t0) / 1000);
       t0 = now;
       if (!visible) return;

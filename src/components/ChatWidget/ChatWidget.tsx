@@ -340,7 +340,7 @@ export default function ChatWidget({
           onClick={() => setOpen(true)}
           aria-label="Magi шидэт туслахыг нээх"
         >
-          <img src={avatarUrl} srcSet={avatarUrl === '/assets/chatbot-owl-96.webp' ? '/assets/chatbot-owl-96.webp 96w, /assets/chatbot-owl-128.webp 128w, /assets/chatbot-owl-160.webp 160w, /assets/chatbot-owl-192.webp 192w' : undefined} sizes="(max-width:480px) 64px, 76px" alt="" width="76" height="76" loading="eager" fetchpriority="high" decoding="async" />
+          <img src={avatarUrl} srcSet={avatarUrl === '/assets/chatbot-owl-96.webp' ? '/assets/chatbot-owl-96.webp 96w, /assets/chatbot-owl-128.webp 128w, /assets/chatbot-owl-160.webp 160w, /assets/chatbot-owl-192.webp 192w' : undefined} sizes="(max-width:480px) 64px, 76px" alt="" width="76" height="76" loading="eager" fetchpriority="low" decoding="async" />
         </button>
       )}
     </div>

@@ -50,7 +50,7 @@ export default function Home() {
 
       <Loader onComplete={() => setIntroFinished(true)} />
       <ScrollProgress />
-      <CursorGlow />
+      {!lightweight && <CursorGlow />}
       <main>
         <Hero />
         <CoursesSection onSelectCourse={openCourse} />
