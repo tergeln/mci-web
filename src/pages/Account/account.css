@@ -68,3 +68,6 @@ header #nav .account-link.is-active{background:var(--nav-control,var(--soft));co
   .workspace-tabs-bar{margin-top:24px;padding-bottom:12px}
   .workspace-tabs button{padding:10px 14px;font-size:12px}
 }
+.wallet-balance{display:grid;gap:4px;margin:12px 0}.wallet-balance strong{font-size:clamp(30px,4vw,44px);line-height:1.1}
+.wallet-topup{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin:16px 0}.wallet-topup label{display:grid;gap:6px;flex:1 1 220px}.wallet-topup input{width:100%}
+.wallet-open{margin-top:12px}.wallet-open p{overflow-wrap:anywhere}

@@ -1,6 +1,7 @@
 // Бүх API дуудлага энэ файлаар дамжина.
 // VITE_USE_MOCK=false болгоход mock-ийн оронд VITE_API_URL руу бодит хүсэлт явна.
 // Тохиргоо: .env.example, гэрээ: docs/API.md
+import { accessToken } from '../lib/supabase';
 
 export const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false';
 const BASE_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
@@ -35,11 +36,13 @@ export async function request(path, { method = 'GET', body, signal, mock } = {})
 
   let res;
   try {
+    const token = await accessToken();
+    const headers = { ...(body && { 'Content-Type': 'application/json' }), ...(token && { Authorization: `Bearer ${token}` }) };
     res = await fetch(BASE_URL + path, {
       credentials: 'include',
       method,
       signal,
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      headers,
       body: body ? JSON.stringify(body) : undefined,
     });
   } catch (error) {
@@ -61,6 +64,7 @@ export async function request(path, { method = 'GET', body, signal, mock } = {})
 
 const MESSAGES = {
   validation_error: ['Мэдээллээ шалгаад дахин оролдоно уу.', 'Please check your details and try again.'],
+  unauthorized: ['Дахин нэвтэрнэ үү.', 'Please log in again.'],
   not_found: ['Хайсан зүйл олдсонгүй.', 'We could not find what you were looking for.'],
   enrollment_closed: ['Энэ сургалтын бүртгэл одоогоор хаалттай байна.', 'Enrollment for this course is currently closed.'],
   already_enrolled: ['Та энэ сургалтад аль хэдийн бүртгүүлсэн байна.', 'You are already enrolled in this course.'],
@@ -73,6 +77,9 @@ const FALLBACK = ['Алдаа гарлаа. Дахин оролдоно уу.', 
 
 /** Алдааны кодыг хэрэглэгчид харуулах текст болгоно. `t` нь useLang()-ийн t. */
 export function errorMessage(error, t) {
+  if (error?.code === 'insufficient_balance') return t('Хэтэвчийн үлдэгдэл хүрэлцэхгүй байна.', 'Your wallet balance is too low.');
+  if (error?.code === 'qpay_unavailable') return t('QPay одоогоор ажиллахгүй байна.', 'QPay is currently unavailable.');
+  if (error?.code === 'qpay_in_progress') return t('Нээлттэй QPay нэхэмжлэх байна. Түр хүлээгээд дахин оролдоно уу.', 'A QPay invoice is still open. Please wait and try again.');
   const [mn, en] = MESSAGES[error?.code] ?? FALLBACK;
   return t(mn, en);
 }

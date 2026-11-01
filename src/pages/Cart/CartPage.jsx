@@ -4,7 +4,10 @@ import { useAuth } from '../../context/AuthContext';
 import { useCommerce } from '../../context/CommerceContext';
 import { useLang } from '../../context/LanguageContext';
 import { getCourses } from '../../api/courses';
-import { createCourseOrder, reportBankTransfer, startQPay } from '../../api/commerce';
+import { checkQPay, createCourseOrder, getMyWallet, payWithWallet, reportBankTransfer, startQPay } from '../../api/commerce';
+import { errorMessage } from '../../api/client';
+import QPayInvoice from './QPayInvoice';
+import { BANK_ACCOUNT } from '../../data/bankAccount';
 import useApi from '../../hooks/useApi';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import ContentImage from '../../components/ContentImage/ContentImage';
@@ -29,12 +32,23 @@ export default function CartPage() {
   const [error, setError] = useState('');
   const [method, setMethod] = useState('bank');
   const [qpay, setQpay] = useState(null);
+  const [balance, setBalance] = useState(null);
   const active = user ? orders.find((order) => order.id === params.get('order')) : null;
   useEffect(() => {
+    if (!user || !active) return undefined;
+    let current = true;
+    getMyWallet().then((wallet) => { if (current) setBalance(wallet.balance); }, () => { if (current) setBalance(null); });
+    return () => { current = false; };
+  }, [user, active?.id, active?.status]);
+  useEffect(() => {
     if (!['pending_payment', 'pending_review'].includes(active?.status)) return;
-    const timer = window.setInterval(() => { if (document.visibilityState === 'visible') refresh(); }, 15000);
+    const orderId = active.id;
+    const timer = window.setInterval(() => {
+      if (document.visibilityState !== 'visible') return;
+      Promise.resolve(qpay ? checkQPay(orderId) : null).catch(() => {}).finally(() => refresh());
+    }, 15000);
     return () => window.clearInterval(timer);
-  }, [active?.id, active?.status, refresh]);
+  }, [active?.id, active?.status, qpay, refresh]);
   const items = (catalog || []).filter((course) => cart.includes(course.id));
   const total = cartTotal(items);
   const amountKnown = total !== null;
@@ -44,7 +58,7 @@ export default function CartPage() {
   async function run(action) {
     if (busy) return;
     setBusy(true); setError('');
-    try { await action(); } catch { setError(t('Үйлдэл амжилтгүй. Дахин оролдоно уу.', 'Something went wrong. Please try again.')); }
+    try { await action(); } catch (failure) { setError(failure?.code ? errorMessage(failure, t) : t('Үйлдэл амжилтгүй. Дахин оролдоно уу.', 'Something went wrong. Please try again.')); }
     finally { setBusy(false); }
   }
   const checkout = () => run(async () => {
@@ -64,19 +78,23 @@ export default function CartPage() {
         <p className="cart-status" role="status">{statusLabel(active.status, t)}</p>
         {active.status === 'paid' ? <><p>{t('Хичээлүүд “Миний сургалт” хэсэгт нээгдэнэ.', 'Your lessons are available in My learning once access is confirmed.')}</p><Link className="btn" to="/account">{t('Миний сургалт', 'My learning')}</Link></> : active.status === 'cancelled' ? <p>{t('Энэ захиалга цуцлагдсан.', 'This order was cancelled.')}</p> : <>
           {active.status === 'awaiting_quote' && <p>{t('Сургалтын үнийн дүн хараахан ороогүй байна. magiccodeai@gmail.com хаягаар үнээ баталгаажуулсны дараа төлбөрөө хийнэ үү.', 'The course price is not configured yet. Confirm your total with magiccodeai@gmail.com before making a transfer.')}</p>}
-          <div className="payment-options"><button type="button" aria-pressed={method === 'bank'} onClick={() => setMethod('bank')}>{t('Дансаар төлөх', 'Bank transfer')}</button><button type="button" aria-pressed={method === 'qpay'} onClick={() => setMethod('qpay')}>QPay</button></div>
-          {method === 'bank' ? <div className="cart-bank">
-            <dl><div><dt>{t('Банк', 'Bank')}</dt><dd>{t('Хаан банк', 'Khan Bank')}</dd></div><div><dt>IBAN</dt><dd>MN790005005031346583</dd></div><div><dt>{t('Данс эзэмшигч', 'Account holder')}</dt><dd>Энхтуяа Цогтбаатар</dd></div></dl>
-            <p>{t('Гүйлгээний утга дээр Gmail хаяг, утасны дугаараа бичнэ үү.', 'Include your Gmail address, phone number in the transfer description.')}</p>
+          <div className="payment-options"><button type="button" aria-pressed={method === 'bank'} onClick={() => setMethod('bank')}>{t('Дансаар төлөх', 'Bank transfer')}</button><button type="button" aria-pressed={method === 'qpay'} onClick={() => setMethod('qpay')}>QPay</button><button type="button" aria-pressed={method === 'wallet'} onClick={() => setMethod('wallet')}>{t('Хэтэвч', 'Wallet')}</button></div>
+          {method === 'wallet' ? <div className="cart-bank">
+            <p>{t('Хэтэвчийн үлдэгдэл:', 'Wallet balance:')} <strong>{money(balance)}</strong></p>
+            {balance !== null && active.amount > balance && <p>{t('Үлдэгдэл хүрэлцэхгүй байна. Эхлээд хэтэвчээ цэнэглэнэ үү.', 'Your balance is too low. Top up your wallet first.')} <Link className="text-link" to="/account?tab=wallet">{t('Хэтэвч цэнэглэх →', 'Top up wallet →')}</Link></p>}
+            <button className="btn" disabled={busy || active.status !== 'pending_payment' || !(active.amount > 0) || balance === null || active.amount > balance} onClick={() => run(async () => { await payWithWallet(active.id); await refresh(); })}>{t('Хэтэвчээс төлөх', 'Pay from wallet')}</button>
+          </div> : method === 'bank' ? <div className="cart-bank">
+            <dl><div><dt>{t('Банк', 'Bank')}</dt><dd>{t('Хаан банк', 'Khan Bank')}</dd></div><div><dt>IBAN</dt><dd>{BANK_ACCOUNT.iban}</dd></div><div><dt>{t('Данс эзэмшигч', 'Account holder')}</dt><dd>{BANK_ACCOUNT.holder}</dd></div></dl>
+            <p>{t('Гүйлгээний утга дээр дараах кодыг бичнэ үү:', 'Use this code as the transfer reference:')} <strong>{active.id}</strong></p>
             <button className="btn" disabled={busy || active.status !== 'pending_payment' || !(active.amount > 0)} onClick={() => run(async () => { await reportBankTransfer(active.id, user.id); await refresh(); })}>{t('Шилжүүлсэн, шалгуулах', 'I transferred — request review')}</button>
           </div> : <div className="cart-bank">
             <p>{active.qpayAvailable ? t('QPay нэхэмжлэх үүсгэн төлбөрөө төлнө үү.', 'Create a QPay invoice to pay.') : t('QPay одоогоор ажиллахгүй тул дансаар шилжүүлнэ үү.', 'QPay is currently unavailable. Please use bank transfer.')}</p>
             <button className="btn" disabled={busy || !active.qpayAvailable || active.status !== 'pending_payment' || !(active.amount > 0)} onClick={() => run(async () => { const invoice = await startQPay(active.id); setQpay(invoice); })}>{t('QPay нэхэмжлэх авах', 'Get QPay invoice')}</button>
-            {qpay?.qrImage && /^https:\/\//.test(qpay.qrImage) && <img className="cart-qr" src={qpay.qrImage} alt="QPay QR" />}
+            {qpay?.orderId === active.id && <QPayInvoice invoice={qpay} />}
           </div>}
           <p className="cart-note">{t('Төлбөр баталгаажсаны дараа хичээл үзэх эрх автоматаар нээгдэнэ. Шилжүүлсэн тухай мэдэгдэх нь төлбөр баталгаажсан гэсэн үг биш.', 'Lesson access unlocks after payment confirmation. Reporting a transfer does not confirm payment.')}</p>
         </>}
-        <button className="btn secondary" disabled={loading || busy} onClick={refresh}>{t('Төлбөрийн төлөв шалгах', 'Check payment status')}</button>
+        <button className="btn secondary" disabled={loading || busy} onClick={() => refresh()}>{t('Төлбөрийн төлөв шалгах', 'Check payment status')}</button>
       </div>
     </section> : <div className="cart-layout">
       <section className="cart-panel">
