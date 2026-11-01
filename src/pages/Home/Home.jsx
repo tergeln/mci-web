@@ -4,7 +4,6 @@ import { useLang } from '../../context/LanguageContext';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { homeCourses } from '../../data/courses';
 import Footer from '../../components/Footer/Footer';
-import Chatbot from '../../components/Chatbot/Chatbot';
 import EnrollDialog from '../../components/dialogs/EnrollDialog';
 import ClassroomDialog from '../../components/dialogs/ClassroomDialog';
 import ParticleUniverse from '../../components/canvas/ParticleUniverse';
@@ -26,7 +25,6 @@ export default function Home() {
   const { t } = useLang();
   const [searchParams] = useSearchParams();
   const [glReady, setGlReady] = useState(null);
-  const [chatOpen, setChatOpen] = useState(false);
   const [enrollRequest, setEnrollRequest] = useState(null);
   const [classroomRequest, setClassroomRequest] = useState(null);
 
@@ -57,10 +55,9 @@ export default function Home() {
         <AboutSection />
         <Activities />
         <TechStrip />
-        <Contact onOpenChat={() => setChatOpen(true)} />
+        <Contact />
       </main>
       <Footer />
-      <Chatbot open={chatOpen} onOpenChange={setChatOpen} />
       <EnrollDialog request={enrollRequest} onOpenClassroom={openClassroom} />
       <div className="toast" id="toast" hidden role="status" />
       <LiveStrip />

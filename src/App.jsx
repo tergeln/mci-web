@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MainNavbar from './components/MainNavbar/MainNavbar';
 import CartDialog from './components/dialogs/CartDialog';
+import ChatWidget from './components/ChatWidget/ChatWidget';
 import ScrollManager from './components/ScrollManager/ScrollManager';
 import Home from './pages/Home/Home';
 import CoursesPage from './pages/Courses/CoursesPage';
@@ -34,6 +35,7 @@ export default function App() {
       </Routes>
       <CartDialog request={cartRequest} />
       </AuthProvider>
+      <ChatWidget />
     </>
   );
 }
