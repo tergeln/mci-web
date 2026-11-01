@@ -1,3 +1,4 @@
+import useNearViewport from '../../hooks/useNearViewport';
 import Tr from '../../components/Tr/Tr';
 import useReveal from '../../hooks/useReveal';
 import { getServices } from '../../api/services';
@@ -29,10 +30,11 @@ function ActivityCard({ activity }) {
 }
 
 export default function Activities() {
-  const { data: activities, loading, error, reload } = useApi((signal) => getServices({ signal }), []);
+  const [sectionRef, enabled] = useNearViewport();
+  const { data: activities, loading, error, reload } = useApi((signal) => getServices({ signal }), [], enabled);
   const [headRef, headClass] = useReveal('section-head');
   return (
-    <section id="activities">
+    <section id="activities" ref={sectionRef}>
       <div className="wrap">
         <div ref={headRef} className={headClass}>
           <div>

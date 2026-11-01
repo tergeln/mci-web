@@ -1,3 +1,4 @@
+import useNearViewport from '../../../hooks/useNearViewport';
 import { Link } from 'react-router-dom';
 import Tr from '../../../components/Tr/Tr';
 import ImpactCard from '../../../components/ImpactCard/ImpactCard';
@@ -7,9 +8,10 @@ import useApi from '../../../hooks/useApi';
 import { getNews } from '../../../api/news';
 
 export default function ImpactNews() {
-  const { data: stories, loading, error, reload } = useApi((signal) => getNews({ limit: 3, signal }), []);
+  const [sectionRef, enabled] = useNearViewport();
+  const { data: stories, loading, error, reload } = useApi((signal) => getNews({ limit: 3, signal }), [], enabled);
   return (
-    <div className="wrap impact-news" id="volunteering">
+    <div className="wrap impact-news" id="volunteering" ref={sectionRef}>
       <ImpactIntro animate />
       <ApiState loading={loading} error={error} onRetry={reload} />
       {stories && (

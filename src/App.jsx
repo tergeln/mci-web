@@ -6,14 +6,15 @@ import { lazy, Suspense } from 'react';
 import './pages/Account/account.css';
 import './styles/subpage.css';
 import { Route, Routes } from 'react-router-dom';
+import Home from './pages/Home/Home';
 import MainNavbar from './components/MainNavbar/MainNavbar';
-import ChatWidget from './components/ChatWidget/ChatWidget';
+const ChatWidget = lazy(() => import('./components/ChatWidget/ChatWidget'));
 import ScrollManager from './components/ScrollManager/ScrollManager';
 
 const CartPage = lazy(() => import('./pages/Cart/CartPage'));
 const LoginPage = lazy(() => import('./pages/Account/LoginPage'));
 const AccountPage = lazy(() => import('./pages/Account/AccountPage'));
-const Home = lazy(() => import('./pages/Home/Home'));
+
 const CoursesPage = lazy(() => import('./pages/Courses/CoursesPage'));
 const NewsPage = lazy(() => import('./pages/News/NewsPage'));
 const NewsDetailPage = lazy(() => import('./pages/NewsDetail/NewsDetailPage'));
@@ -44,7 +45,7 @@ function SiteRoutes() {
         </Routes>
       </Suspense>
       <ClassroomDialog request={classroomRequest} />
-      <ChatWidget />
+      <Suspense fallback={null}><ChatWidget /></Suspense>
     </>
   );
 }

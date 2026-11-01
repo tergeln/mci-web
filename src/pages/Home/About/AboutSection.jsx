@@ -1,3 +1,4 @@
+import useNearViewport from '../../../hooks/useNearViewport';
 import Tr from '../../../components/Tr/Tr';
 import useReveal from '../../../hooks/useReveal';
 import { useLang } from '../../../context/LanguageContext';
@@ -8,8 +9,9 @@ import ApiState from '../../../components/ApiState/ApiState';
 import { imageDelivery } from '../../../assets/imageDelivery';
 
 export default function AboutSection() {
-  const { data, loading, error, reload } = useApi((signal) => getAbout({ signal }), []);
-  return <section className="about" id="about">
+  const [sectionRef, enabled] = useNearViewport();
+  const { data, loading, error, reload } = useApi((signal) => getAbout({ signal }), [], enabled);
+  return <section className="about" id="about" ref={sectionRef}>
     <div className="wrap"><ApiState loading={loading} error={error} onRetry={reload} /></div>
     {data?.visible && <DirectorProfile director={data} />}
     <ImpactNews />

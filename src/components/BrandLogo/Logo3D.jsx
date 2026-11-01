@@ -145,9 +145,12 @@ export default function Logo3D({
   minHeight = 200,
   zoom = 1,
   className,
+  onReady,
 }) {
   const hostRef = useRef(null);
   const apiRef = useRef(null);
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
   // Prop өөрчлөгдөхөд сцен дахин үүсгэхгүй, ref-ээр уншина.
   const live = useRef({ variant, depth, autoRotate, zoom });
   live.current = { variant, depth, autoRotate, zoom };
@@ -309,6 +312,7 @@ export default function Logo3D({
     });
     io.observe(host);
 
+    let reportedReady = false;
     let raf = 0;
     let t0 = performance.now();
     const frame = (now) => {
@@ -327,6 +331,10 @@ export default function Logo3D({
       camera.position.set(0, 0, Math.max(8, 9.6 / camera.aspect) / live.current.zoom);
       camera.lookAt(0, 0, 0);
       renderer.render(scene, camera);
+      if (!reportedReady) {
+        reportedReady = true;
+        onReadyRef.current?.();
+      }
     };
     raf = requestAnimationFrame(frame);
 

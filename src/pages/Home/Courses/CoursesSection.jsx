@@ -1,3 +1,4 @@
+import useNearViewport from '../../../hooks/useNearViewport';
 import { Link } from 'react-router-dom';
 import Tr from '../../../components/Tr/Tr';
 import useReveal from '../../../hooks/useReveal';
@@ -8,10 +9,11 @@ import ApiState from '../../../components/ApiState/ApiState';
 import { getCourses } from '../../../api/courses';
 
 export default function CoursesSection({ onSelectCourse }) {
+  const [sectionRef, enabled] = useNearViewport();
   const [headRef, headClass] = useReveal('section-head');
-  const { data: courses, loading, error, reload } = useApi((signal) => getCourses({ signal }), []);
+  const { data: courses, loading, error, reload } = useApi((signal) => getCourses({ signal }), [], enabled);
   return (
-    <section id="courses">
+    <section id="courses" ref={sectionRef}>
       <div className="wrap">
         <div ref={headRef} className={headClass}>
           <div>
