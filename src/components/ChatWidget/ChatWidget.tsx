@@ -235,7 +235,7 @@ export default function ChatWidget({
           onClick={() => setOpen(true)}
           aria-label="Magi шидэт туслахыг нээх"
         >
-          <img src={avatarUrl} alt="" width="76" height="76" />
+          <img src={avatarUrl} alt="" width="76" height="76" loading="eager" fetchPriority="high" />
         </button>
       )}
     </div>
