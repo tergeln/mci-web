@@ -6,6 +6,7 @@ import { homeCourses } from '../../data/courses';
 import Footer from '../../components/Footer/Footer';
 import { useCommerce } from '../../context/CommerceContext';
 import Universe2D from '../../components/canvas/Universe2D';
+import Loader from './Loader';
 import ScrollProgress from './ScrollProgress';
 import CursorGlow from './CursorGlow';
 import ChapterIndex from './ChapterIndex';
@@ -44,6 +45,7 @@ export default function Home() {
       <Suspense fallback={null}>
         <ParticleUniverse onResult={setGlReady} />
       </Suspense>
+      <Loader />
       <ScrollProgress />
       <CursorGlow />
       <ChapterIndex />
