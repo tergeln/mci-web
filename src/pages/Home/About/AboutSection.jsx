@@ -2,18 +2,29 @@ import Tr from '../../../components/Tr/Tr';
 import useReveal from '../../../hooks/useReveal';
 import { useLang } from '../../../context/LanguageContext';
 import ImpactNews from './ImpactNews';
-import { director } from '../../../data/director';
+import useApi from '../../../hooks/useApi';
+import { getAbout } from '../../../api/about';
+import ApiState from '../../../components/ApiState/ApiState';
 
 export default function AboutSection() {
+  const { data, loading, error, reload } = useApi((signal) => getAbout({ signal }), []);
+  return <section className="about" id="about">
+    <div className="wrap"><ApiState loading={loading} error={error} onRetry={reload} /></div>
+    {data?.visible && <DirectorProfile director={data} />}
+    <ImpactNews />
+  </section>;
+}
+
+function DirectorProfile({ director }) {
   const { lang } = useLang();
   const [headRef, headClass] = useReveal('about-head');
   const [copyRef, copyClass] = useReveal('about-copy');
   const [factsRef, factsClass] = useReveal('about-director-facts');
   return (
-    <section className="about" id="about">
+    <>
       <div className="wrap">
         <div ref={headRef} className={headClass}>
-          <div className="eyebrow"><Tr mn="БИДНИЙ ТУХАЙ" en="OUR STORY" /></div>
+          <div className="eyebrow"><Tr text={director.heading} /></div>
         </div>
       </div>
       <div className="wrap about-grid">
@@ -23,42 +34,41 @@ export default function AboutSection() {
             <strong><Tr text={director.name} /></strong>
             <span><Tr text={director.role} /></span>
           </figcaption>
-          <div className="about-director-langs">
+          {director.languages.length > 0 && <div className="about-director-langs">
             <span><Tr mn="Хэлний мэдлэг" en="Languages" /></span>
             <ul>
-              {director.languages.map((language) => (
-                <li key={language.en}><Tr text={language} /></li>
+              {director.languages.map((language, index) => (
+                <li key={index}><Tr text={language} /></li>
               ))}
             </ul>
-          </div>
+          </div>}
         </figure>
         <div ref={copyRef} className={copyClass}>
           <p><Tr text={director.bio} /></p>
-          <dl className="about-director-stats">
-            {director.stats.map((stat) => (
-              <div key={stat.label.en}>
+          {director.stats.length > 0 && <dl className="about-director-stats">
+            {director.stats.map((stat, index) => (
+              <div key={index}>
                 <dt>{stat.value}</dt>
                 <dd><Tr text={stat.label} /></dd>
               </div>
             ))}
-          </dl>
+          </dl>}
         </div>
       </div>
-      <div className="wrap">
+      {director.facts.length > 0 && <div className="wrap">
         <div ref={factsRef} className={factsClass}>
-          {director.facts.map((group) => (
-            <div key={group.title.en}>
+          {director.facts.map((group, index) => (
+            <div key={index}>
               <h3><Tr text={group.title} /></h3>
               <ul>
-                {group.items.map((item) => (
-                  <li key={item.en}><Tr text={item} /></li>
+                {group.items.map((item, index) => (
+                  <li key={index}><Tr text={item} /></li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-      </div>
-      <ImpactNews />
-    </section>
+      </div>}
+    </>
   );
 }
