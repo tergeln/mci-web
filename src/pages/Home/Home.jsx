@@ -31,7 +31,7 @@ export default function Home() {
   const [enrollRequest, setEnrollRequest] = useState(null);
   const [classroomRequest, setClassroomRequest] = useState(null);
 
-  useDocumentTitle(t('Magic Code AI — Суралц. Бүтээ. Хөгж.', 'Magic Code AI — Learn. Build. Become.'));
+  useDocumentTitle(t('Magic Code AI', 'Magic Code AI'));
 
   const openCourse = useCallback((course) => setEnrollRequest((r) => ({ course, id: (r ? r.id : 0) + 1 })), []);
   const openClassroom = useCallback((course) => setClassroomRequest((r) => ({ course, id: (r ? r.id : 0) + 1 })), []);
