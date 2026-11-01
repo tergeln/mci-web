@@ -102,7 +102,7 @@ export default function ChatWidget({
   business,
   title = "Magi Шидэт туслах",
   greeting = "Сайн уу! Намайг Magi гэдэг. Би Magic Code AI-ийн туслах. Танд юугаар туслах вэ?",
-  avatarUrl = "/assets/chatbot-owl.png",
+  avatarUrl = "/assets/chatbot-owl-96.webp",
   suggestions = [
     { label: "Сургалтууд", question: "Ямар сургалтууд байдаг вэ?" },
     { label: "Вебсайтын үнэ", question: "Вебсайт хийлгэхэд хэдэн төгрөг вэ?" },
@@ -340,7 +340,7 @@ export default function ChatWidget({
           onClick={() => setOpen(true)}
           aria-label="Magi шидэт туслахыг нээх"
         >
-          <img src={avatarUrl} alt="" width="76" height="76" loading="eager" fetchPriority="high" />
+          <img src={avatarUrl} srcSet={avatarUrl === '/assets/chatbot-owl-96.webp' ? '/assets/chatbot-owl-96.webp 96w, /assets/chatbot-owl-192.webp 192w' : undefined} sizes="(max-width:480px) 64px, 76px" alt="" width="76" height="76" loading="eager" decoding="async" />
         </button>
       )}
     </div>

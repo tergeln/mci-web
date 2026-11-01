@@ -1,7 +1,9 @@
 import { useLang } from '../../context/LanguageContext';
+import { imageDelivery } from '../../assets/imageDelivery';
 
 export default function ContentImage({ image, className, loading = 'lazy', sizes = '100vw', decorative = false }) {
   const { lang } = useLang();
+  image = imageDelivery(image);
   return <img
     className={className}
     src={image.src}

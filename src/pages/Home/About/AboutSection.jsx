@@ -5,6 +5,7 @@ import ImpactNews from './ImpactNews';
 import useApi from '../../../hooks/useApi';
 import { getAbout } from '../../../api/about';
 import ApiState from '../../../components/ApiState/ApiState';
+import { imageDelivery } from '../../../assets/imageDelivery';
 
 export default function AboutSection() {
   const { data, loading, error, reload } = useApi((signal) => getAbout({ signal }), []);
@@ -16,6 +17,7 @@ export default function AboutSection() {
 }
 
 function DirectorProfile({ director }) {
+  const photo = imageDelivery(director.photo);
   const { lang } = useLang();
   const [headRef, headClass] = useReveal('about-head');
   const [copyRef, copyClass] = useReveal('about-copy');
@@ -29,7 +31,7 @@ function DirectorProfile({ director }) {
       </div>
       <div className="wrap about-grid">
         <figure className="about-picture about-director">
-          <img src={director.photo.src} alt={director.name[lang]} width={director.photo.width} height={director.photo.height} loading="lazy" decoding="async" />
+          <img src={photo.src} srcSet={photo.srcSet} sizes={photo.srcSet ? '(max-width:720px) 96px, clamp(150px,13vw,200px)' : undefined} alt={director.name[lang]} width={photo.width} height={photo.height} loading="lazy" decoding="async" />
           <figcaption>
             <strong><Tr text={director.name} /></strong>
             <span><Tr text={director.role} /></span>

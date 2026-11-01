@@ -1,0 +1,30 @@
+{
+  "/assets/partners/hushkhan.png": {
+    "src": "/assets/partners/hushkhan-96.webp",
+    "srcSet": "/assets/partners/hushkhan-96.webp 96w, /assets/partners/hushkhan-192.webp 192w, /assets/partners/hushkhan-288.webp 288w"
+  },
+  "/assets/partners/num.png": {
+    "src": "/assets/partners/num-96.webp",
+    "srcSet": "/assets/partners/num-96.webp 96w, /assets/partners/num-192.webp 192w, /assets/partners/num-288.webp 288w"
+  },
+  "/assets/partners/young-women-entrepreneurs.png": {
+    "src": "/assets/partners/young-women-entrepreneurs-96.webp",
+    "srcSet": "/assets/partners/young-women-entrepreneurs-96.webp 96w, /assets/partners/young-women-entrepreneurs-192.webp 192w, /assets/partners/young-women-entrepreneurs-288.webp 288w"
+  },
+  "/assets/chatbot-owl.png": {
+    "src": "/assets/chatbot-owl-96.webp",
+    "srcSet": "/assets/chatbot-owl-96.webp 96w, /assets/chatbot-owl-192.webp 192w"
+  },
+  "/assets/about/director-enkhtuya.jpg": {
+    "src": "/assets/about/director-enkhtuya-200.webp",
+    "srcSet": "/assets/about/director-enkhtuya-200.webp 200w, /assets/about/director-enkhtuya-400.webp 400w, /assets/about/director-enkhtuya-600.webp 600w"
+  },
+  "/assets/news/khush-tugul/group-photo.jpg": {
+    "src": "/assets/news/khush-tugul/group-photo-320.webp",
+    "srcSet": "/assets/news/khush-tugul/group-photo-320.webp 320w, /assets/news/khush-tugul/group-photo-480.webp 480w, /assets/news/khush-tugul/group-photo-768.webp 768w, /assets/news/khush-tugul/group-photo-1284.webp 1284w"
+  },
+  "/assets/news/khush-tugul/group-photo-small.jpg": {
+    "src": "/assets/news/khush-tugul/group-photo-320.webp",
+    "srcSet": "/assets/news/khush-tugul/group-photo-320.webp 320w, /assets/news/khush-tugul/group-photo-480.webp 480w, /assets/news/khush-tugul/group-photo-768.webp 768w, /assets/news/khush-tugul/group-photo-1284.webp 1284w"
+  }
+}
