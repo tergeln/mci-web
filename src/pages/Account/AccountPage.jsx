@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { LearningProgress, AccountProfile } from './AccountDetails';
 import { useAuth } from '../../context/AuthContext';
@@ -26,7 +26,7 @@ function LearnerPanel({ id, activeTab, children }) {
 }
 
 export default function AccountPage() {
-  const { user, logout, records, addRecord } = useAuth();
+  const { user, ready, remote, logout, records, addRecord, refreshRecords } = useAuth();
   const { t, lang } = useLang();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('overview');
@@ -40,6 +40,8 @@ export default function AccountPage() {
   const [progressVersion, setProgressVersion] = useState(0);
   const [expandedRecord, setExpandedRecord] = useState(null);
   useDocumentTitle(t('Миний хэсэг — Magic Code AI', 'My account — Magic Code AI'));
+  useEffect(() => { Promise.resolve(refreshRecords()).catch(() => {}); }, [refreshRecords]);
+  if (!ready) return null;
   if (!user) return <Navigate to="/login" state={{ from: location.pathname }} replace />;
 
   const visible = records.filter((record) => record.userId === user.id);
@@ -51,8 +53,8 @@ export default function AccountPage() {
     setActiveTab(id);
     document.getElementById(`learner-tab-${id}`)?.focus({ preventScroll: true });
   }
-  function saveRecord(type, items, message) {
-    try { addRecord(type, items); setNotice(message); setNoticeError(false); return true; }
+  async function saveRecord(type, items, message) {
+    try { await addRecord(type, items); setNotice(message); setNoticeError(false); return true; }
     catch (error) { setNotice(errorMessage(error, t)); setNoticeError(true); return false; }
   }
 
@@ -64,7 +66,7 @@ export default function AccountPage() {
       onLogout={logout}
     />
     <div className="workspace-tabs-bar"><WorkspaceTabs tabs={LEARNER_TABS} activeTab={activeTab} onChange={setActiveTab} prefix="learner" label={t('Суралцагчийн хэсгүүд', 'Learner dashboard sections')} /></div>
-    <p className="account-note">{t('Мэдээлэл зөвхөн энэ хөтөч дээр хадгалагдана.', 'Data is saved only in this browser.')}</p>
+    <p className="account-note">{remote ? t('Суралцах явц энэ хөтөч дээр хадгалагдана.', 'Learning progress is saved in this browser.') : t('Мэдээлэл зөвхөн энэ хөтөч дээр хадгалагдана.', 'Data is saved only in this browser.')}</p>
     <p role="status" className={`account-feedback${noticeError ? ' account-error' : ''}`}>{notice}</p>
 
     <LearnerPanel id="overview" activeTab={activeTab}>
@@ -93,7 +95,7 @@ export default function AccountPage() {
           const quantity = cart.filter((id) => id === index).length;
           return quantity > 0 && <div className="account-row" key={product.en}><span>{product[lang]}</span><div className="account-quantity"><button type="button" aria-label={`${product[lang]} −1`} onClick={() => setCart((previous) => { const next = [...previous]; next.splice(next.indexOf(index), 1); return next; })}>−</button><output aria-live="polite">{quantity}</output><button type="button" aria-label={`${product[lang]} +1`} onClick={() => setCart((previous) => [...previous, index])}>+</button></div></div>;
         })}<small>{t('Жишээ бүтээгдэхүүн · Үнэ тогтоогоогүй, төлбөр авахгүй.', 'Concept products · No payment required.')}</small></div>}
-        <div className="account-actions"><button className="btn" disabled={!cart.length} onClick={() => { if (saveRecord('order', cart.map((index) => cartProducts[index][lang]), t('Захиалга хадгалагдлаа. Түүх табаас харна уу.', 'Order saved. See the History tab.'))) setCart([]); }}>{t('Захиалах', 'Place order')} ({cart.length})</button><button className="btn secondary" disabled={!cart.length} onClick={() => setCart([])}>{t('Цэвэрлэх', 'Clear')}</button></div>
+        <div className="account-actions"><button className="btn" disabled={!cart.length} onClick={async () => { if (await saveRecord('order', cart.map((index) => cartProducts[index][lang]), t('Захиалга хадгалагдлаа. Түүх табаас харна уу.', 'Order saved. See the History tab.'))) setCart([]); }}>{t('Захиалах', 'Place order')} ({cart.length})</button><button className="btn secondary" disabled={!cart.length} onClick={() => setCart([])}>{t('Цэвэрлэх', 'Clear')}</button></div>
       </section>
     </LearnerPanel>
 

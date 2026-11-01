@@ -1,6 +1,7 @@
 // Бүх API дуудлага энэ файлаар дамжина.
 // VITE_USE_MOCK=false болгоход mock-ийн оронд VITE_API_URL руу бодит хүсэлт явна.
 // Тохиргоо: .env.example, гэрээ: docs/API.md
+import { accessToken } from '../lib/supabase';
 
 export const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false';
 const BASE_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
@@ -35,10 +36,12 @@ export async function request(path, { method = 'GET', body, signal, mock } = {})
 
   let res;
   try {
+    const token = await accessToken();
+    const headers = { ...(body && { 'Content-Type': 'application/json' }), ...(token && { Authorization: `Bearer ${token}` }) };
     res = await fetch(BASE_URL + path, {
       method,
       signal,
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      headers,
       body: body ? JSON.stringify(body) : undefined,
     });
   } catch (error) {
@@ -60,6 +63,7 @@ export async function request(path, { method = 'GET', body, signal, mock } = {})
 
 const MESSAGES = {
   validation_error: ['Мэдээллээ шалгаад дахин оролдоно уу.', 'Please check your details and try again.'],
+  unauthorized: ['Дахин нэвтэрнэ үү.', 'Please log in again.'],
   not_found: ['Хайсан зүйл олдсонгүй.', 'We could not find what you were looking for.'],
   enrollment_closed: ['Энэ сургалтын бүртгэл одоогоор хаалттай байна.', 'Enrollment for this course is currently closed.'],
   already_enrolled: ['Та энэ сургалтад аль хэдийн бүртгүүлсэн байна.', 'You are already enrolled in this course.'],

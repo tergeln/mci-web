@@ -13,6 +13,8 @@ const errors = {
   duplicate: ['Энэ имэйл бүртгэлтэй байна. Нэвтрэх хэсгээр орно уу.', 'This email is already registered. Please log in.'],
   storage: ['Бүртгэлийг хадгалж чадсангүй. Хөтчийн хадгалах зөвшөөрлийг шалгаад дахин оролдоно уу.', 'Could not save your account. Allow browser storage and try again.'],
   login: ['Имэйл эсвэл нууц үг буруу байна.', 'Incorrect email or password.'],
+  unconfirmed: ['Имэйлээ баталгаажуулаад дахин нэвтэрнэ үү.', 'Confirm your email address, then log in.'],
+  rate: ['Хэт олон оролдлого хийлээ. Түр хүлээгээд дахин оролдоно уу.', 'Too many attempts. Please wait and try again.'],
   unknown: ['Алдаа гарлаа. Дахин оролдоно уу.', 'Something went wrong. Please try again.'],
 };
 
@@ -24,7 +26,7 @@ function PasswordVisibilityIcon({ visible }) {
 
 export default function LoginPage({ mode = 'login' }) {
   const signingUp = mode === 'register';
-  const { user, login, register } = useAuth();
+  const { user, ready, login, register } = useAuth();
   const { t } = useLang();
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,7 +37,9 @@ export default function LoginPage({ mode = 'login' }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [confirmSent, setConfirmSent] = useState(false);
   useDocumentTitle(signingUp ? t('Бүртгүүлэх — Magic Code AI', 'Sign up — Magic Code AI') : t('Нэвтрэх — Magic Code AI', 'Log in — Magic Code AI'));
+  if (!ready) return null;
   if (user) return <Navigate to="/account" replace />;
 
   async function submit(event) {
@@ -48,9 +52,10 @@ export default function LoginPage({ mode = 'login' }) {
       if (signingUp) {
         const result = await register({ name, email, password });
         if (result.error) { setError(result.error); return; }
+        if (result.confirm) { setConfirmSent(true); return; }
       } else {
         const profile = await login(email, password);
-        if (!profile) { setError('login'); return; }
+        if (!profile || profile.error) { setError(profile?.error || 'login'); return; }
       }
       navigate('/account', { replace: true });
     } catch {
@@ -74,7 +79,7 @@ export default function LoginPage({ mode = 'login' }) {
       </nav>
       <h2>{signingUp ? t('Хамтдаа эхэлье', 'Start your journey') : t('Тавтай морил', 'Welcome back')}</h2>
       <p>{signingUp ? t('Өөрийн суралцах орон зайг үүсгээрэй.', 'Create your own learning space.') : t('Бүртгэлээрээ нэвтрэх', 'Log in to your account')}</p>
-      <form onSubmit={submit} aria-busy={busy}>
+      {confirmSent ? <p role="status">{t(`${email} хаяг руу баталгаажуулах холбоос илгээлээ. Имэйлээ шалгаад, холбоосыг дарсны дараа нэвтэрнэ үү.`, `We sent a confirmation link to ${email}. Open it, then log in.`)}</p> : <form onSubmit={submit} aria-busy={busy}>
         <fieldset disabled={busy}>
           {signingUp && <div className="auth-field"><label htmlFor="auth-name">{t('Нэр', 'Name')}</label><input id="auth-name" name="name" autoComplete="name" required maxLength={100} value={name} onChange={update(setName)} /></div>}
           <div className="auth-field"><label htmlFor="login-email">{t('Имэйл хаяг', 'Email address')}</label><input id="login-email" name="email" type="email" autoComplete="username" required maxLength={254} value={email} onChange={update(setEmail)} /></div>
@@ -86,7 +91,7 @@ export default function LoginPage({ mode = 'login' }) {
           {error && <p className="account-error" role="alert">{t(...(errors[error] || errors.unknown))}</p>}
           <button className="btn auth-submit" type="submit">{busy ? t('Түр хүлээнэ үү…', 'Please wait…') : signingUp ? t('Бүртгүүлэх →', 'Sign up →') : t('Нэвтрэх →', 'Log in →')}</button>
         </fieldset>
-      </form>
+      </form>}
       <p className="auth-switch">{signingUp ? t('Бүртгэлтэй юу?', 'Already have an account?') : t('Бүртгэлгүй юу?', 'New here?')} <Link className="text-link" to={signingUp ? '/login' : '/register'} state={location.state}>{signingUp ? t('Нэвтрэх', 'Log in') : t('Бүртгүүлэх', 'Sign up')}</Link></p>
     </div>
   </main>;
