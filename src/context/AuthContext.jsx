@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { request, USE_MOCK } from '../api/client';
 import { recordStore } from '../api/localRecords';
 import { RECORDS_EVENT, RECORDS_KEY } from '../api/mock/recordStore';
 import { readStorage, writeStorage } from '../hooks/useLocalStorage';
@@ -15,11 +16,19 @@ export function AuthProvider({ children }) {
   const [registered, setRegistered] = useState(() => registeredAccounts(read('mc-demo-accounts-v1', [])));
   const accounts = [...demoUsers, ...registered];
   const [user, setUser] = useState(() => {
+    if (!USE_MOCK) return null;
     const id = readStorage('mc-demo-session', '');
     const account = accounts.find((u) => u.id === id);
     if (!account) return null;
     return publicProfile(account);
   });
+  const [ready, setReady] = useState(USE_MOCK);
+  useEffect(() => {
+    if (USE_MOCK) return;
+    let active = true;
+    request('/auth/me').then((profile) => { if (active) setUser(profile); }).catch(() => { if (active) setUser(null); }).finally(() => { if (active) setReady(true); });
+    return () => { active = false; };
+  }, []);
   const [allRecords, setRecords] = useState(() => { try { return recordStore.list(); } catch { return []; } });
   useEffect(() => {
     const refresh = () => { try { setRecords(recordStore.list()); } catch { /* Preserve the visible copy if saved data is damaged. */ } };
@@ -29,6 +38,7 @@ export function AuthProvider({ children }) {
     return () => { window.removeEventListener(RECORDS_EVENT, refresh); window.removeEventListener('storage', onStorage); };
   }, []);
   async function login(email, password) {
+    if (!USE_MOCK) { const profile = await request('/auth/login', { method: 'POST', body: { email: normalizeEmail(email), password } }); setUser(profile); return profile; }
     const account = accounts.find((u) => u.email === normalizeEmail(email));
     if (!account || !(account.password ? account.password === password : await matchesPassword(account, password))) return false;
     const profile = publicProfile(account);
@@ -37,6 +47,7 @@ export function AuthProvider({ children }) {
     return profile;
   }
   async function register(details) {
+    if (!USE_MOCK) { const profile = await request('/auth/register', { method: 'POST', body: details }); setUser(profile); return { profile }; }
     const saved = registeredAccounts(read('mc-demo-accounts-v1', []));
     const error = validateRegistration(details, [...demoUsers, ...saved]);
     if (error) return { error };
@@ -52,11 +63,11 @@ export function AuthProvider({ children }) {
     setUser(profile);
     return { profile };
   }
-  function logout() { writeStorage('mc-demo-session', ''); setUser(null); }
+  async function logout() { if (!USE_MOCK) await request('/auth/logout', { method: 'POST' }); writeStorage('mc-demo-session', ''); setUser(null); }
   function addRecord(type, items) {
     if (!user || !items.length) return;
     recordStore.add({ type, items, userId: user.id, name: user.name, email: user.email });
   }
-  return <AuthContext.Provider value={{ user, login, register, logout, records: allRecords.filter((record) => !record.deletedAt), addRecord }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, ready, login, register, logout, records: allRecords.filter((record) => !record.deletedAt), addRecord }}>{children}</AuthContext.Provider>;
 }
 export const useAuth = () => useContext(AuthContext);

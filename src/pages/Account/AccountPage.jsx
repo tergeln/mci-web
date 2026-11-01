@@ -4,12 +4,13 @@ import { LearningProgress, AccountProfile } from './AccountDetails';
 import { useAuth } from '../../context/AuthContext';
 import { useLang } from '../../context/LanguageContext';
 import { errorMessage } from '../../api/client';
-import ClassroomDialog from '../../components/dialogs/ClassroomDialog';
+import { useCommerce } from '../../context/CommerceContext';
 import { cartProducts } from '../../data/merch';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import WorkspaceHeading from './WorkspaceHeading';
 import WorkspaceTabs from './WorkspaceTabs';
 import './account.css';
+import { entitlementExpiry } from '../../data/courseAccess';
 import { learningCourses } from '../../data/lessons';
 
 const LEARNER_TABS = [
@@ -26,26 +27,24 @@ function LearnerPanel({ id, activeTab, children }) {
 }
 
 export default function AccountPage() {
-  const { user, logout, records, addRecord } = useAuth();
+  const { user, ready, logout, records, addRecord } = useAuth();
   const { t, lang } = useLang();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('overview');
-  const [request, setRequest] = useState(null);
+  const { entitlements, ownedIds, openCourse: watch, refresh: refreshCourses, loading: coursesLoading } = useCommerce();
   const [cart, setCart] = useState([]);
   const [notice, setNotice] = useState('');
   const [noticeError, setNoticeError] = useState(false);
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [progressVersion, setProgressVersion] = useState(0);
   const [expandedRecord, setExpandedRecord] = useState(null);
   useDocumentTitle(t('Миний хэсэг — Magic Code AI', 'My account — Magic Code AI'));
+  if (!ready) return <main className="account-page wrap" role="status">{t('Ачааллаж байна…', 'Loading…')}</main>;
   if (!user) return <Navigate to="/login" state={{ from: location.pathname }} replace />;
 
   const visible = records.filter((record) => record.userId === user.id);
   const filtered = visible.filter((record) => (typeFilter === 'all' || record.type === typeFilter) && (statusFilter === 'all' || record.status === statusFilter) && `${record.id} ${record.items.join(' ')}`.toLowerCase().includes(query.toLowerCase()));
-  const watch = (courseId = 'data-analysis') => setRequest((previous) => ({ courseId, id: (previous?.id || 0) + 1 }));
-  const enrolled = visible.some((record) => record.type === 'course' && record.status !== 'cancelled');
   const statusName = (status) => status === 'done' ? t('Шийдвэрлэсэн', 'Completed') : status === 'cancelled' ? t('Цуцалсан', 'Cancelled') : t('Шинэ', 'New');
   function openTab(id) {
     setActiveTab(id);
@@ -69,7 +68,7 @@ export default function AccountPage() {
 
     <LearnerPanel id="overview" activeTab={activeTab}>
       <div className="account-stats">{[
-        [t('Миний сургалт', 'My courses'), Number(enrolled)],
+        [t('Миний сургалт', 'My courses'), ownedIds.length],
         [t('Бүтээгдэхүүний захиалга', 'Product orders'), visible.filter((record) => record.type === 'order').length],
         [t('Сургалтын бүртгэл', 'Course enrollments'), visible.filter((record) => record.type === 'course').length],
       ].map(([label, value]) => <div className="account-card" key={label}><small>{label}</small><strong>{value}</strong></div>)}</div>
@@ -77,12 +76,13 @@ export default function AccountPage() {
     </LearnerPanel>
 
     <LearnerPanel id="learning" activeTab={activeTab}>
-      {learningCourses.map((course) => <section className="account-card account-section" key={course.id}>
+      {learningCourses.filter((course) => ownedIds.includes(course.id)).map((course) => <section className="account-card account-section" key={course.id}>
         <div className="eyebrow">MAGIC CODE · LEARNING SPACE</div>
         <h2>{t(course.title.mn, course.title.en)}</h2>
-        <p>{course.lessons.length} {t('нээлттэй жишээ видео хичээл', 'public preview video lessons')}</p>
+        <p>{course.lessons.length} {t('хичээл', 'lessons')} · {t('Эрх дуусах:', 'Access until:')} {new Date(entitlementExpiry(entitlements.find((item) => item.courseId === course.id))).toLocaleDateString(lang === 'mn' ? 'mn-MN' : 'en-US')}</p>
         <div className="account-actions"><button className="btn" onClick={() => watch(course.id)}>{t('Хичээл үзэх ▶', 'Watch lessons ▶')}</button></div>
       </section>)}
+      {!ownedIds.length && <section className="account-card account-section"><p>{coursesLoading ? t('Ачааллаж байна…', 'Loading…') : t('Төлбөр баталгаажсан сургалт одоогоор алга. Таны авсан сургалтууд энд харагдана.', 'No paid courses yet. Your purchased courses will appear here.')}</p><Link className="btn" to="/cart">{t('Сагс, захиалга харах', 'View cart & orders')}</Link><button className="btn secondary" disabled={coursesLoading} onClick={refreshCourses}>{t('Шинэчлэх', 'Refresh')}</button></section>}
       <Link className="text-link" to="/courses">{t('Бүх сургалт үзэх →', 'Explore all courses →')}</Link>
     </LearnerPanel>
 
@@ -97,7 +97,7 @@ export default function AccountPage() {
       </section>
     </LearnerPanel>
 
-    <LearnerPanel id="progress" activeTab={activeTab}><LearningProgress key={`${user.id}-${progressVersion}`} onWatch={watch} /></LearnerPanel>
+    <LearnerPanel id="progress" activeTab={activeTab}><LearningProgress key={`${user.id}-${ownedIds.join("-")}`} onWatch={watch} /></LearnerPanel>
     <LearnerPanel id="profile" activeTab={activeTab}><AccountProfile key={user.id} /></LearnerPanel>
 
     <LearnerPanel id="history" activeTab={activeTab}>
@@ -111,5 +111,5 @@ export default function AccountPage() {
         </div>)}
       </section>
     </LearnerPanel>
-  </main><ClassroomDialog key={user.id} request={request} onProgress={() => setProgressVersion((version) => version + 1)} /></>;
+  </main></>;
 }

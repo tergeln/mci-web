@@ -36,6 +36,7 @@ export async function request(path, { method = 'GET', body, signal, mock } = {})
   let res;
   try {
     res = await fetch(BASE_URL + path, {
+      credentials: 'include',
       method,
       signal,
       headers: body ? { 'Content-Type': 'application/json' } : undefined,

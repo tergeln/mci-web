@@ -24,7 +24,7 @@ function PasswordVisibilityIcon({ visible }) {
 
 export default function LoginPage({ mode = 'login' }) {
   const signingUp = mode === 'register';
-  const { user, login, register } = useAuth();
+  const { user, ready, login, register } = useAuth();
   const { t } = useLang();
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,7 +36,9 @@ export default function LoginPage({ mode = 'login' }) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   useDocumentTitle(signingUp ? t('Бүртгүүлэх — Magic Code AI', 'Sign up — Magic Code AI') : t('Нэвтрэх — Magic Code AI', 'Log in — Magic Code AI'));
-  if (user) return <Navigate to="/account" replace />;
+  const returnTo = typeof location.state?.from === 'string' && location.state.from.startsWith('/') && !location.state.from.startsWith('//') && !['/login', '/register'].includes(location.state.from) ? location.state.from : '/account';
+  if (!ready) return <main className="account-page wrap" role="status">{t('Ачааллаж байна…', 'Loading…')}</main>;
+  if (user) return <Navigate to={returnTo} replace />;
 
   async function submit(event) {
     event.preventDefault();
@@ -52,7 +54,7 @@ export default function LoginPage({ mode = 'login' }) {
         const profile = await login(email, password);
         if (!profile) { setError('login'); return; }
       }
-      navigate('/account', { replace: true });
+      navigate(returnTo, { replace: true });
     } catch {
       setError('unknown');
     } finally {
@@ -64,7 +66,7 @@ export default function LoginPage({ mode = 'login' }) {
   return <main className="account-page wrap login-layout">
     <div className="login-intro">
       <div className="eyebrow">MAGIC CODE · YOUR SPACE</div>
-      <h1>{t('Үргэлжлүүлэн', 'Keep')}<br /><em>{t('бүтээцгээе.', 'creating.')}</em></h1>
+      <h1>{t('Хамтдаа', 'Let’s grow')} <em>{t('хөгжье.', 'together.')}</em></h1>
       <p>{t('Хичээлээ үзэж, шинэ зүйл суралцаж, өөрийн ахиц бүрийг бүтээх орон зай.', 'Your space to learn, explore lessons and keep moving forward.')}</p>
     </div>
     <div className="account-card login-card">
@@ -73,7 +75,7 @@ export default function LoginPage({ mode = 'login' }) {
         <Link to="/register" state={location.state} aria-current={signingUp ? 'page' : undefined}>{t('Бүртгүүлэх', 'Sign up')}</Link>
       </nav>
       <h2>{signingUp ? t('Хамтдаа эхэлье', 'Start your journey') : t('Тавтай морил', 'Welcome back')}</h2>
-      <p>{signingUp ? t('Өөрийн суралцах орон зайг үүсгээрэй.', 'Create your own learning space.') : t('Бүртгэлээрээ нэвтрэх', 'Log in to your account')}</p>
+      {signingUp && <p className="auth-description">{t('Өөрийн суралцах орон зайг үүсгээрэй.', 'Create your own learning space.')}</p>}
       <form onSubmit={submit} aria-busy={busy}>
         <fieldset disabled={busy}>
           {signingUp && <div className="auth-field"><label htmlFor="auth-name">{t('Нэр', 'Name')}</label><input id="auth-name" name="name" autoComplete="name" required maxLength={100} value={name} onChange={update(setName)} /></div>}

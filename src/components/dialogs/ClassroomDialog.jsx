@@ -1,128 +1,89 @@
+import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useCommerce } from '../../context/CommerceContext';
 import { useEffect, useRef, useState } from 'react';
-import Tr from '../Tr/Tr';
 import { useLang } from '../../context/LanguageContext';
+import { getCourseLessons } from '../../api/commerce';
 import closeOnBackdrop from '../../hooks/dialogBackdrop';
 import { readStorage, writeStorage } from '../../hooks/useLocalStorage';
 import { getLearningCourse, lessonStorageKeys } from '../../data/lessons';
+import CoursePurchaseButton, { CourseTerms } from '../CoursePurchaseButton';
 import './classroom-dialog.css';
+import '../../pages/Cart/cart.css';
 
-function loadCompleted(key, courseLessons) {
-  try {
-    const saved = JSON.parse(readStorage(key, '[]'));
-    if (Array.isArray(saved)) return [...new Set(saved.filter((id) => courseLessons.some((l) => l.id === id)))];
-  } catch {
-    /* эвдэрсэн өгөгдлийг алгасна */
-  }
-  return [];
-}
-
-function loadLast(key, courseLessons) {
-  const last = Number(readStorage(key, ''));
-  return Number.isInteger(last) && last >= 0 && last < courseLessons.length ? last : 0;
-}
-
-// request – id нэмэгдэх бүрт dialog нээгдэж, видеог ачаална.
-export default function ClassroomDialog({ request, onProgress }) {
+export default function ClassroomDialog({ request }) {
   const { user } = useAuth();
+  const { hasAccess } = useCommerce();
   const course = getLearningCourse(request?.courseId ?? request?.course?.id);
   if (!course) return null;
-  return <CourseClassroom key={`${user?.id || 'guest'}-${course.id}`} request={request} course={course} userId={user?.id || 'guest'} onProgress={onProgress} />;
+  const unlocked = !!user && hasAccess(course.id);
+  return <ClassroomWindow key={`${user?.id || 'guest'}-${course.id}-${unlocked}`} course={course} request={request} userId={user?.id} unlocked={unlocked} />;
 }
 
-function CourseClassroom({ request, course, userId, onProgress }) {
+function ClassroomWindow({ request, course, userId, unlocked }) {
   const { t } = useLang();
-  const courseLessons = course.lessons;
-  const { progress: progressKey, last: lastKey } = lessonStorageKeys(course.id, userId);
-  const dialogRef = useRef(null);
-  const [current, setCurrent] = useState(() => loadLast(lastKey, courseLessons));
-  const [completed, setCompleted] = useState(() => loadCompleted(progressKey, courseLessons));
-  const [videoId, setVideoId] = useState(null);
-
-  const lesson = courseLessons[current];
-
-  const play = (index) => {
-    setCurrent(index);
-    setVideoId(courseLessons[index].id);
-    writeStorage(lastKey, String(index));
-  };
-
+  const { key: locationKey } = useLocation();
+  const dialog = useRef(null);
+  const previousLocation = useRef(locationKey);
+  const [opened, setOpened] = useState(false);
+  const [lessons, setLessons] = useState(null);
+  const [error, setError] = useState(false);
+  const [retry, setRetry] = useState(0);
+  useEffect(() => {
+    if (previousLocation.current !== locationKey) { dialog.current?.close(); setOpened(false); }
+    previousLocation.current = locationKey;
+  }, [locationKey]);
   useEffect(() => {
     if (!request) return;
-    play(current);
-    const dialog = dialogRef.current;
-    if (dialog && !dialog.open) dialog.showModal();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!dialog.current.open) dialog.current.showModal();
+    setOpened(true);
   }, [request]);
+  useEffect(() => {
+    let active = true;
+    if (!unlocked || !opened) return;
+    setLessons(null); setError(false);
+    getCourseLessons(course.id, userId).then((result) => {
+      if (!active) return;
+      if (!Array.isArray(result.lessons) || !result.lessons.length) { setError(true); return; }
+      setLessons(result.lessons);
+    }).catch(() => { if (active) setError(true); });
+    return () => { active = false; };
+  }, [course.id, userId, unlocked, opened, retry]);
+  const preview = course.lessons[0];
+  return <dialog id="classroom" ref={dialog} onClick={closeOnBackdrop} onClose={() => setOpened(false)} aria-label={t(course.title.mn, course.title.en)}>
+    <div className="classroom-top"><div><small>MAGIC CODE · LEARNING SPACE</small><h3>{t(course.title.mn, course.title.en)}</h3></div><button type="button" className="icon-btn" aria-label={t('Хичээлийг хаах', 'Close lessons')} onClick={() => dialog.current.close()}>×</button></div>
+    {!unlocked ? <div className="classroom-preview classroom-preview-grid">
+      <div className="classroom-preview-main"><h3>{t('Богино танилцуулга', 'Short preview')}</h3>
+        <div className="lesson-video">{opened && <iframe title={t('Сургалтын танилцуулга', 'Course preview')} src={`https://www.youtube-nocookie.com/embed/${preview.id}?start=0&end=60&rel=0`} allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" />}</div>
+        <p>{t('60 секундийн жишээ танилцуулга · Англи хэлээр.', '60-second sample preview · In English.')}</p>
+      </div>
+      <aside className="classroom-preview-syllabus"><h3>{t('Сургалтын агуулга', 'Course syllabus')}</h3>
+        <ol>{course.lessons.map((lesson) => <li key={lesson.id}>{t(lesson.mn, lesson.en)}</li>)}</ol>
+        <CourseTerms />
+        <CoursePurchaseButton courseId={course.id} />
+      </aside>
+    </div> : <>
+      {!lessons && !error && <div className="classroom-preview" role="status">{t('Хичээл ачааллаж байна…', 'Loading your lessons…')}</div>}
+      {error && <div className="classroom-preview" role="alert"><p>{t('Хичээл үзэх эрхийг баталгаажуулж чадсангүй. Төлбөрийн төлөвөө шалгаад дахин оролдоно уу.', 'Could not verify lesson access. Check your payment status and try again.')}</p><button className="btn secondary" onClick={() => setRetry((value) => value + 1)}>{t('Дахин оролдох', 'Retry')}</button></div>}
+      {lessons && opened && <PaidLessons course={{ ...course, lessons }} userId={userId} />}
+    </>}
+  </dialog>;
+}
 
+function PaidLessons({ course, userId }) {
+  const { t } = useLang();
+  const { progress: progressKey, last: lastKey } = lessonStorageKeys(course.id, userId);
+  const [current, setCurrent] = useState(() => { const index = Number(readStorage(lastKey, '0')); return Number.isInteger(index) && index >= 0 && index < course.lessons.length ? index : 0; });
+  const [completed, setCompleted] = useState(() => { try { const saved = JSON.parse(readStorage(progressKey, '[]')); return Array.isArray(saved) ? [...new Set(saved.filter((id) => course.lessons.some((lesson) => lesson.id === id)))] : []; } catch { return []; } });
+  const lesson = course.lessons[current];
+  const play = (index) => { setCurrent(index); writeStorage(lastKey, String(index)); };
   const toggleComplete = () => {
-    const next = completed.includes(lesson.id) ? completed.filter((x) => x !== lesson.id) : [...completed, lesson.id];
-    setCompleted(next);
-    writeStorage(progressKey, JSON.stringify(next));
-    onProgress?.();
+    const next = completed.includes(lesson.id) ? completed.filter((id) => id !== lesson.id) : [...completed, lesson.id];
+    setCompleted(next); writeStorage(progressKey, JSON.stringify(next));
   };
-
-  return (
-    <dialog id="classroom" ref={dialogRef} onClick={closeOnBackdrop} onClose={() => setVideoId(null)}>
-      <div className="classroom-top">
-        <div>
-          <small>MAGIC CODE · LEARNING SPACE</small>
-          <h3>{t(course.title.mn, course.title.en)}</h3>
-        </div>
-        <button type="button" className="icon-btn" id="closeClassroom" aria-label="Close lessons" onClick={() => dialogRef.current.close()}>×</button>
-      </div>
-      <div className="classroom-layout">
-        <div className="classroom-main">
-          <div className="lesson-video">
-            <iframe
-              id="lessonPlayer"
-              title={t(lesson.mn, lesson.en)}
-              src={videoId ? `https://www.youtube-nocookie.com/embed/${videoId}?rel=0` : undefined}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              referrerPolicy="strict-origin-when-cross-origin"
-            />
-          </div>
-          <small id="lessonCreator">{lesson.creator} · YouTube</small>
-          <h3 id="lessonTitle">{t(lesson.mn, lesson.en)}</h3>
-          <p>
-            <Tr
-              mn="Түр сан: бусад бүтээгчдийн нээлттэй YouTube хичээлүүд · Англи хэлээр."
-              en="Preview library: public YouTube lessons from independent creators · In English."
-            />
-          </p>
-          <a id="lessonYoutube" href={`https://www.youtube.com/watch?v=${lesson.id}`} target="_blank" rel="noopener noreferrer">
-            <Tr mn="YouTube дээр үзэх" en="Watch on YouTube" />
-          </a>
-          <div className="lesson-actions">
-            <button className="btn" id="completeLesson" onClick={toggleComplete}>
-              {completed.includes(lesson.id)
-                ? t('Үзсэн тэмдэглэгээг авах', 'Undo completion')
-                : t('Үзсэн гэж тэмдэглэх', 'Mark as completed')}
-            </button>
-            <button className="btn secondary" id="nextLesson" disabled={current === courseLessons.length - 1} onClick={() => play(current + 1)}>
-              <Tr mn="Дараагийн хичээл" en="Next lesson" />
-            </button>
-          </div>
-        </div>
-        <div className="classroom-sidebar">
-          <h3><Tr mn="Хичээлийн агуулга" en="Course content" /></h3>
-          <p id="lessonProgress" aria-live="polite">
-            {t('Дууссан: ', 'Completed: ')}
-            {completed.length} / {courseLessons.length}
-          </p>
-          <progress id="lessonProgressBar" value={completed.length} max={courseLessons.length} />
-          <div id="lessonList">
-            {courseLessons.map((l, i) => (
-              <button key={l.id} type="button" className="lesson-choice" aria-current={i === current ? 'true' : 'false'} onClick={() => play(i)}>
-                <span>{completed.includes(l.id) ? '✓' : String(i + 1).padStart(2, '0')}</span>
-                <span>{t(l.mn, l.en)}</span>
-              </button>
-            ))}
-          </div>
-          <small><Tr mn="Тэмдэглэсэн явц энэ хөтөч дээр хадгалагдана." en="Completion marks are saved in this browser." /></small>
-        </div>
-      </div>
-    </dialog>
-  );
+  return <div className="classroom-layout"><div className="classroom-main">
+    <div className="lesson-video">{lesson.videoUrl && /^https:\/\//.test(lesson.videoUrl) ? <video key={lesson.id} controls src={lesson.videoUrl} style={{ width: '100%', height: '100%' }} /> : <iframe title={t(lesson.mn, lesson.en)} src={`https://www.youtube-nocookie.com/embed/${lesson.id}?rel=0`} allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />}</div>
+    <small>{lesson.creator}</small><h3>{t(lesson.mn, lesson.en)}</h3>
+    <div className="lesson-actions"><button className="btn" onClick={toggleComplete}>{completed.includes(lesson.id) ? t('Үзсэн тэмдэглэгээг авах', 'Undo completion') : t('Үзсэн гэж тэмдэглэх', 'Mark completed')}</button><button className="btn secondary" disabled={current === course.lessons.length - 1} onClick={() => play(current + 1)}>{t('Дараагийн хичээл', 'Next lesson')}</button></div>
+  </div><aside className="classroom-sidebar"><h3>{t('Хичээлийн агуулга', 'Course content')}</h3><p>{completed.length} / {course.lessons.length}</p><progress value={completed.length} max={course.lessons.length} />{course.lessons.map((item, index) => <button className="lesson-choice" key={item.id} aria-current={index === current ? 'true' : 'false'} onClick={() => play(index)}><span>{completed.includes(item.id) ? '✓' : String(index + 1).padStart(2, '0')}</span><span>{t(item.mn, item.en)}</span></button>)}</aside></div>;
 }

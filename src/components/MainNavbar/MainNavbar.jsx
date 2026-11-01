@@ -95,7 +95,7 @@ export default function MainNavbar({ cartCount, onCartClick }) {
             <span className={`lang-option${lang === 'mn' ? ' active' : ''}`}>MN</span>
             <span className={`lang-option${lang === 'en' ? ' active' : ''}`}>EN</span>
           </button>
-          <button className="language" id="cartBtn" aria-label={t('Сонирхсон бүтээгдэхүүн', 'Shopping bag')} onClick={onCartClick}>
+          <button className="language" id="cartBtn" aria-label={t('Сагс', 'Shopping cart')} onClick={onCartClick}>
             <PouchIcon />
             {cartCount > 0 && <span className="cart-count" id="count" aria-live="polite">{cartCount}</span>}
           </button>

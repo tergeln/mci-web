@@ -17,6 +17,7 @@ test('public pages have distinct canonical URLs and are all present in sitemap',
   assert.deepEqual(pageSeo('/index.html'), pageSeo('/'));
   assert.deepEqual(pageSeo('/courses/index.html'), pageSeo('/courses'));
   assert.equal(pageSeo('/account').noindex, true);
+  assert.equal(pageSeo('/cart').noindex, true);
   assert.equal(pageSeo('/login').noindex, true);
   assert.equal(pageSeo('/register').noindex, true);
   assert.equal(pageSeo('/news/missing').noindex, true);

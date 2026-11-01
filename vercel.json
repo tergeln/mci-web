@@ -4,6 +4,7 @@
   "rewrites": [
     { "source": "/login", "destination": "/login/index.html" },
     { "source": "/register", "destination": "/register/index.html" },
+    { "source": "/cart", "destination": "/cart/index.html" },
     { "source": "/account", "destination": "/account/index.html" },
     { "source": "/courses", "destination": "/courses/index.html" },
     { "source": "/news", "destination": "/news/index.html" },

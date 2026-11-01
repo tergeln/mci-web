@@ -1,20 +1,23 @@
 import Tr from '../../../components/Tr/Tr';
-import { courseButtonLabel } from '../../../data/courses';
+import { useCommerce } from '../../../context/CommerceContext';
+import CoursePurchaseButton, { CourseTerms } from '../../../components/CoursePurchaseButton';
 import useReveal from '../../../hooks/useReveal';
 import CourseArt from './CourseArt';
 import { useLang } from '../../../context/LanguageContext';
 
 export default function CourseCard({ course, index, onSelect }) {
   const [ref, className] = useReveal('card');
-  const { lang } = useLang();
+  const { lang, t } = useLang();
+  const { hasAccess } = useCommerce();
   return (
     <article ref={ref} className={className} aria-label={course.title[lang]}>
       <CourseArt course={course} />
       <div className="card-body">
         <p><Tr text={course.text} /></p>
-        <div className="meta"><Tr text={course.meta} /></div>
+        <div className="meta"><Tr text={course.meta} /><CourseTerms /></div>
         <div className="card-bottom">
-          <button data-course={index} onClick={onSelect}><Tr text={courseButtonLabel} /></button>
+          {!hasAccess(course.id) && <button className="course-preview-link" onClick={onSelect}>{t("Танилцуулга үзэх", "Watch preview")}</button>}
+          <CoursePurchaseButton courseId={course.id} />
         </div>
       </div>
     </article>

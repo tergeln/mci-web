@@ -31,7 +31,7 @@ export function seoPlugin() {
     generateBundle(_options, bundle) {
       const template = bundle['index.html'];
       if (!template) throw new Error('SEO build requires index.html');
-      for (const path of [...publicPages.filter((item) => item.path !== '/').map((item) => item.path), '/login', '/register', '/account']) {
+      for (const path of [...publicPages.filter((item) => item.path !== '/').map((item) => item.path), '/login', '/register', '/account', '/cart']) {
         this.emitFile({ type: 'asset', fileName: `${path.slice(1)}/index.html`, source: withSeo(String(template.source), path) });
       }
     },
