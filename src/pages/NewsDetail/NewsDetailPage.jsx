@@ -21,7 +21,9 @@ export default function NewsDetailPage() {
   const { data: story, loading, error, reload } = useApi((signal) => getNewsItem(id, { signal }), [id]);
   const missing = error?.code === 'not_found';
 
-  useDocumentTitle(story ? `${story.title[lang]} — Magic Code AI` : 'Бидний хийсэн ажлууд', 'Our Work');
+  useDocumentTitle(story ? `${story.title[lang]} — Magic Code AI` : t('Бидний хийсэн ажлууд — Magic Code AI', 'Our Work — Magic Code AI'), {
+    description: story?.summary?.[lang], image: story?.coverImage?.src, noindex: missing || undefined,
+  });
 
   return (
     <>

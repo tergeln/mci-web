@@ -2,10 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
   "rewrites": [
-    { "source": "/login", "destination": "/index.html" },
-    { "source": "/register", "destination": "/index.html" },
-    { "source": "/account", "destination": "/index.html" },
-    { "source": "/courses", "destination": "/index.html" },
+    { "source": "/login", "destination": "/login/index.html" },
+    { "source": "/register", "destination": "/register/index.html" },
+    { "source": "/account", "destination": "/account/index.html" },
+    { "source": "/courses", "destination": "/courses/index.html" },
+    { "source": "/news", "destination": "/news/index.html" },
+    { "source": "/news/1", "destination": "/news/1/index.html" },
+    { "source": "/news/2", "destination": "/news/2/index.html" },
+    { "source": "/news/3", "destination": "/news/3/index.html" },
     { "source": "/news/:path*", "destination": "/index.html" }
   ]
 }
