@@ -9,6 +9,7 @@ import { cartProducts } from '../../data/merch';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import WorkspaceHeading from './WorkspaceHeading';
 import WorkspaceTabs from './WorkspaceTabs';
+import WalletPanel from './WalletPanel';
 import './account.css';
 import { entitlementExpiry } from '../../data/courseAccess';
 import { learningCourses } from '../../data/lessons';
@@ -16,6 +17,7 @@ import { learningCourses } from '../../data/lessons';
 const LEARNER_TABS = [
   { id: 'overview', mn: 'Тойм', en: 'Overview' },
   { id: 'learning', mn: 'Миний сургалт', en: 'My learning' },
+  { id: 'wallet', mn: 'Хэтэвч', en: 'Wallet' },
   { id: 'products', mn: 'Дэлгүүр', en: 'Shop' },
   { id: 'progress', mn: 'Суралцах явц', en: 'Progress' },
   { id: 'profile', mn: 'Миний мэдээлэл', en: 'My profile' },
@@ -30,7 +32,7 @@ export default function AccountPage() {
   const { user, ready, remote, logout, records, addRecord, refreshRecords } = useAuth();
   const { t, lang } = useLang();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState(() => new URLSearchParams(location.search).get('tab') === 'wallet' ? 'wallet' : 'overview');
   const { entitlements, ownedIds, openCourse: watch, refresh: refreshCourses, loading: coursesLoading } = useCommerce();
   const [cart, setCart] = useState([]);
   const [notice, setNotice] = useState('');
@@ -86,6 +88,8 @@ export default function AccountPage() {
       {!ownedIds.length && <section className="account-card account-section"><p>{coursesLoading ? t('Ачааллаж байна…', 'Loading…') : t('Төлбөр баталгаажсан сургалт одоогоор алга. Таны авсан сургалтууд энд харагдана.', 'No paid courses yet. Your purchased courses will appear here.')}</p><Link className="btn" to="/cart">{t('Сагс, захиалга харах', 'View cart & orders')}</Link><button className="btn secondary" disabled={coursesLoading} onClick={refreshCourses}>{t('Шинэчлэх', 'Refresh')}</button></section>}
       <Link className="text-link" to="/courses">{t('Бүх сургалт үзэх →', 'Explore all courses →')}</Link>
     </LearnerPanel>
+
+    <LearnerPanel id="wallet" activeTab={activeTab}>{activeTab === 'wallet' && <WalletPanel />}</LearnerPanel>
 
     <LearnerPanel id="products" activeTab={activeTab}>
       <section className="account-card account-section"><div className="eyebrow">02 · PRODUCTS</div><h2>{t('Дэлгүүр', 'Shop')}</h2><p>{t('Бүтээгдэхүүнээ сонгож захиалаарай.', 'Select products to order.')}</p>

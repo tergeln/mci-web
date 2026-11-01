@@ -77,6 +77,9 @@ const FALLBACK = ['Алдаа гарлаа. Дахин оролдоно уу.', 
 
 /** Алдааны кодыг хэрэглэгчид харуулах текст болгоно. `t` нь useLang()-ийн t. */
 export function errorMessage(error, t) {
+  if (error?.code === 'insufficient_balance') return t('Хэтэвчийн үлдэгдэл хүрэлцэхгүй байна.', 'Your wallet balance is too low.');
+  if (error?.code === 'qpay_unavailable') return t('QPay одоогоор ажиллахгүй байна.', 'QPay is currently unavailable.');
+  if (error?.code === 'qpay_in_progress') return t('Нээлттэй QPay нэхэмжлэх байна. Түр хүлээгээд дахин оролдоно уу.', 'A QPay invoice is still open. Please wait and try again.');
   const [mn, en] = MESSAGES[error?.code] ?? FALLBACK;
   return t(mn, en);
 }
