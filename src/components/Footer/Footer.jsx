@@ -5,7 +5,7 @@ export default function Footer() {
     <footer>
       <div className="wrap">
         <small>
-          <Tr mn="© 2026 Magic Code AI. Сониуч хүн бүрд зориулав." en="© 2026 Magic Code AI. Made for curious minds." />
+          <Tr mn="© 2026 Magic Code AI. Бүх эрх хуулиар хамгаалагдсан." en="© 2026 Magic Code AI. All rights reserved." />
         </small>
       </div>
     </footer>

@@ -5,7 +5,7 @@ import { sendChatMessage } from '../../api/chat';
 import { errorMessage } from '../../api/client';
 import getChatViewport from './chatViewport';
 
-const mascotImage = '/assets/chatbot-hedgehog.png';
+const mascotImage = '/assets/chatbot-falcon.webp';
 
 // open/onOpenChange-ийг Home барина (Contact хэсгийн товч мөн chat-ийг нээдэг).
 export default function Chatbot({ open, onOpenChange }) {

@@ -111,36 +111,41 @@ export default function EnrollDialog({ request, onOpenClassroom }) {
           <div className="summary-row"><span>{t('Сургалт', 'Course')}</span><strong>{name}</strong></div>
           <div className="summary-row"><span>{t('Төлбөр', 'Tuition')}</span><strong>{t('Баталгаажуулах', 'To be confirmed')}</strong></div>
         </div>
-        <div className="demo">
-          <Tr
-            mn="Төлбөрийн дэлгэцийн туршилт. Бодит төлбөр авахгүй. Албан ёсны үнэ болон төлбөрийн холболтыг байгууллага баталгаажуулна."
-            en="Payment UI demo. No money is collected. Official pricing and payment integration require confirmation from the academy."
-          />
-        </div>
         <div className="payment-options">
           <button type="button" aria-pressed={payment === 0} onClick={() => setPayment(0)}>QPay</button>
           <button type="button" aria-pressed={payment === 1} onClick={() => setPayment(1)}>
             <Tr mn="Банкны шилжүүлэг" en="Bank transfer" />
           </button>
         </div>
-        <p id="paymentNote" className="muted" style={{ fontSize: '11px', marginTop: '15px' }}>
-          {t('Бодит системд энд QPay QR код эсвэл банкны баталгаажсан мэдээлэл гарна.', 'In the live system, a QPay QR or verified bank details appear here.')}
-        </p>
+        {payment === 1 ? (
+          <div id="paymentNote" style={{ marginTop: '15px' }}>
+            <div className="summary-row"><span>{t('Банк', 'Bank')}</span><strong>{t('Хаан банк', 'Khan Bank')}</strong></div>
+            <div className="summary-row"><span>IBAN</span><strong style={{ overflowWrap: 'anywhere' }}>MN790005005031346583</strong></div>
+            <div className="summary-row"><span>{t('Данс эзэмшигч', 'Account holder')}</span><strong>Энхтуяа Цогтбаатар</strong></div>
+            <p className="muted" style={{ marginTop: '15px' }}>
+              {t('Гүйлгээний утга дээр Gmail хаяг, утасны дугаараа бичнэ үү.', 'Please include your Gmail address and phone number in the transfer description.')}
+            </p>
+          </div>
+        ) : (
+          <p id="paymentNote" className="muted" style={{ fontSize: '11px', marginTop: '15px' }}>
+            {t('QPay одоогоор ажиллахгүй тул дансаар шилжүүлнэ үү.', 'QPay is currently unavailable. Please pay by bank transfer.')}
+          </p>
+        )}
         {errorBox}
         <button className="btn full" id="finishPayment" disabled={busy} onClick={onPay}>
-          {busy ? t('Илгээж байна', 'Sending') : t('Туршилтын бүртгэлийг дуусгах', 'Finish demo enrollment')}
+          {busy ? t('Илгээж байна', 'Sending') : t('Бүртгэлийг дуусгах', 'Finish enrollment')}
         </button>
         <button className="btn secondary full" id="backEnroll" disabled={busy} onClick={() => { setError(''); setStep('form'); }}>
           <Tr mn="Буцах" en="Back" />
         </button>
       </div>
       <div id="successStep" hidden={step !== 'success'}>
-        <h3>{USE_MOCK ? t('Туршилтын бүртгэл бэлэн ✓', 'Demo registration complete ✓') : t('Бүртгэл хүлээн авлаа ✓', 'Registration received ✓')}</h3>
+        <h3>{USE_MOCK ? t('Бүртгэл хадгалагдлаа ✓', 'Registration saved ✓') : t('Бүртгэл хүлээн авлаа ✓', 'Registration received ✓')}</h3>
         <p style={{ marginTop: '15px' }}>
           {USE_MOCK
             ? waitlist
-              ? t('Энэ бол дэлгэцийн туршилт. Жинхэнэ хүлээлгийн жагсаалтад нэгдэх бол magiccodeai@gmail.com руу бичээрэй.', 'This is a UI demo. Email magiccodeai@gmail.com to join the real waitlist.')
-              : t('Бүртгэл болон төлбөрийн урсгалыг туршлаа. Мэдээлэл серверт илгээгээгүй, төлбөр аваагүй. Албан ёсоор бүртгүүлэх бол и-мэйлээр холбогдоорой.', 'You have explored enrollment and checkout. No details were sent to a server and no payment was taken. Email us for official enrollment.')
+              ? t('Хүлээлгийн жагсаалтад нэгдэх бол magiccodeai@gmail.com руу бичээрэй.', 'Email magiccodeai@gmail.com to join the waitlist.')
+              : t('Бүртгэл энэ хөтөч дээр хадгалагдлаа. Төлбөрөө баталгаажуулах бол magiccodeai@gmail.com руу холбогдоорой.', 'Your registration is saved in this browser. Contact magiccodeai@gmail.com to confirm your payment.')
             : waitlist
               ? t('Та хүлээлгийн жагсаалтад нэгдлээ. Сургалт нээгдэхэд бид тантай холбогдоно.', 'You have joined the waitlist. We will contact you when the course opens.')
               : t('Бүртгэл хүлээн авлаа. Төлбөр баталгаажсаны дараа бид тантай холбогдоно.', 'Your registration has been received. We will contact you once payment is confirmed.')}

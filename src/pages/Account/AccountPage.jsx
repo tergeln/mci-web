@@ -64,7 +64,7 @@ export default function AccountPage() {
       onLogout={logout}
     />
     <div className="workspace-tabs-bar"><WorkspaceTabs tabs={LEARNER_TABS} activeTab={activeTab} onChange={setActiveTab} prefix="learner" label={t('Суралцагчийн хэсгүүд', 'Learner dashboard sections')} /></div>
-    <p className="account-note">{t('Demo орчин · Бодит төлбөр хийгдэхгүй. Мэдээлэл зөвхөн энэ хөтөч дээр хадгалагдана.', 'Demo environment · No real payments. Data is saved only in this browser.')}</p>
+    <p className="account-note">{t('Мэдээлэл зөвхөн энэ хөтөч дээр хадгалагдана.', 'Data is saved only in this browser.')}</p>
     <p role="status" className={`account-feedback${noticeError ? ' account-error' : ''}`}>{notice}</p>
 
     <LearnerPanel id="overview" activeTab={activeTab}>
@@ -87,13 +87,13 @@ export default function AccountPage() {
     </LearnerPanel>
 
     <LearnerPanel id="products" activeTab={activeTab}>
-      <section className="account-card account-section"><div className="eyebrow">02 · PRODUCTS</div><h2>{t('Demo дэлгүүр', 'Demo shop')}</h2><p>{t('Жишээ бүтээгдэхүүн сонгож захиалгын урсгалыг туршаарай.', 'Select concept products to try the order flow.')}</p>
+      <section className="account-card account-section"><div className="eyebrow">02 · PRODUCTS</div><h2>{t('Дэлгүүр', 'Shop')}</h2><p>{t('Бүтээгдэхүүнээ сонгож захиалаарай.', 'Select products to order.')}</p>
         {cartProducts.map((product, index) => <div className="account-row" key={product.en}><span>{product.emblem} {product[lang]}</span><button className="btn secondary" onClick={() => { setCart((previous) => [...previous, index]); setNotice(''); }}>+ {t('Нэмэх', 'Add')}</button></div>)}
         {cart.length > 0 && <div className="account-cart"><h3>{t('Миний сагс', 'My bag')}</h3>{cartProducts.map((product, index) => {
           const quantity = cart.filter((id) => id === index).length;
           return quantity > 0 && <div className="account-row" key={product.en}><span>{product[lang]}</span><div className="account-quantity"><button type="button" aria-label={`${product[lang]} −1`} onClick={() => setCart((previous) => { const next = [...previous]; next.splice(next.indexOf(index), 1); return next; })}>−</button><output aria-live="polite">{quantity}</output><button type="button" aria-label={`${product[lang]} +1`} onClick={() => setCart((previous) => [...previous, index])}>+</button></div></div>;
         })}<small>{t('Жишээ бүтээгдэхүүн · Үнэ тогтоогоогүй, төлбөр авахгүй.', 'Concept products · No payment required.')}</small></div>}
-        <div className="account-actions"><button className="btn" disabled={!cart.length} onClick={() => { if (saveRecord('order', cart.map((index) => cartProducts[index][lang]), t('Demo захиалга үүслээ. Түүх табаас харна уу.', 'Demo order created. See the History tab.'))) setCart([]); }}>{t('Demo захиалах', 'Place demo order')} ({cart.length})</button><button className="btn secondary" disabled={!cart.length} onClick={() => setCart([])}>{t('Цэвэрлэх', 'Clear')}</button></div>
+        <div className="account-actions"><button className="btn" disabled={!cart.length} onClick={() => { if (saveRecord('order', cart.map((index) => cartProducts[index][lang]), t('Захиалга хадгалагдлаа. Түүх табаас харна уу.', 'Order saved. See the History tab.'))) setCart([]); }}>{t('Захиалах', 'Place order')} ({cart.length})</button><button className="btn secondary" disabled={!cart.length} onClick={() => setCart([])}>{t('Цэвэрлэх', 'Clear')}</button></div>
       </section>
     </LearnerPanel>
 
@@ -107,7 +107,7 @@ export default function AccountPage() {
         {!filtered.length && <p className="account-empty">{t('Тохирох бүртгэл, захиалга олдсонгүй.', 'No matching enrollments or orders.')}</p>}
         {filtered.map((record) => <div className="account-record" key={record.id}><div className="account-row"><div><strong>{record.type === 'course' ? t('Сургалт', 'Course') : t('Захиалга', 'Order')} · {[...new Set(record.items)].join(', ')}</strong><p>{new Date(record.createdAt).toLocaleDateString(lang === 'mn' ? 'mn-MN' : 'en-US')} · #{record.id.slice(0, 8)}</p></div><span className="account-badge">{statusName(record.status)}</span></div>
           <button className="text-link account-help" aria-expanded={expandedRecord === record.id} onClick={() => setExpandedRecord(expandedRecord === record.id ? null : record.id)}>{expandedRecord === record.id ? t('Хураах ↑', 'Collapse ↑') : t('Дэлгэрэнгүй ↓', 'View details ↓')}</button>
-          {expandedRecord === record.id && <div className="account-record-detail"><p>{t('Бүртгэлийн дугаар', 'Reference')}: {record.id}</p><p>{t('Үүссэн огноо', 'Created')}: {new Date(record.createdAt).toLocaleString(lang === 'mn' ? 'mn-MN' : 'en-US')}</p>{[...new Set(record.items)].map((item) => <div className="account-row" key={item}><span>{item}</span><strong>× {record.items.filter((value) => value === item).length}</strong></div>)}<small>{t('Demo бүртгэл · Бодит төлбөрийн баримт биш.', 'Demo record · No real payment receipt.')}</small></div>}
+          {expandedRecord === record.id && <div className="account-record-detail"><p>{t('Бүртгэлийн дугаар', 'Reference')}: {record.id}</p><p>{t('Үүссэн огноо', 'Created')}: {new Date(record.createdAt).toLocaleString(lang === 'mn' ? 'mn-MN' : 'en-US')}</p>{[...new Set(record.items)].map((item) => <div className="account-row" key={item}><span>{item}</span><strong>× {record.items.filter((value) => value === item).length}</strong></div>)}<small>{t('Бүртгэлийн мэдээлэл · Төлбөрийн баримт биш.', 'Record details · Not a payment receipt.')}</small></div>}
         </div>)}
       </section>
     </LearnerPanel>

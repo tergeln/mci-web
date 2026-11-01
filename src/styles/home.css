@@ -44,7 +44,7 @@
 
 /* style block #21 (chatbot-reference-icon) */
 #chatToggle{padding:0;overflow:hidden;background:#030E21;border-color:#E8D5A3}
-#chatToggle .chat-robot-portrait{position:absolute;inset:0;border-radius:50%;background:url('/assets/chatbot-wizard.png') center/contain no-repeat}
+#chatToggle .chat-robot-portrait{position:absolute;inset:0;border-radius:50%;background:url('/assets/chatbot-falcon.webp') center/contain no-repeat}
 
 /* style block #22 (chatbot-character-shape) */
 #chatToggle,#chatToggle:hover{width:112px;height:112px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible;filter:drop-shadow(0 6px 10px #030e212b)}

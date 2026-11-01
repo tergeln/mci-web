@@ -1,12 +1,12 @@
 export const chatGreeting = {
   open: {
-    mn: 'Сайн уу!  Би Magic Code AI-ийн туслах. Сургалт, бүртгэл, төлбөр эсвэл холбоо барих талаар асуугаарай.',
-    en: 'Hello!  I am the Magic Code AI assistant. Ask about courses, enrollment, payments or contact details.',
+    mn: 'Сайн уу! Би Magic Code AI-ийн туслах Magi байна. Танд юугаар туслах уу?',
+    en: 'Hello! I’m Magi, the Magic Code AI assistant. How can I help you?',
   },
   // Хэл солиход өмнөх мессежүүдийг орлуулдаг мессеж
   relang: {
-    mn: 'Сайн уу! Би Magic Code AI-ийн туслах. Сургалт, бүртгэл эсвэл төлбөрийн талаар асуугаарай.',
-    en: 'Hello!  I am the Magic Code AI assistant. Ask about courses, enrollment or payments.',
+    mn: 'Сайн уу! Би Magic Code AI-ийн туслах Magi байна. Танд юугаар туслах уу?',
+    en: 'Hello! I’m Magi, the Magic Code AI assistant. How can I help you?',
   },
 };
 
@@ -17,7 +17,7 @@ export const quickQuestions = [
 ];
 
 export const chatSystemPrompt = {
-  mn: `Та Magic Code AI-ийн вебсайтын туслах. Зөвхөн Монгол хэлээр, товч бөгөөд ойлгомжтой хариул.
+  mn: `Та Magic Code AI-ийн вебсайтын Magi нэртэй туслах. Зөвхөн Монгол хэлээр, товч бөгөөд ойлгомжтой хариул.
 
 [ХАМРАХ ХҮРЭЭ БА АЮУЛГҮЙ ХАРИУЛТ]
 1. Зөвхөн Magic Code AI-ийн вебсайт хөгжүүлэлт, мерч, сургалт, үнэ, бүртгэл, төлбөр болон холбоо барих мэдээллийн талаар хариул.
