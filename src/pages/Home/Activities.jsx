@@ -1,12 +1,13 @@
 import Tr from '../../components/Tr/Tr';
 import useReveal from '../../hooks/useReveal';
-import { activities } from '../../data/activities';
-import { serviceImages } from '../../assets/siteImages';
+import { getServices } from '../../api/services';
+import useApi from '../../hooks/useApi';
+import ApiState from '../../components/ApiState/ApiState';
 import ContentImage from '../../components/ContentImage/ContentImage';
 
 function ActivityCard({ activity }) {
   const [ref, className] = useReveal('activity');
-  const image = serviceImages[activity.number.split(' ')[0]];
+  const image = activity.image;
   return (
     <article ref={ref} className={className}>
       <div className="service-image" aria-hidden="true">
@@ -28,6 +29,7 @@ function ActivityCard({ activity }) {
 }
 
 export default function Activities() {
+  const { data: activities, loading, error, reload } = useApi((signal) => getServices({ signal }), []);
   const [headRef, headClass] = useReveal('section-head');
   return (
     <section id="activities">
@@ -38,9 +40,10 @@ export default function Activities() {
             <h2><Tr mn="Таны бизнесийн <em>цахим шийдэл.</em>" en="Digital solutions <em>for your business.</em>" /></h2>
           </div>
         </div>
+        <ApiState loading={loading} error={error} onRetry={reload} />
         <div className="activities">
-          {activities.map((activity) => (
-            <ActivityCard key={activity.number} activity={activity} />
+          {activities?.map((activity) => (
+            <ActivityCard key={activity.id} activity={activity} />
           ))}
         </div>
       </div>
