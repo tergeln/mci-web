@@ -46,7 +46,7 @@ Frontend (`mci-web`) болон backend-ийн хоорондын тохирол
 | 409 | `enrollment_closed` | Курсын бүртгэл нээгдээгүй (`status: "planned"`) |
 | 409 | `already_enrolled` | Энэ и-мэйлээр тухайн курсад аль хэдийн бүртгүүлсэн |
 | 409 | `payment_not_required` | Бүртгэл төлбөр шаардахгүй (хүлээлгийн жагсаалт) |
-| 429 | `rate_limited` | Хэт олон хүсэлт (ялангуяа `/chat`) |
+| 429 | `rate_limited` | Хэт олон хүсэлт |
 | 500 | `internal_error` | Серверийн алдаа |
 
 ---
@@ -240,32 +240,37 @@ Optional `gallery: NewsImage[]` нь дэлгэрэнгүй хуудасны з�
 
 ## 4. Чат туслах
 
-### `POST /chat`
+Чат нь энэ backend-ийн нэг хэсэг биш. Тусдаа **mci-chatbot** RAG API (`VITE_CHAT_API_URL`, одоо `https://magiccode-chatbot.vercel.app`) руу `src/components/ChatWidget/` шууд хандана. `VITE_USE_MOCK`-д хамаарахгүй.
+
+### `POST {VITE_CHAT_API_URL}/chat`
 
 ```json
 {
-  "message": "Төлбөр хэд вэ?",
-  "lang": "mn",
+  "message": "Онлайн дэлгүүр хийлгэх үнэ хэд вэ?",
   "history": [
-    { "role": "assistant", "content": "Сайн уу! Сургалт, бүртгэлийн талаар асуугаарай." },
-    { "role": "user", "content": "Ямар сургалтууд байна?" }
+    { "role": "user", "content": "Онлайн дэлгүүр хийдэг үү?" },
+    { "role": "assistant", "content": "Тийм, онлайн дэлгүүр хийдэг." }
   ]
 }
 ```
 
 | Талбар | Тайлбар |
 |---|---|
-| `message` | ≤ 500 тэмдэгт |
-| `lang` | `"mn"` эсвэл `"en"` — хариулах хэл |
-| `history` | Өмнөх мессежүүд, хамгийн ихдээ сүүлийн 10 |
+| `message` | 1–500 тэмдэгт |
+| `history` | Өмнөх мессежүүд, хамгийн ихдээ 6, тус бүр ≤ 1000 тэмдэгт |
+| `business` | Заавал биш: `"course"`, `"web"`, `"merch"` — хайлтыг тухайн чиглэлээр хязгаарлана |
 
 **200**
 
 ```json
-{ "reply": "Өгөгдлийн шинжилгээний сургалтын үнийг magiccodeai@gmail.com хаягаар лавлаарай." }
+{
+  "answer": "Онлайн дэлгүүрийн үнэ 5,000,000₮ – 15,000,000₮ байна.",
+  "found": true,
+  "sources": [{ "title": "services", "heading": "…ОНЛАЙН ДЭЛГҮҮР", "page": null, "similarity": 0.79 }]
+}
 ```
 
-AI-ийн API key-г зөвхөн backend-д хадгална. Frontend AI үйлчилгээ рүү шууд хандахгүй. Урвуулан ашиглахаас сэргийлж IP-ээр хязгаар (429 `rate_limited`) тавихыг зөвлөж байна.
+`found: false` үед `answer` нь холбоо барих мэдээлэлтэй стандарт татгалзах текст байна. Алдаа нь FastAPI хэлбэрээр `{ "detail": "…" }` ирнэ: 422 (буруу хүсэлт), 429 (IP-д минутад 10, өдөрт 100 хязгаар), 502/503 (түр алдаа). Сайтын домэйн тухайн API-ийн `ALLOWED_ORIGINS`-д байх ёстой.
 
 ---
 
@@ -287,7 +292,8 @@ AI-ийн API key-г зөвхөн backend-д хадгална. Frontend AI үй�
 | Файл | Үүрэг |
 |---|---|
 | `src/api/client.js` | `request()` — mock эсвэл бодит `fetch`, алдааг `ApiError` болгоно |
-| `src/api/courses.js`, `news.js`, `enrollments.js`, `chat.js` | Endpoint бүрийн функц |
+| `src/api/courses.js`, `news.js`, `enrollments.js`, `commerce.js` | Endpoint бүрийн функц |
+| `src/components/ChatWidget/` | Magi чат, mci-chatbot API руу шууд хандана (дээрх 4-р хэсэг) |
 | `src/api/mock/db.js` | Mock өгөгдөл (backend-ийн хариутай ижил хэлбэртэй) |
 | `src/hooks/useApi.js` | Өгөгдөл татах hook: `{ data, loading, error, reload }` |
 | `src/components/ApiState/ApiState.jsx` | "Ачааллаж байна…" / алдаа + "Дахин оролдох" |

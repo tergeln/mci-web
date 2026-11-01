@@ -1,51 +1,52 @@
 // Mock "өгөгдлийн сан". Backend бэлэн болоход энэ хавтас хэрэггүй болно.
 // Өгөгдлийн хэлбэр docs/API.md-тэй яг таарах ёстой.
+import { COURSE_PRICE } from '../../data/courseAccess';
 import { ApiError } from '../client';
 import { courseImages } from '../../assets/siteImages';
 
 export const courses = [
   {
-    id: 'vip-course', category: 'AI', status: 'open', price: null, image: courseImages['vip-course'],
+    id: 'vip-course', category: 'AI', status: 'open', price: COURSE_PRICE, image: courseImages['vip-course'],
     title: { mn: 'VIP цогц сургалт', en: 'VIP Course' },
     description: { mn: 'Суурь ойлголтоос AI төсөл хүртэлх цогц хөтөлбөр.', en: 'A complete path from fundamentals to an AI project.' },
   },
   {
-    id: 'data-analysis', category: 'Data', status: 'open', price: null, image: courseImages['data-analysis'],
+    id: 'data-analysis', category: 'Data', status: 'open', price: COURSE_PRICE, image: courseImages['data-analysis'],
     title: { mn: 'Өгөгдлийн шинжилгээ ба Power BI', en: 'Data Analysis & Power BI' },
     description: { mn: 'SQL, Python болон Power BI ашиглан өгөгдөл шинжилж, тайлан бүтээх.', en: 'Analyse data and build reports with SQL, Python and Power BI.' },
   },
   {
-    id: 'computer-skills', category: 'Digital', status: 'open', price: null, image: courseImages['computer-skills'],
+    id: 'computer-skills', category: 'Digital', status: 'open', price: COURSE_PRICE, image: courseImages['computer-skills'],
     title: { mn: 'Компьютерын хэрэглээ', en: 'Computer Skills' },
     description: { mn: 'Компьютерын үндсэн хэрэглээ, файл болон өдөр тутмын дижитал хэрэгслүүд.', en: 'Computer basics, files and everyday digital tools.' },
   },
   {
-    id: 'python-programming', category: 'Code', status: 'open', price: null, image: courseImages['python-programming'],
+    id: 'python-programming', category: 'Code', status: 'open', price: COURSE_PRICE, image: courseImages['python-programming'],
     title: { mn: 'Python программчлал', en: 'Python Programming' },
     description: { mn: 'Python хэлний суурь, өгөгдлийн бүтэц, автоматжуулалт.', en: 'Python fundamentals, data structures and automation.' },
   },
   {
-    id: 'web-development', category: 'Code', status: 'open', price: null, image: courseImages['web-development'],
+    id: 'web-development', category: 'Code', status: 'open', price: COURSE_PRICE, image: courseImages['web-development'],
     title: { mn: 'Вэб хөгжүүлэлт', en: 'Web Development' },
     description: { mn: 'HTML, CSS, JavaScript ашиглан вэбсайт бүтээх суурь.', en: 'Build websites with HTML, CSS and JavaScript.' },
   },
   {
-    id: 'sql-databases', category: 'Data', status: 'open', price: null, image: courseImages['sql-databases'],
+    id: 'sql-databases', category: 'Data', status: 'open', price: COURSE_PRICE, image: courseImages['sql-databases'],
     title: { mn: 'SQL ба өгөгдлийн сан', en: 'SQL & Databases' },
     description: { mn: 'Өгөгдлийн сангийн зохион байгуулалт, хайлт болон шинжилгээ.', en: 'Database design, queries and analysis.' },
   },
   {
-    id: 'ai-rag-systems', category: 'AI', status: 'open', price: null, image: courseImages['ai-rag-systems'],
+    id: 'ai-rag-systems', category: 'AI', status: 'open', price: COURSE_PRICE, image: courseImages['ai-rag-systems'],
     title: { mn: 'AI ба RAG систем', en: 'AI & RAG Systems' },
     description: { mn: 'Эх сурвалжид тулгуурласан AI туслах бүтээх ойлголтууд.', en: 'Explore grounded AI assistants and retrieval.' },
   },
   {
-    id: 'machine-learning', category: 'AI', status: 'open', price: null, image: courseImages['machine-learning'],
+    id: 'machine-learning', category: 'AI', status: 'open', price: COURSE_PRICE, image: courseImages['machine-learning'],
     title: { mn: 'Машин сургалт', en: 'Machine Learning' },
     description: { mn: 'Өгөгдөл бэлтгэх, загвар сургах, үр дүнг үнэлэх суурь.', en: 'Prepare data, train models and evaluate results.' },
   },
   {
-    id: 'cybersecurity', category: 'Digital', status: 'open', price: null, image: courseImages['cybersecurity'],
+    id: 'cybersecurity', category: 'Digital', status: 'open', price: COURSE_PRICE, image: courseImages['cybersecurity'],
     title: { mn: 'Кибер аюулгүй байдал', en: 'Cybersecurity' },
     description: { mn: 'Дижитал мэдээлэл, бүртгэл болон системээ хамгаалах суурь.', en: 'Foundations for protecting accounts, information and systems.' },
   },

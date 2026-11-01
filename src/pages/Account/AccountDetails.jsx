@@ -1,3 +1,5 @@
+import { useCommerce } from '../../context/CommerceContext';
+import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLang } from '../../context/LanguageContext';
@@ -8,8 +10,11 @@ import { learningCourses, getLearningCourse, lessonStorageKeys } from '../../dat
 export function LearningProgress({ onWatch }) {
   const { user } = useAuth();
   const { t } = useLang();
-  const [courseId, setCourseId] = useState('data-analysis');
+  const { ownedIds } = useCommerce();
+  const [selectedCourseId, setCourseId] = useState('');
+  const courseId = ownedIds.includes(selectedCourseId) ? selectedCourseId : ownedIds[0];
   const course = getLearningCourse(courseId);
+  if (!course) return <section className="account-card account-section"><h2>{t('Суралцах явц', 'Learning progress')}</h2><p>{t('Төлбөр баталгаажсан сургалтын явц энд харагдана.', 'Progress for your purchased courses will appear here.')}</p><Link to="/courses" className="btn">{t('Сургалтууд үзэх', 'Explore courses')}</Link></section>;
   const courseLessons = course.lessons;
   const { progress: progressKey } = lessonStorageKeys(course.id, user.id);
   let completed = [];
@@ -20,7 +25,7 @@ export function LearningProgress({ onWatch }) {
   return <section className="account-card account-section">
     <div className="eyebrow">03 · PROGRESS</div>
     <h2>{t('Суралцах явц', 'Learning progress')}</h2>
-    <label>{t('Сургалт', 'Course')}<select value={courseId} onChange={(event) => setCourseId(event.target.value)}>{learningCourses.map((item) => <option key={item.id} value={item.id}>{t(item.title.mn, item.title.en)}</option>)}</select></label>
+    <label>{t('Сургалт', 'Course')}<select value={courseId} onChange={(event) => setCourseId(event.target.value)}>{learningCourses.filter((item) => ownedIds.includes(item.id)).map((item) => <option key={item.id} value={item.id}>{t(item.title.mn, item.title.en)}</option>)}</select></label>
     <p>{completed.length} / {courseLessons.length} {t('хичээл дууссан', 'lessons completed')} · {Math.round(completed.length / courseLessons.length * 100)}%</p>
     <progress className="account-progress" value={completed.length} max={courseLessons.length} aria-label={t('Хичээлийн явц', 'Lesson progress')} />
     {courseLessons.map((lesson, index) => <div className="account-row" key={lesson.id}><span>{completed.some((item) => item.id === lesson.id) ? '✓' : String(index + 1).padStart(2, '0')} · {t(lesson.mn, lesson.en)}</span></div>)}

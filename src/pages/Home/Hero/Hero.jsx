@@ -34,7 +34,7 @@ export default function Hero() {
       <div className="hero">
         <div>
           <div className="eyebrow"><Tr mn="ИРЭЭДҮЙГ ХАМТДАА БҮТЭЭЕ" en="BUILD YOUR NEXT CHAPTER" /></div>
-          <h1><Tr mn="Санаагаа<br>бүтээл болго." en="Turn ideas<br>into reality." /></h1>
+          <h1><Tr mn="Zero to Pro" en="Zero to Pro" /></h1>
           <p>
             <Tr
               mn="Та манайхаас ирээдүйн технологийн ур чадварыг эзэмшиж, бизнестээ тохирсон веб хөгжүүлэлтийн шийдэл авах боломжтой."

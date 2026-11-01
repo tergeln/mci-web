@@ -5,19 +5,17 @@ import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useApi from '../../hooks/useApi';
 import { getCourses } from '../../api/courses';
 import { catalogFilters } from '../../data/catalog';
-import { courseButtonLabel } from '../../data/courses';
+import CoursePurchaseButton, { CourseTerms } from '../../components/CoursePurchaseButton';
+import { useCommerce } from '../../context/CommerceContext';
 import './courses.css';
 import ContentImage from '../../components/ContentImage/ContentImage';
 import { useLang } from '../../context/LanguageContext';
-import EnrollDialog from '../../components/dialogs/EnrollDialog';
-import ClassroomDialog from '../../components/dialogs/ClassroomDialog';
 
 const ART_TEXT = ['{ }', 'SQL', '✧'];
 
 export default function CoursesPage() {
   const { t } = useLang();
-  const [enrollRequest, setEnrollRequest] = useState(null);
-  const [classroomRequest, setClassroomRequest] = useState(null);
+  const { openCourse, hasAccess } = useCommerce();
   const [filter, setFilter] = useState('all');
   const [query, setQuery] = useState('');
   const searchRef = useRef(null);
@@ -63,9 +61,9 @@ export default function CoursesPage() {
                 <div className="catalog-body">
                   <h3><Tr text={c.title} /></h3>
                   <p><Tr text={c.description} /></p>
-                  <button className="btn" type="button" onClick={() => setEnrollRequest((previous) => ({ course: { ...c, open: c.status === 'open' }, id: (previous?.id ?? 0) + 1 }))}>
-                    <Tr text={courseButtonLabel} />
-                  </button>
+                  <CourseTerms />
+                  <CoursePurchaseButton courseId={c.id} />
+                  {!hasAccess(c.id) && <button className="course-preview-link" type="button" onClick={() => openCourse(c.id)}>{t('Танилцуулга үзэх', 'Watch preview')}</button>}
                 </div>
               </article>
             ))}
@@ -77,8 +75,7 @@ export default function CoursesPage() {
           </div>
         )}
       </main>
-      <EnrollDialog request={enrollRequest} onOpenClassroom={(course) => setClassroomRequest((previous) => ({ course, id: (previous?.id ?? 0) + 1 }))} />
-      <ClassroomDialog request={classroomRequest} />
+
     </>
   );
 }

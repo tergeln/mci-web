@@ -4,9 +4,7 @@ import { useLang } from '../../context/LanguageContext';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { homeCourses } from '../../data/courses';
 import Footer from '../../components/Footer/Footer';
-import Chatbot from '../../components/Chatbot/Chatbot';
-import EnrollDialog from '../../components/dialogs/EnrollDialog';
-import ClassroomDialog from '../../components/dialogs/ClassroomDialog';
+import { useCommerce } from '../../context/CommerceContext';
 import Universe2D from '../../components/canvas/Universe2D';
 import Loader from './Loader';
 import ScrollProgress from './ScrollProgress';
@@ -27,14 +25,11 @@ export default function Home() {
   const { t } = useLang();
   const [searchParams] = useSearchParams();
   const [glReady, setGlReady] = useState(null);
-  const [chatOpen, setChatOpen] = useState(false);
-  const [enrollRequest, setEnrollRequest] = useState(null);
-  const [classroomRequest, setClassroomRequest] = useState(null);
+  const { openCourse: showCourse } = useCommerce();
 
   useDocumentTitle(t('Magic Code AI', 'Magic Code AI'));
 
-  const openCourse = useCallback((course) => setEnrollRequest((r) => ({ course, id: (r ? r.id : 0) + 1 })), []);
-  const openClassroom = useCallback((course) => setClassroomRequest((r) => ({ course, id: (r ? r.id : 0) + 1 })), []);
+  const openCourse = useCallback((index) => showCourse(homeCourses[index].id), [showCourse]);
 
   // `/?course=data-analysis` – каталог хуудсаас орж ирэхэд тухайн курсийн dialog-ийг шууд нээнэ.
   // Хуучин `/?course=0|1|2` холбоосууд ч ажиллана.
@@ -60,14 +55,11 @@ export default function Home() {
         <AboutSection />
         <Activities />
         <TechStrip />
-        <Contact onOpenChat={() => setChatOpen(true)} />
+        <Contact />
       </main>
       <Footer />
-      <Chatbot open={chatOpen} onOpenChange={setChatOpen} />
-      <EnrollDialog request={enrollRequest} onOpenClassroom={openClassroom} />
       <div className="toast" id="toast" hidden role="status" />
       <LiveStrip />
-      <ClassroomDialog request={classroomRequest} />
     </>
   );
 }

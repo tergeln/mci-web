@@ -39,6 +39,7 @@ export async function request(path, { method = 'GET', body, signal, mock } = {})
     const token = await accessToken();
     const headers = { ...(body && { 'Content-Type': 'application/json' }), ...(token && { Authorization: `Bearer ${token}` }) };
     res = await fetch(BASE_URL + path, {
+      credentials: 'include',
       method,
       signal,
       headers,
