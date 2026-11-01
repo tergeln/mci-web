@@ -21,8 +21,9 @@ import useLightweightVisuals from '../../hooks/useLightweightVisuals';
 
 const ParticleUniverse = lazy(() => import('../../components/canvas/ParticleUniverse'));
 
-export default function Home() {
+export default function Home({ onIntroComplete }) {
   const lightweight = useLightweightVisuals();
+  const mobile = useLightweightVisuals('(max-width:900px)');
   const { t } = useLang();
   const [searchParams] = useSearchParams();
   const [glReady, setGlReady] = useState(null);
@@ -48,12 +49,12 @@ export default function Home() {
         <ParticleUniverse onResult={setGlReady} />
       </Suspense>}
 
-      <Loader onComplete={() => setIntroFinished(true)} />
+      <Loader onComplete={() => { setIntroFinished(true); onIntroComplete?.(); }} />
       <ScrollProgress />
       {!lightweight && <CursorGlow />}
       <main>
         <Hero />
-        <CoursesSection onSelectCourse={openCourse} />
+        <CoursesSection onSelectCourse={openCourse} fetchEnabled={!mobile || introFinished} />
         <AboutSection />
         <Activities />
         <TechStrip />

@@ -1,12 +1,13 @@
 import { CommerceProvider, useCommerce } from './context/CommerceContext';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { AuthProvider } from './context/AuthContext';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useCallback, useState } from 'react';
 import './pages/Account/account.css';
 import './styles/subpage.css';
 import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home/Home';
+import useLightweightVisuals from './hooks/useLightweightVisuals';
 import MainNavbar from './components/MainNavbar/MainNavbar';
 const ChatWidget = lazy(() => import('./components/ChatWidget/ChatWidget'));
 import ScrollManager from './components/ScrollManager/ScrollManager';
@@ -27,6 +28,11 @@ export default function App() {
 function SiteRoutes() {
   const { cart, classroomRequest } = useCommerce();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const mobile = useLightweightVisuals('(max-width:900px)');
+  const [homeReady, setHomeReady] = useState(false);
+  const onIntroComplete = useCallback(() => setHomeReady(true), []);
+  const showChat = !mobile || pathname !== '/' || homeReady;
   const openCart = () => navigate('/cart');
   return (
     <>
@@ -37,16 +43,16 @@ function SiteRoutes() {
           <Route path="/login" element={<LoginPage key="login" />} />
           <Route path="/register" element={<LoginPage key="register" mode="register" />} />
           <Route path="/account" element={<AccountPage />} />
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home onIntroComplete={onIntroComplete} />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/news" element={<NewsPage />} />
           <Route path="/news/:id" element={<NewsDetailPage />} />
-          <Route path="*" element={<Home />} />
+          <Route path="*" element={<Home onIntroComplete={onIntroComplete} />} />
         </Routes>
       </Suspense>
       {classroomRequest && <Suspense fallback={null}><ClassroomDialog request={classroomRequest} /></Suspense>}
-      <Suspense fallback={null}><ChatWidget /></Suspense>
+      {showChat && <Suspense fallback={null}><ChatWidget /></Suspense>}
     </>
   );
 }

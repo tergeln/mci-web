@@ -8,10 +8,10 @@ import useApi from '../../../hooks/useApi';
 import ApiState from '../../../components/ApiState/ApiState';
 import { getCourses } from '../../../api/courses';
 
-export default function CoursesSection({ onSelectCourse }) {
+export default function CoursesSection({ onSelectCourse, fetchEnabled = true }) {
   const [sectionRef, enabled] = useNearViewport();
   const [headRef, headClass] = useReveal('section-head');
-  const { data: courses, loading, error, reload } = useApi((signal) => getCourses({ signal }), [], enabled);
+  const { data: courses, loading, error, reload } = useApi((signal) => getCourses({ signal }), [], enabled && fetchEnabled);
   return (
     <section id="courses" ref={sectionRef}>
       <div className="wrap">

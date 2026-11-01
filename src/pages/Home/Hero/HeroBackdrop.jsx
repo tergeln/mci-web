@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import useLightweightVisuals from '../../../hooks/useLightweightVisuals';
 
 // Эх JS-ийн seed-тэй (2047) санамсаргүй тоо – од бүр үргэлж ижил байрлалтай.
 function makeStars() {
@@ -19,11 +20,13 @@ function makeStars() {
 }
 
 export default function HeroBackdrop() {
+  const mobile = useLightweightVisuals('(max-width:900px)');
   const stars = useMemo(makeStars, []);
+  const visibleStars = mobile ? stars.slice(0, 40) : stars;
   return (
     <>
       <div className="hero-static-stars" aria-hidden="true">
-        {stars.map((s) => (
+        {visibleStars.map((s) => (
           <i key={s.key} style={s.style} />
         ))}
       </div>

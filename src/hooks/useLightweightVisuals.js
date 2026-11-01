@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const query = '(max-width:900px), (prefers-reduced-motion:reduce)';
-export default function useLightweightVisuals() {
+export default function useLightweightVisuals(query = '(max-width:900px), (prefers-reduced-motion:reduce)') {
   const [lightweight, setLightweight] = useState(() => window.matchMedia(query).matches);
   useEffect(() => {
     const media = window.matchMedia(query);
@@ -9,6 +8,6 @@ export default function useLightweightVisuals() {
     media.addEventListener('change', update);
     update();
     return () => media.removeEventListener('change', update);
-  }, []);
+  }, [query]);
   return lightweight;
 }
