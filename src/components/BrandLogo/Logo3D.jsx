@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three'; // төсөл three@0.128.0 ашигладаг, энэ код түүнд зориулагдсан
-import { LOGO_SHAPES } from './logoShapes';
+import { LOGO_SHAPES } from './extrusionShapes';
 
 /** Градиент сонголтууд: [зүүн талын өнгө (M), баруун талын өнгө (од)] */
 export const GRADIENTS = {

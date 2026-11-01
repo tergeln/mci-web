@@ -1,6 +1,6 @@
 import { CommerceProvider, useCommerce } from './context/CommerceContext';
 import { useNavigate } from 'react-router-dom';
-import ClassroomDialog from './components/dialogs/ClassroomDialog';
+
 import { AuthProvider } from './context/AuthContext';
 import { lazy, Suspense } from 'react';
 import './pages/Account/account.css';
@@ -11,6 +11,7 @@ import MainNavbar from './components/MainNavbar/MainNavbar';
 const ChatWidget = lazy(() => import('./components/ChatWidget/ChatWidget'));
 import ScrollManager from './components/ScrollManager/ScrollManager';
 
+const ClassroomDialog = lazy(() => import('./components/dialogs/ClassroomDialog'));
 const CartPage = lazy(() => import('./pages/Cart/CartPage'));
 const LoginPage = lazy(() => import('./pages/Account/LoginPage'));
 const AccountPage = lazy(() => import('./pages/Account/AccountPage'));
@@ -44,7 +45,7 @@ function SiteRoutes() {
           <Route path="*" element={<Home />} />
         </Routes>
       </Suspense>
-      <ClassroomDialog request={classroomRequest} />
+      {classroomRequest && <Suspense fallback={null}><ClassroomDialog request={classroomRequest} /></Suspense>}
       <Suspense fallback={null}><ChatWidget /></Suspense>
     </>
   );
