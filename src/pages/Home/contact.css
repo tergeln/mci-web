@@ -29,3 +29,14 @@ main section#contact .contact-email-group .contact-heading{margin:0 0 6px;font-s
 #contact .contact-facebook svg{flex-shrink:0}
 
 main section#contact .contact-email-group .contact-heading{text-align:center}
+
+@media (max-width:640px){
+  #contact .contact-minimal{display:grid;grid-template-columns:minmax(0,1fr);justify-items:start;gap:20px}
+  #contact .contact-minimal>*{min-width:0;max-width:100%}
+  main section#contact .contact-email-group .contact-heading{text-align:left}
+  #contact .contact-mail,#contact .contact-facebook{font-size:14px}
+  #contact .contact-facebook{min-height:44px}
+  .site-footer{padding-bottom:calc(140px + env(safe-area-inset-bottom,0px))}
+  .site-footer .footer-inner{justify-content:center;min-width:0}
+  .site-footer small{display:block;min-width:0;max-width:100%;text-align:center;overflow-wrap:anywhere}
+}
