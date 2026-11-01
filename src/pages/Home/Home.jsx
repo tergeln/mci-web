@@ -9,7 +9,6 @@ import Universe2D from '../../components/canvas/Universe2D';
 import Loader from './Loader';
 import ScrollProgress from './ScrollProgress';
 import CursorGlow from './CursorGlow';
-import ChapterIndex from './ChapterIndex';
 import Hero from './Hero/Hero';
 import TechStrip from './Hero/TechStrip';
 import CoursesSection from './Courses/CoursesSection';
@@ -48,7 +47,6 @@ export default function Home() {
       <Loader />
       <ScrollProgress />
       <CursorGlow />
-      <ChapterIndex />
       <main>
         <Hero />
         <CoursesSection onSelectCourse={openCourse} />

@@ -23,15 +23,26 @@ export default function Universe2D({ active }) {
     const pts = Array.from({ length: count }, (_, i) => ({
       i, x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, z: Math.random(), a: i * 2.39996,
     }));
-    const color = (v) => getComputedStyle(document.getElementById('home')).getPropertyValue(v).trim();
+    let colors = {};
+    const readColors = () => {
+      const style = getComputedStyle(document.getElementById('home'));
+      colors = { glow: style.getPropertyValue('--glow').trim(), acc: style.getPropertyValue('--blue').trim() };
+    };
+    readColors();
+    const themeObserver = new MutationObserver(readColors);
+    themeObserver.observe(root, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+    let sectionBottoms = [];
+    const measureSections = () => {
+      sectionBottoms = [...document.querySelectorAll('main section')].map((section) => section.getBoundingClientRect().bottom + window.scrollY);
+      onScroll();
+    };
 
     const resize = () => {
       w = window.innerWidth;
       h = window.innerHeight;
       const d = Math.min(window.devicePixelRatio || 1, 2);
-      const r = canvas.getBoundingClientRect();
-      canvas.width = r.width * d;
-      canvas.height = r.height * d;
+      canvas.width = Math.round(w * d);
+      canvas.height = Math.round(h * d);
       ctx.setTransform(d, 0, 0, d, 0, 0);
     };
     const onPointer = (e) => {
@@ -39,15 +50,15 @@ export default function Universe2D({ active }) {
       my = e.clientY / h;
     };
     const onScroll = () => {
-      const sections = [...document.querySelectorAll('main section')];
-      const sec = sections.findIndex((s) => s.getBoundingClientRect().bottom > h * 0.5);
+      const sec = sectionBottoms.findIndex((bottom) => bottom - window.scrollY > h * 0.5);
       morph = Math.max(0, sec) % 6;
     };
     window.addEventListener('resize', resize);
     window.addEventListener('pointermove', onPointer);
     window.addEventListener('scroll', onScroll, { passive: true });
     resize();
-    onScroll();
+    const layoutObserver = new ResizeObserver(measureSections);
+    layoutObserver.observe(document.querySelector('main'));
 
     const frame = (now) => {
       raf = requestAnimationFrame(frame);
@@ -55,8 +66,7 @@ export default function Universe2D({ active }) {
       last = now;
       if (!rm) time += 0.009;
       ctx.clearRect(0, 0, w, h);
-      const glow = color('--glow');
-      const acc = color('--blue');
+      const { glow, acc } = colors;
       const centerX = w < 760 ? w * 0.5 : w * 0.72;
       const centerY = h * 0.45;
       const scale = Math.min(w, h) * 0.26;
@@ -126,6 +136,8 @@ export default function Universe2D({ active }) {
 
     return () => {
       cancelAnimationFrame(raf);
+      themeObserver.disconnect();
+      layoutObserver.disconnect();
       window.removeEventListener('resize', resize);
       window.removeEventListener('pointermove', onPointer);
       window.removeEventListener('scroll', onScroll);

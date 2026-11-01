@@ -292,16 +292,15 @@ export default function Logo3D({
     canvas.addEventListener('pointerup', onUp);
     canvas.addEventListener('pointercancel', onUp);
 
-    const resize = () => {
-      const w = host.clientWidth || 1;
-      const h = host.clientHeight || 1;
+    const resize = ([entry]) => {
+      const w = entry.contentRect.width || 1;
+      const h = entry.contentRect.height || 1;
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
     };
     const ro = new ResizeObserver(resize);
     ro.observe(host);
-    resize();
 
     // Дэлгэцээс гарсан үед зурахаа зогсооно (батарей, гүйцэтгэл).
     let visible = true;

@@ -7,16 +7,20 @@ import HeroVisual from './HeroVisual';
 // `html.hero-in-view` – hero дэлгэцийн дээд хагаст байх үед body/canvas-ын дэвсгэрийг өөрчилдөг.
 function useHeroInView() {
   useEffect(() => {
+    const home = document.getElementById('home');
+    if (!home) return undefined;
+    let observer;
     const sync = () => {
-      const home = document.getElementById('home');
-      if (!home) return;
-      document.documentElement.classList.toggle('hero-in-view', home.getBoundingClientRect().bottom > window.innerHeight * 0.5);
+      observer?.disconnect();
+      observer = new IntersectionObserver(([entry]) => {
+        document.documentElement.classList.toggle('hero-in-view', entry.isIntersecting);
+      }, { rootMargin: `-${window.innerHeight * 0.5}px 0px 0px 0px` });
+      observer.observe(home);
     };
-    window.addEventListener('scroll', sync, { passive: true });
     window.addEventListener('resize', sync);
     sync();
     return () => {
-      window.removeEventListener('scroll', sync);
+      observer.disconnect();
       window.removeEventListener('resize', sync);
       document.documentElement.classList.remove('hero-in-view');
     };
