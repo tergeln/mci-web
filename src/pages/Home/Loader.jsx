@@ -1,8 +1,10 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import reducedMotion from '../../hooks/reducedMotion';
 import './intro.css';
 const Logo3D = lazy(() => import('../../components/BrandLogo/Logo3D'));
-export default function Loader() {
+export default function Loader({ onComplete }) {
+  const completeRef = useRef(onComplete);
+  completeRef.current = onComplete;
   const [reduce] = useState(reducedMotion);
   const [visible, setVisible] = useState(!reduce);
   const [ready, setReady] = useState(reduce);
@@ -17,6 +19,9 @@ export default function Loader() {
     const timer = setTimeout(() => setVisible(false), 4000);
     return () => clearTimeout(timer);
   }, [ready]);
+  useEffect(() => {
+    if (!visible) completeRef.current?.();
+  }, [visible]);
   if (!visible) return null;
   return <div className={`site-intro${ready ? ' is-ready' : ''}`} aria-hidden="true"><div className="site-intro-mark">
     <div className="site-intro-logo">{!reduce && <Suspense fallback={null}>

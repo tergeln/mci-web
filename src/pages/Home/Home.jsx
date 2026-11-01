@@ -26,13 +26,7 @@ export default function Home() {
   const { t } = useLang();
   const [searchParams] = useSearchParams();
   const [glReady, setGlReady] = useState(null);
-  const [visualsEnabled, setVisualsEnabled] = useState(false);
-  useEffect(() => {
-    const enable = () => setVisualsEnabled(true);
-    const events = ['pointerdown', 'keydown', 'scroll'];
-    events.forEach(event => window.addEventListener(event, enable, { once: true, passive: true }));
-    return () => events.forEach(event => window.removeEventListener(event, enable));
-  }, []);
+  const [introFinished, setIntroFinished] = useState(false);
   const { openCourse: showCourse } = useCommerce();
 
   useDocumentTitle(t('Magic Code AI', 'Magic Code AI'));
@@ -50,11 +44,11 @@ export default function Home() {
   return (
     <>
       <Universe2D active={!lightweight && glReady === false} />
-      {!lightweight && visualsEnabled && <Suspense fallback={null}>
+      {!lightweight && introFinished && <Suspense fallback={null}>
         <ParticleUniverse onResult={setGlReady} />
       </Suspense>}
 
-      <Loader />
+      <Loader onComplete={() => setIntroFinished(true)} />
       <ScrollProgress />
       <CursorGlow />
       <main>
