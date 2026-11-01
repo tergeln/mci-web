@@ -18,7 +18,6 @@ export const director = {
     t('Орос', 'Russian'),
     t('Англи', 'English'),
     t('Хятад', 'Chinese'),
-    t('Япон', 'Japanese'),
     t('Солонгос', 'Korean'),
   ],
   facts: [

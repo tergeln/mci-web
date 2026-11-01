@@ -1,0 +1,29 @@
+#contact{position:relative;z-index:1;background:var(--bg);border-top:1px solid var(--line);padding:28px 0}
+#contact .contact-minimal{display:flex;align-items:center;justify-content:space-between;gap:24px}
+#contact .contact-logo{display:block;flex-shrink:0;line-height:0}
+#contact .contact-logo img{display:block;width:112px;height:70px;object-fit:contain}
+:root[data-theme=dark] #contact .contact-logo img{filter:brightness(0) invert(1)}
+#contact .contact-mail,#contact .contact-facebook{font:400 14px/1.6 var(--font-body);color:var(--ink);overflow-wrap:anywhere}
+#contact .contact-facebook{display:inline-flex;align-items:center;gap:12px;color:var(--muted)}
+#contact .contact-mail:hover,#contact .contact-facebook:hover{color:var(--blue)}
+#contact a:focus-visible{outline:2px solid var(--blue);outline-offset:5px}
+.site-footer{display:none}
+@media(max-width:600px){#contact{padding:22px 0 52px}#contact .contact-minimal{flex-wrap:wrap;justify-content:flex-start;gap:16px 24px}#contact .contact-logo{flex-basis:100%}#contact .contact-logo img{width:88px;height:55px}#contact .contact-mail,#contact .contact-facebook{font-size:13px}}
+
+/* Keep the contact surface opaque above the decorative canvas and clear of the fixed ticker. */
+main section#contact{isolation:isolate;z-index:17;background:var(--bg);padding:24px 0 68px;min-height:0}
+main section#contact .contact-minimal{min-height:64px;align-items:center}
+main section#contact .contact-logo img{width:96px;height:60px}
+@media(max-width:600px){main section#contact{padding:22px 0 64px}}
+
+.site-footer{display:block;position:relative;z-index:17;background:var(--bg);border:0;padding:0 0 54px}
+.site-footer .footer-inner{display:flex;align-items:center;border-top:1px solid var(--line);padding-top:14px}
+.site-footer small{font:400 11px/1.6 var(--font-body);color:var(--muted)}
+main section#contact{padding-bottom:20px}
+@media(max-width:600px){main section#contact{padding-bottom:20px}}
+
+main section#contact .contact-heading{font:500 14px/1.5 var(--font-body);letter-spacing:0;color:var(--muted);margin:0 0 14px}
+
+main section#contact .contact-email-group .contact-heading{margin:0 0 6px;font-size:12px}
+#contact .contact-email-group{min-width:0}
+#contact .contact-facebook svg{flex-shrink:0}
