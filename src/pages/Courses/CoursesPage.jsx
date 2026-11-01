@@ -33,7 +33,7 @@ export default function CoursesPage() {
   return (
     <>
       <main className="catalog-page wrap">
-        <div className="eyebrow"><Tr mn="СУРАЛЦАХ ЗАМАА СОНГО" en="CHOOSE YOUR PATH" /></div>
+        <div className="eyebrow"><Tr mn="СУРАЛЦАХ ЗАМАА СОНГООРОЙ" en="CHOOSE YOUR PATH" /></div>
         <div className="catalog-search">
           <label htmlFor="course-search">{t('Сургалт хайх', 'Search courses')}</label>
           <div className="catalog-search-field">
@@ -62,8 +62,10 @@ export default function CoursesPage() {
                   <h3><Tr text={c.title} /></h3>
                   <p><Tr text={c.description} /></p>
                   <CourseTerms />
-                  <CoursePurchaseButton courseId={c.id} />
+                  <div className="catalog-course-actions">
                   {!hasAccess(c.id) && <button className="course-preview-link" type="button" onClick={() => openCourse(c.id)}>{t('Танилцуулга үзэх', 'Watch preview')}</button>}
+                  <CoursePurchaseButton courseId={c.id} />
+                  </div>
                 </div>
               </article>
             ))}

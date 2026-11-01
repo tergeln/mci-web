@@ -17,7 +17,7 @@
   --cw-input-bg: #ffffff;
   --cw-input-border: #d3dae5;
   --cw-send-bg: var(--gold-button-gradient, linear-gradient(135deg, #f8e6a3, #efd16e 55%, #e4be50));
-  --cw-send-text: #231d0e;
+  --cw-send-text: var(--gold-button-text, #231d0e);
   --cw-error-bg: #fdecec;
   --cw-error-text: #9b1c1c;
   position: fixed;
