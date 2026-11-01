@@ -11,6 +11,7 @@ type Message = {
   role: Role;
   content: string;
   error?: boolean;
+  followups?: string[];
 };
 type Suggestion = { label: string; question: string };
 
@@ -25,6 +26,76 @@ type Props = {
 
 const API_URL = (import.meta.env.VITE_CHAT_API_URL as string | undefined) ?? "";
 const GENERIC_ERROR = "Түр алдаа гарлаа. Дахин оролдоно уу.";
+
+// Хариулт дахь холбоосыг товч болгоно. Зөвхөн итгэмжлэгдсэн домэйн, имэйлийг: ботыг хууран
+// гадны холбоос гаргуулсан ч энгийн текст хэвээр үлдэж, дарагдахгүй.
+const TRUSTED_DOMAINS = ["mci.mn", "facebook.com"];
+const TRUSTED_EMAILS = ["magiccodeai@gmail.com"];
+const LINK_RE = /https?:\/\/[^\s<>()"']+[^\s<>()"'.,;:!?]|[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
+
+function linkFor(token: string): { href: string; label: string } | null {
+  if (!token.startsWith("http")) {
+    return TRUSTED_EMAILS.includes(token.toLowerCase()) ? { href: `mailto:${token}`, label: token } : null;
+  }
+  try {
+    const url = new URL(token);
+    const host = url.hostname.replace(/^www\./, "");
+    if (!TRUSTED_DOMAINS.some((d) => host === d || host.endsWith(`.${d}`))) return null;
+    return { href: url.href, label: host.endsWith("facebook.com") ? "Facebook" : host };
+  } catch {
+    return null;
+  }
+}
+
+function renderText(text: string) {
+  const parts = [];
+  let last = 0;
+  for (const match of text.matchAll(LINK_RE)) {
+    const link = linkFor(match[0]);
+    if (!link) continue;
+    parts.push(text.slice(last, match.index));
+    parts.push(
+      <a key={match.index} className="cw-link" href={link.href} target="_blank" rel="noopener noreferrer">
+        {link.label} ↗
+      </a>,
+    );
+    last = match.index! + match[0].length;
+  }
+  parts.push(text.slice(last));
+  return parts;
+}
+
+// "- a - b - c" гэж нэг мөрөнд нийлсэн жагсаалтыг мөр болгон задалж, "- " мөрүүдийг <ul> болгоно.
+// (Үнийн "500,000₮ – 1,200,000₮" нь урт зураас тул хамаарахгүй.)
+function renderAnswer(text: string) {
+  const normalized =
+    !/\n\s*-\s/.test(text) && (text.match(/\s-\s/g) ?? []).length >= 2
+      ? text.replace(/\s+-\s+/g, "\n- ")
+      : text;
+  const blocks = [];
+  let items: string[] = [];
+  const flush = () => {
+    if (items.length) {
+      blocks.push(
+        <ul key={blocks.length}>
+          {items.map((it, i) => <li key={i}>{renderText(it)}</li>)}
+        </ul>,
+      );
+      items = [];
+    }
+  };
+  for (const raw of normalized.split("\n")) {
+    const line = raw.trim();
+    if (/^[-•]\s+/.test(line)) {
+      items.push(line.replace(/^[-•]\s+/, ""));
+    } else if (line) {
+      flush();
+      blocks.push(<p key={blocks.length}>{renderText(line)}</p>);
+    }
+  }
+  flush();
+  return blocks;
+}
 
 export default function ChatWidget({
   apiUrl = API_URL,
@@ -120,7 +191,13 @@ export default function ChatWidget({
       if (!res.ok) {
         throw new Error(typeof data?.detail === "string" ? data.detail : GENERIC_ERROR);
       }
-      push({ role: "assistant", content: String(data.answer ?? "") });
+      push({
+        role: "assistant",
+        content: String(data.answer ?? ""),
+        followups: Array.isArray(data.followups)
+          ? data.followups.filter((q: unknown) => typeof q === "string").slice(0, 3)
+          : [],
+      });
     } catch (e) {
       if (controller.signal.aborted && !timedOut) return; // reset() цуцалсан
       const message =
@@ -141,6 +218,15 @@ export default function ChatWidget({
     }
   }
 
+  // Эхэнд анхны товчнууд, дараа нь сүүлийн хариултын санал болгосон дараагийн асуултууд
+  const last = messages[messages.length - 1];
+  const chips: Suggestion[] =
+    messages.length === 0
+      ? suggestions
+      : !loading && last.role === "assistant"
+        ? (last.followups ?? []).map((q) => ({ label: q, question: q }))
+        : [];
+
   return (
     <div className={"cw-root" + (open ? " cw-open" : "")}>
       {open && (
@@ -148,7 +234,13 @@ export default function ChatWidget({
           {/* <header> биш: сайтын глобал `header {position: fixed}` дүрэмд өртөхгүйн тулд */}
           <div className="cw-header">
             <img className="cw-avatar" src={avatarUrl} alt="" width="44" height="44" />
-            <strong>{title}</strong>
+            <div className="cw-title">
+              <strong>{title}</strong>
+              <span className="cw-status">
+                <i aria-hidden="true" />
+                Онлайн
+              </span>
+            </div>
             <button
               type="button"
               className="cw-icon-btn cw-refresh"
@@ -168,43 +260,54 @@ export default function ChatWidget({
           </div>
 
           <div className="cw-messages" ref={listRef} aria-live="polite">
-            <div className="cw-msg cw-assistant">
-              <p>{greeting}</p>
+            <div className="cw-row">
+              <img className="cw-mini" src={avatarUrl} alt="" width="28" height="28" />
+              <div className="cw-msg cw-assistant">
+                <p>{greeting}</p>
+              </div>
             </div>
 
-            {messages.map((m) => (
-              <div
-                key={m.id}
-                className={
-                  "cw-msg " +
-                  (m.role === "user" ? "cw-user" : "cw-assistant") +
-                  (m.error ? " cw-error" : "")
-                }
-              >
-                <p>{m.content}</p>
-              </div>
-            ))}
+            {messages.map((m) =>
+              m.role === "user" ? (
+                <div key={m.id} className="cw-msg cw-user">
+                  <p>{m.content}</p>
+                </div>
+              ) : (
+                <div key={m.id} className="cw-row">
+                  <img className="cw-mini" src={avatarUrl} alt="" width="28" height="28" />
+                  <div className={"cw-msg cw-assistant" + (m.error ? " cw-error" : "")}>
+                    {renderAnswer(m.content)}
+                  </div>
+                </div>
+              ),
+            )}
 
             {loading && (
-              <div className="cw-msg cw-assistant">
-                <span className="cw-typing" aria-label="Хариулж байна">
-                  <i />
-                  <i />
-                  <i />
-                </span>
+              <div className="cw-row">
+                <img className="cw-mini" src={avatarUrl} alt="" width="28" height="28" />
+                <div className="cw-msg cw-assistant cw-pending" aria-label="Хариулж байна">
+                  <span className="cw-typing">
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                  <small>Magi бичиж байна</small>
+                </div>
+              </div>
+            )}
+
+            {/* Сүүлийн хариултын доор, мессежүүдтэй хамт гүйлгэгдэнэ */}
+            {chips.length > 0 && (
+              <div className={"cw-chips" + (messages.length ? " cw-chips--next" : "")}>
+                <span className="cw-chips-label">{messages.length ? "Санал болгох асуулт" : "Түгээмэл асуулт"}</span>
+                {chips.map((s) => (
+                  <button type="button" key={s.label} onClick={() => send(s.question)} disabled={loading}>
+                    {s.label}
+                  </button>
+                ))}
               </div>
             )}
           </div>
-
-          {messages.length === 0 && suggestions.length > 0 && (
-            <div className="cw-chips">
-              {suggestions.map((s) => (
-                <button type="button" key={s.label} onClick={() => send(s.question)} disabled={loading}>
-                  {s.label}
-                </button>
-              ))}
-            </div>
-          )}
 
           <form
             className="cw-form"
