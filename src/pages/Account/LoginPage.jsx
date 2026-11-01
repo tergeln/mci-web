@@ -13,8 +13,9 @@ const errors = {
   duplicate: ['Энэ имэйл бүртгэлтэй байна. Нэвтрэх хэсгээр орно уу.', 'This email is already registered. Please log in.'],
   storage: ['Бүртгэлийг хадгалж чадсангүй. Хөтчийн хадгалах зөвшөөрлийг шалгаад дахин оролдоно уу.', 'Could not save your account. Allow browser storage and try again.'],
   login: ['Имэйл эсвэл нууц үг буруу байна.', 'Incorrect email or password.'],
-  unconfirmed: ['Имэйлээ баталгаажуулаад дахин нэвтэрнэ үү.', 'Confirm your email address, then log in.'],
-  rate: ['Хэт олон оролдлого хийлээ. Түр хүлээгээд дахин оролдоно уу.', 'Too many attempts. Please wait and try again.'],
+  unconfirmed: ['Имэйл хаягаа баталгаажуулаагүй байна. Имэйлээ шалгаж, баталгаажуулах линк дээр дарна уу.', 'Please confirm your email first. Check your inbox for the confirmation link.'],
+  confirmFailed: ['Баталгаажуулах линк хүчингүй эсвэл хугацаа нь дууссан байна. Нэвтэрч үзээд, болохгүй бол дахин бүртгүүлнэ үү.', 'This confirmation link is invalid or has expired. Try logging in, or sign up again.'],
+  rate: ['Хэт олон оролдлого хийлээ. Хэдэн минутын дараа дахин оролдоно уу.', 'Too many attempts. Please try again in a few minutes.'],
   unknown: ['Алдаа гарлаа. Дахин оролдоно уу.', 'Something went wrong. Please try again.'],
 };
 
@@ -35,9 +36,9 @@ export default function LoginPage({ mode = 'login' }) {
   const [password, setPassword] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(() => (new URLSearchParams(location.search).get('confirm') === 'failed' ? 'confirmFailed' : ''));
+  const [sentTo, setSentTo] = useState('');
   const [busy, setBusy] = useState(false);
-  const [confirmSent, setConfirmSent] = useState(false);
   useDocumentTitle(signingUp ? t('Бүртгүүлэх — Magic Code AI', 'Sign up — Magic Code AI') : t('Нэвтрэх — Magic Code AI', 'Log in — Magic Code AI'));
   const returnTo = typeof location.state?.from === 'string' && location.state.from.startsWith('/') && !location.state.from.startsWith('//') && !['/login', '/register'].includes(location.state.from) ? location.state.from : '/account';
   if (!ready) return <main className="account-page wrap" role="status">{t('Ачааллаж байна…', 'Loading…')}</main>;
@@ -53,14 +54,14 @@ export default function LoginPage({ mode = 'login' }) {
       if (signingUp) {
         const result = await register({ name, email, password });
         if (result.error) { setError(result.error); return; }
-        if (result.confirm) { setConfirmSent(true); return; }
+        if (result.confirmation) { setSentTo(result.confirmation); return; }
       } else {
         const profile = await login(email, password);
         if (!profile || profile.error) { setError(profile?.error || 'login'); return; }
       }
       navigate(returnTo, { replace: true });
-    } catch {
-      setError('unknown');
+    } catch (err) {
+      setError(err?.code === 'email_not_confirmed' ? 'unconfirmed' : ['rate_limited', 'email_rate_limited'].includes(err?.code) ? 'rate' : 'unknown');
     } finally {
       setBusy(false);
     }
@@ -80,7 +81,11 @@ export default function LoginPage({ mode = 'login' }) {
       </nav>
       <h2>{signingUp ? t('Хамтдаа эхэлье', 'Start your journey') : t('Тавтай морил', 'Welcome back')}</h2>
       {signingUp && <p className="auth-description">{t('Өөрийн суралцах орон зайг үүсгээрэй.', 'Create your own learning space.')}</p>}
-      {confirmSent ? <p role="status">{t(`${email} хаяг руу баталгаажуулах холбоос илгээлээ. Имэйлээ шалгаад, холбоосыг дарсны дараа нэвтэрнэ үү.`, `We sent a confirmation link to ${email}. Open it, then log in.`)}</p> : <form onSubmit={submit} aria-busy={busy}>
+      {sentTo ? <div className="auth-confirmation" role="status">
+        <p><strong>{t('Имэйлээ шалгана уу.', 'Check your email.')}</strong></p>
+        <p>{t(`${sentTo} хаяг руу баталгаажуулах линк илгээлээ. Линк дээр дарж бүртгэлээ баталгаажуулаад, энд буцаж ирж нэвтэрнэ үү.`, `We sent a confirmation link to ${sentTo}. Open it to confirm your account, then come back here to log in.`)}</p>
+        <p>{t('Имэйл ирэхгүй бол Spam хавтсаа шалгана уу.', 'If it does not arrive, check your spam folder.')}</p>
+      </div> : <form onSubmit={submit} aria-busy={busy}>
         <fieldset disabled={busy}>
           {signingUp && <div className="auth-field"><label htmlFor="auth-name">{t('Нэр', 'Name')}</label><input id="auth-name" name="name" autoComplete="name" required maxLength={100} value={name} onChange={update(setName)} /></div>}
           <div className="auth-field"><label htmlFor="login-email">{t('Имэйл хаяг', 'Email address')}</label><input id="login-email" name="email" type="email" autoComplete="username" required maxLength={254} value={email} onChange={update(setEmail)} /></div>

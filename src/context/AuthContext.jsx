@@ -40,7 +40,10 @@ function DemoAuthProvider({ children }) {
     return () => { window.removeEventListener(RECORDS_EVENT, refresh); window.removeEventListener('storage', onStorage); };
   }, []);
   async function login(email, password) {
-    if (!USE_MOCK) { const profile = await request('/auth/login', { method: 'POST', body: { email: normalizeEmail(email), password } }); setUser(profile); return profile; }
+    if (!USE_MOCK) {
+      try { const profile = await request('/auth/login', { method: 'POST', body: { email: normalizeEmail(email), password } }); setUser(profile); return profile; }
+      catch (error) { if (error.status === 401) return false; throw error; }
+    }
     const account = accounts.find((u) => u.email === normalizeEmail(email));
     if (!account || !(account.password ? account.password === password : await matchesPassword(account, password))) return false;
     const profile = publicProfile(account);
@@ -49,7 +52,18 @@ function DemoAuthProvider({ children }) {
     return profile;
   }
   async function register(details) {
-    if (!USE_MOCK) { const profile = await request('/auth/register', { method: 'POST', body: details }); setUser(profile); return { profile }; }
+    if (!USE_MOCK) {
+      try {
+        const result = await request('/auth/register', { method: 'POST', body: details });
+        // Имэйл баталгаажуулалт: линк дээр дарах хүртэл нэвтрэхгүй.
+        if (result?.confirmationRequired) return { confirmation: result.email };
+        setUser(result); return { profile: result };
+      } catch (error) {
+        if (error.status === 409) return { error: 'duplicate' };
+        if (error.status === 400 && error.fields) return { error: ['name', 'email', 'password'].find((key) => error.fields[key]) || 'unknown' };
+        throw error;
+      }
+    }
     const saved = registeredAccounts(read('mc-demo-accounts-v1', []));
     const error = validateRegistration(details, [...demoUsers, ...saved]);
     if (error) return { error };
@@ -127,7 +141,7 @@ function SupabaseAuthProvider({ children }) {
     }
     // Бүртгэлтэй и-мэйлийг Supabase алдаагүй буцаадаг; identities хоосон байвал давхардсан.
     if (data.user?.identities?.length === 0) return { error: 'duplicate' };
-    return data.session ? { profile: toUser(data.user) } : { confirm: true };
+    return data.session ? { profile: toUser(data.user) } : { confirmation: normalizeEmail(details.email) };
   }
   async function logout() {
     await supabase.auth.signOut({ scope: 'local' });
