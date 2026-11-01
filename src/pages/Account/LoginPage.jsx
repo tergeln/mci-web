@@ -83,7 +83,7 @@ export default function LoginPage({ mode = 'login' }) {
       {signingUp && <p className="auth-description">{t('Өөрийн суралцах орон зайг үүсгээрэй.', 'Create your own learning space.')}</p>}
       {sentTo ? <div className="auth-confirmation" role="status">
         <p><strong>{t('Имэйлээ шалгана уу.', 'Check your email.')}</strong></p>
-        <p>{t(`${sentTo} хаяг руу баталгаажуулах линк илгээлээ. Линк дээр дарахад бүртгэл баталгаажиж, автоматаар нэвтэрнэ.`, `We sent a confirmation link to ${sentTo}. Open it to confirm your account and log in.`)}</p>
+        <p>{t(`${sentTo} хаяг руу баталгаажуулах линк илгээлээ. Линк дээр дарж бүртгэлээ баталгаажуулаад, энд буцаж ирж нэвтэрнэ үү.`, `We sent a confirmation link to ${sentTo}. Open it to confirm your account, then come back here to log in.`)}</p>
         <p>{t('Имэйл ирэхгүй бол Spam хавтсаа шалгана уу.', 'If it does not arrive, check your spam folder.')}</p>
       </div> : <form onSubmit={submit} aria-busy={busy}>
         <fieldset disabled={busy}>
