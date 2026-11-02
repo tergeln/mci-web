@@ -22,6 +22,9 @@ type Props = {
   greeting?: string;
   avatarUrl?: string;
   suggestions?: Suggestion[];
+  teaser?: string;
+  teaserShowMs?: number;
+  teaserGapMs?: number;
 };
 
 const API_URL = (import.meta.env.VITE_CHAT_API_URL as string | undefined) ?? "";
@@ -101,7 +104,7 @@ function renderAnswer(text: string) {
 export default function ChatWidget({
   apiUrl = API_URL,
   business,
-  title = "Magi Шидэт туслах",
+  title = "Magi дижитал туслах",
   greeting = "Сайн уу! Намайг Magi гэдэг. Би Magic Code AI-ийн туслах. Танд юугаар туслах вэ?",
   avatarUrl = "/assets/chatbot-owl-96.webp",
   suggestions = [
@@ -109,8 +112,14 @@ export default function ChatWidget({
     { label: "Вебсайтын үнэ", question: "Вебсайт хийлгэхэд хэдэн төгрөг вэ?" },
     { label: "Холбогдох", question: "Тантай хэрхэн холбогдох вэ?" },
   ],
+  teaser = "Magi дижитал туслах",
+  teaserShowMs = 20 * 1000,
+  teaserGapMs = 60 * 1000,
 }: Props) {
   const [open, setOpen] = useState(false);
+  const [teaserVisible, setTeaserVisible] = useState(false);
+  const [teaserDismissed, setTeaserDismissed] = useState(false);
+  const chatOpenedBefore = useRef(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -157,6 +166,28 @@ export default function ChatWidget({
       root.style.removeProperty("--cw-top");
     };
   }, [open]);
+
+  // Чат хаалттай үед шувууны дээр teaserShowMs харагдаж, teaserGapMs нуугдах мөчлөг.
+  // Сайтад ороход шууд гарна; чатыг хаасны дараа шууд биш, завсар өнгөрсний дараа гарна.
+  // × дарвал энэ хуудсанд дахин гарахгүй.
+  // (StrictMode-д effect давхар ажилласан ч ижил үр дүнтэй байхаар "чатыг нээж байсан эсэх"-ээр шийднэ.)
+  useEffect(() => {
+    setTeaserVisible(false);
+    if (open) chatOpenedBefore.current = true;
+    if (open || teaserDismissed) return;
+    let timer: number;
+    const show = () => {
+      setTeaserVisible(true);
+      timer = window.setTimeout(hide, teaserShowMs);
+    };
+    const hide = () => {
+      setTeaserVisible(false);
+      timer = window.setTimeout(show, teaserGapMs);
+    };
+    if (chatOpenedBefore.current) hide();
+    else show();
+    return () => window.clearTimeout(timer);
+  }, [open, teaserDismissed]);
 
   useEffect(() => {
     if (!open) return;
@@ -358,6 +389,22 @@ export default function ChatWidget({
         </section>
       )}
 
+      {!open && teaserVisible && (
+        <div className="cw-teaser" role="status">
+          <button type="button" className="cw-teaser-text" onClick={() => setOpen(true)}>
+            {teaser}
+          </button>
+          <button
+            type="button"
+            className="cw-teaser-close"
+            onClick={() => setTeaserDismissed(true)}
+            aria-label="Мэдэгдлийг хаах"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {/* Чат нээлттэй үед шувуу нуугдана, хаахдаа × эсвэл Esc */}
       {!open && (
         <button
@@ -365,7 +412,7 @@ export default function ChatWidget({
           className="cw-launcher"
           ref={launcherRef}
           onClick={() => setOpen(true)}
-          aria-label="Magi шидэт туслахыг нээх"
+          aria-label="Magi дижитал туслахыг нээх"
         >
           <img src={avatarUrl} srcSet={avatarUrl === '/assets/chatbot-owl-96.webp' ? '/assets/chatbot-owl-96.webp 96w, /assets/chatbot-owl-128.webp 128w, /assets/chatbot-owl-160.webp 160w, /assets/chatbot-owl-192.webp 192w' : undefined} sizes="(max-width:480px) 64px, 76px" alt="" width="76" height="76" loading="eager" fetchpriority="low" decoding="async" />
         </button>
