@@ -26,6 +26,7 @@ type Props = {
 
 const API_URL = (import.meta.env.VITE_CHAT_API_URL as string | undefined) ?? "";
 const GENERIC_ERROR = "Түр алдаа гарлаа. Дахин оролдоно уу.";
+const MOBILE_QUERY = "(max-width: 480px)";   // ChatWidget.css-ийн @media-тай ижил байх ёстой
 
 // Хариулт дахь холбоосыг товч болгоно. Зөвхөн итгэмжлэгдсэн домэйн, имэйлийг: ботыг хууран
 // гадны холбоос гаргуулсан ч энгийн текст хэвээр үлдэж, дарагдахгүй.
@@ -119,6 +120,7 @@ export default function ChatWidget({
   const launcherRef = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
   const requestRef = useRef<AbortController | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = listRef.current;
@@ -126,9 +128,34 @@ export default function ChatWidget({
   }, [messages, loading, open]);
 
   useEffect(() => {
-    if (open) inputRef.current?.focus();
-    else if (wasOpen.current) launcherRef.current?.focus(); // хаасны дараа фокусыг шувуунд буцаана
+    // Утсан дээр автомат фокус гарыг шууд гаргаж чатыг таглана: зөвхөн хулганатай төхөөрөмж дээр
+    if (open && window.matchMedia("(pointer: fine)").matches) inputRef.current?.focus();
+    else if (!open && wasOpen.current) launcherRef.current?.focus(); // хаасны дараа фокусыг шувуунд буцаана
     wasOpen.current = open;
+  }, [open]);
+
+  // Утсан дээр бүтэн дэлгэц: ард байгаа сайтыг гүйлгэхгүй, гар гарахад панелыг харагдах хэсэгт тааруулна
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!open || !root || !window.matchMedia(MOBILE_QUERY).matches) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const vv = window.visualViewport;
+    const sync = () => {
+      if (!vv) return;
+      root.style.setProperty("--cw-vh", `${vv.height}px`);
+      root.style.setProperty("--cw-top", `${vv.offsetTop}px`);
+    };
+    sync();
+    vv?.addEventListener("resize", sync);
+    vv?.addEventListener("scroll", sync);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      vv?.removeEventListener("resize", sync);
+      vv?.removeEventListener("scroll", sync);
+      root.style.removeProperty("--cw-vh");
+      root.style.removeProperty("--cw-top");
+    };
   }, [open]);
 
   useEffect(() => {
@@ -228,7 +255,7 @@ export default function ChatWidget({
         : [];
 
   return (
-    <div className={"cw-root" + (open ? " cw-open" : "")}>
+    <div ref={rootRef} className={"cw-root" + (open ? " cw-open" : "")}>
       {open && (
         <section className="cw-panel" role="dialog" aria-label={title}>
           {/* <header> биш: сайтын глобал `header {position: fixed}` дүрэмд өртөхгүйн тулд */}

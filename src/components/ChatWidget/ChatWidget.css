@@ -440,6 +440,8 @@
   text-align: left;
 }
 
+/* Утас: нээгдэхэд бүтэн дэлгэц. --cw-vh/--cw-top-ийг JS visualViewport-оос тавина
+   (iOS дээр гар гарахад панел гарын дээрх хэсэгт багтана). MOBILE_QUERY-тэй ижил байх ёстой. */
 @media (max-width: 480px) {
   .cw-root {
     right: 14px;
@@ -450,14 +452,38 @@
     height: 64px;
   }
   .cw-open .cw-panel {
-    height: min(640px, calc(100dvh - 110px));
+    position: fixed;
+    top: var(--cw-top, 0);
+    left: 0;
+    right: 0;
+    bottom: auto;
+    width: 100%;
+    height: var(--cw-vh, 100dvh);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    animation: cw-sheet 0.25s ease-out;
   }
+  .cw-open .cw-header {
+    padding-top: calc(14px + env(safe-area-inset-top, 0px));
+  }
+  .cw-open .cw-form {
+    margin-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+  .cw-open .cw-icon-btn {
+    width: 40px;
+    height: 40px;   /* хуруугаар дарахад хангалттай */
+  }
+}
+@keyframes cw-sheet {
+  from { opacity: 0; transform: translateY(24px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cw-typing i,
   .cw-launcher img,
   .cw-panel,
+  .cw-open .cw-panel,
   .cw-row,
   .cw-user,
   .cw-chips { animation: none; }
