@@ -1,13 +1,7 @@
 import Tr from '../Tr/Tr';
-
+import '../../pages/Home/contact.css';
 export default function Footer() {
-  return (
-    <footer>
-      <div className="wrap">
-        <small>
-          <Tr mn="© 2026 Magic Code AI. Бүх эрх хуулиар хамгаалагдсан." en="© 2026 Magic Code AI. All rights reserved." />
-        </small>
-      </div>
-    </footer>
-  );
+  return <footer className="site-footer"><div className="wrap footer-inner">
+    <small>© {new Date().getFullYear()} Magic Code AI. <Tr mn="Бүх эрх хуулиар хамгаалагдсан." en="All rights reserved." /></small>
+  </div></footer>;
 }

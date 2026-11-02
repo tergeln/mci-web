@@ -1,3 +1,4 @@
+import useNearViewport from '../../../hooks/useNearViewport';
 import { Link } from 'react-router-dom';
 import Tr from '../../../components/Tr/Tr';
 import useReveal from '../../../hooks/useReveal';
@@ -7,11 +8,12 @@ import useApi from '../../../hooks/useApi';
 import ApiState from '../../../components/ApiState/ApiState';
 import { getCourses } from '../../../api/courses';
 
-export default function CoursesSection({ onSelectCourse }) {
+export default function CoursesSection({ onSelectCourse, fetchEnabled = true }) {
+  const [sectionRef, enabled] = useNearViewport();
   const [headRef, headClass] = useReveal('section-head');
-  const { data: courses, loading, error, reload } = useApi((signal) => getCourses({ signal }), []);
+  const { data: courses, loading, error, reload } = useApi((signal) => getCourses({ signal }), [], enabled && fetchEnabled);
   return (
-    <section id="courses">
+    <section id="courses" ref={sectionRef}>
       <div className="wrap">
         <div ref={headRef} className={headClass}>
           <div>
@@ -28,7 +30,7 @@ export default function CoursesSection({ onSelectCourse }) {
         <ApiState loading={loading} error={error} onRetry={reload} />
         <div className="courses">
           {homeCourses.map((course, i) => (
-            <CourseCard key={course.title.en} course={{ ...course, image: course.image ?? courses?.find((item) => item.id === course.id)?.image }} index={i} onSelect={() => onSelectCourse(i)} />
+            <CourseCard key={course.title.en} course={{ ...course, price: courses?.find((item) => item.id === course.id)?.price, image: course.image ?? courses?.find((item) => item.id === course.id)?.image }} index={i} onSelect={() => onSelectCourse(i)} />
           ))}
           <Link className="text-link courses-more" to="/courses">
             <Tr mn="Цааш үзэх" en="See all courses" /><span aria-hidden="true">→</span>

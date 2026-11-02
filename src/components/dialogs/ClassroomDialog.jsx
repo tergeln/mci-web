@@ -59,7 +59,7 @@ function ClassroomWindow({ request, course, userId, unlocked }) {
       </div>
       <aside className="classroom-preview-syllabus"><h3>{t('Сургалтын агуулга', 'Course syllabus')}</h3>
         <ol>{course.lessons.map((lesson) => <li key={lesson.id}>{t(lesson.mn, lesson.en)}</li>)}</ol>
-        <CourseTerms />
+        <CourseTerms courseId={course.id} />
         <CoursePurchaseButton courseId={course.id} />
       </aside>
     </div> : <>

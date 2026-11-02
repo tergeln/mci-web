@@ -30,6 +30,26 @@ export function reportBankTransfer(orderId, userId) {
     method: 'POST', mock: () => orders.reportTransfer(userId, orderId),
   });
 }
+export function payWithWallet(orderId) {
+  return request(`/orders/${encodeURIComponent(orderId)}/wallet`, {
+    method: 'POST', mock: () => { throw new ApiError(503, 'wallet_unavailable', 'Wallet is unavailable in demo mode'); },
+  });
+}
+export function getMyWallet() {
+  return request('/me/wallet', {
+    mock: () => ({ balance: 0, currency: 'MNT', transactions: [], topups: [], limits: { min: 1000, max: 5000000 }, bank: null }),
+  });
+}
+export function createWalletTopup(amount) {
+  return request('/me/wallet/topups', {
+    method: 'POST', body: { amount }, mock: () => { throw new ApiError(503, 'wallet_unavailable', 'Wallet is unavailable in demo mode'); },
+  });
+}
+export function checkQPay(orderId) {
+  return request(`/orders/${encodeURIComponent(orderId)}/qpay/check`, {
+    method: 'POST', mock: () => { throw new ApiError(503, 'qpay_unavailable', 'QPay is currently unavailable'); },
+  });
+}
 export function startQPay(orderId) {
   return request(`/orders/${encodeURIComponent(orderId)}/qpay`, {
     method: 'POST', mock: () => { throw new ApiError(503, 'qpay_unavailable', 'QPay is currently unavailable'); },

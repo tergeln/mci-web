@@ -9,22 +9,27 @@ import Universe2D from '../../components/canvas/Universe2D';
 import Loader from './Loader';
 import ScrollProgress from './ScrollProgress';
 import CursorGlow from './CursorGlow';
-import ChapterIndex from './ChapterIndex';
 import Hero from './Hero/Hero';
-import TechStrip from './Hero/TechStrip';
+
 import CoursesSection from './Courses/CoursesSection';
 import AboutSection from './About/AboutSection';
 import Activities from './Activities';
 import Contact from './Contact';
 import LiveStrip from './LiveStrip';
 import '../../styles/home.css';
+import useLightweightVisuals from '../../hooks/useLightweightVisuals';
 
 const ParticleUniverse = lazy(() => import('../../components/canvas/ParticleUniverse'));
 
-export default function Home() {
+export default function Home({ onIntroComplete }) {
+  const lightweight = useLightweightVisuals();
+  const mobile = useLightweightVisuals('(max-width:900px)');
+  const reducedMotion = useLightweightVisuals('(prefers-reduced-motion:reduce)');
+  const particlesEnabled = mobile ? !reducedMotion : !lightweight;
   const { t } = useLang();
   const [searchParams] = useSearchParams();
   const [glReady, setGlReady] = useState(null);
+  const [introFinished, setIntroFinished] = useState(false);
   const { openCourse: showCourse } = useCommerce();
 
   useDocumentTitle(t('Magic Code AI', 'Magic Code AI'));
@@ -41,20 +46,20 @@ export default function Home() {
 
   return (
     <>
-      <Universe2D active={glReady === false} />
-      <Suspense fallback={null}>
+      <Universe2D active={particlesEnabled && glReady === false} />
+      {particlesEnabled && introFinished && <Suspense fallback={null}>
         <ParticleUniverse onResult={setGlReady} />
-      </Suspense>
-      <Loader />
+      </Suspense>}
+
+      <Loader onComplete={() => { setIntroFinished(true); onIntroComplete?.(); }} />
       <ScrollProgress />
-      <CursorGlow />
-      <ChapterIndex />
+      {!lightweight && <CursorGlow />}
       <main>
         <Hero />
-        <CoursesSection onSelectCourse={openCourse} />
+        <CoursesSection onSelectCourse={openCourse} fetchEnabled={!mobile || introFinished} />
         <AboutSection />
         <Activities />
-        <TechStrip />
+
         <Contact />
       </main>
       <Footer />

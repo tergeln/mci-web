@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three'; // төсөл three@0.128.0 ашигладаг, энэ код түүнд зориулагдсан
-import { LOGO_SHAPES } from './logoShapes';
+import { LOGO_SHAPES } from './extrusionShapes';
 
 /** Градиент сонголтууд: [зүүн талын өнгө (M), баруун талын өнгө (од)] */
 export const GRADIENTS = {
@@ -145,9 +145,12 @@ export default function Logo3D({
   minHeight = 200,
   zoom = 1,
   className,
+  onReady,
 }) {
   const hostRef = useRef(null);
   const apiRef = useRef(null);
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
   // Prop өөрчлөгдөхөд сцен дахин үүсгэхгүй, ref-ээр уншина.
   const live = useRef({ variant, depth, autoRotate, zoom });
   live.current = { variant, depth, autoRotate, zoom };
@@ -162,7 +165,8 @@ export default function Logo3D({
     } catch (e) {
       return undefined; // WebGL байхгүй төхөөрөмж
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const compact = window.matchMedia('(max-width:900px)').matches;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compact ? 1 : 2));
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.05;
@@ -233,7 +237,10 @@ export default function Logo3D({
       }
     };
 
+    let builtDepth;
     const build = (d) => {
+      if (builtDepth === d) return;
+      builtDepth = d;
       for (const child of [...logo.children]) {
         child.geometry.dispose();
         logo.remove(child);
@@ -246,7 +253,7 @@ export default function Logo3D({
           bevelThickness: 0.05,
           bevelSize: 0.03,
           bevelOffset: 0,
-          bevelSegments: 8,
+          bevelSegments: compact ? 2 : 8,
           curveSegments: 1,
           steps: 1,
         });
@@ -292,16 +299,15 @@ export default function Logo3D({
     canvas.addEventListener('pointerup', onUp);
     canvas.addEventListener('pointercancel', onUp);
 
-    const resize = () => {
-      const w = host.clientWidth || 1;
-      const h = host.clientHeight || 1;
+    const resize = ([entry]) => {
+      const w = entry.contentRect.width || 1;
+      const h = entry.contentRect.height || 1;
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
     };
     const ro = new ResizeObserver(resize);
     ro.observe(host);
-    resize();
 
     // Дэлгэцээс гарсан үед зурахаа зогсооно (батарей, гүйцэтгэл).
     let visible = true;
@@ -310,10 +316,14 @@ export default function Logo3D({
     });
     io.observe(host);
 
+    let reportedReady = false;
     let raf = 0;
     let t0 = performance.now();
+    let lastRender = 0;
     const frame = (now) => {
       raf = requestAnimationFrame(frame);
+      if (compact && now - lastRender < 1000 / 30) return;
+      lastRender = now;
       const dt = Math.min(0.05, (now - t0) / 1000);
       t0 = now;
       if (!visible) return;
@@ -328,6 +338,10 @@ export default function Logo3D({
       camera.position.set(0, 0, Math.max(8, 9.6 / camera.aspect) / live.current.zoom);
       camera.lookAt(0, 0, 0);
       renderer.render(scene, camera);
+      if (!reportedReady) {
+        reportedReady = true;
+        onReadyRef.current?.();
+      }
     };
     raf = requestAnimationFrame(frame);
 

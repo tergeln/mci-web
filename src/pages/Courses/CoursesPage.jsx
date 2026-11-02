@@ -61,7 +61,7 @@ export default function CoursesPage() {
                 <div className="catalog-body">
                   <h3><Tr text={c.title} /></h3>
                   <p><Tr text={c.description} /></p>
-                  <CourseTerms />
+                  <CourseTerms price={c.price} />
                   <div className="catalog-course-actions">
                   {!hasAccess(c.id) && <button className="course-preview-link" type="button" onClick={() => openCourse(c.id)}>{t('Танилцуулга үзэх', 'Watch preview')}</button>}
                   <CoursePurchaseButton courseId={c.id} />

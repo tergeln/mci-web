@@ -1,4 +1,7 @@
 import Tr from '../../../components/Tr/Tr';
+import { imageDelivery } from '../../../assets/imageDelivery';
+
+const partnerImage = (logo) => imageDelivery({ src: `/assets/partners/${logo}.png` });
 
 const partners = [
   { name: 'Хушхан брэнд', en: 'HUSHKHAN', logo: 'hushkhan' },
@@ -31,7 +34,7 @@ export default function TechStrip() {
             <div key={group} className="tech-flow-group" aria-hidden={group ? true : undefined}>
               {visiblePartners.map((partner) => (
                 <div className="partner" key={partner.logo}>
-                  <div className={`partner-logo partner-logo--${partner.logo}`}><img src={`/assets/partners/${partner.logo}.png`} alt="" width="72" height="72" /></div>
+                  <div className={`partner-logo partner-logo--${partner.logo}`}><img {...partnerImage(partner.logo)} sizes="(max-width:640px) 46px, 72px" alt="" width="72" height="72" loading="lazy" decoding="async" /></div>
                   <span><Tr mn={partner.name} en={partner.en} /></span>
                 </div>
               ))}

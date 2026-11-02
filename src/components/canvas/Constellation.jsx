@@ -3,8 +3,6 @@ import { useLang } from '../../context/LanguageContext';
 import reducedMotion from '../../hooks/reducedMotion';
 import { skills } from '../../data/skills';
 
-const cssVar = (name) => getComputedStyle(document.getElementById('home')).getPropertyValue(name).trim();
-
 // Ур чадварын оддын зураглал (2D canvas). Оддыг дарж сонгоно.
 export default function Constellation({ selected, onSelect }) {
   const { lang, t } = useLang();
@@ -22,17 +20,31 @@ export default function Constellation({ selected, onSelect }) {
     let time = 0;
     let last = 0;
     let raf = 0;
+    let cw = 0;
+    let ch = 0;
+    let visible = false;
+    let colors = {};
+    const readColors = () => {
+      const style = getComputedStyle(document.getElementById('home'));
+      colors = Object.fromEntries(['--glow', '--blue', '--ink'].map((name) => [name, style.getPropertyValue(name).trim()]));
+    };
+    readColors();
+    const themeObserver = new MutationObserver(readColors);
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
 
-    const resize = () => {
+    const resize = ([entry]) => {
       w = window.innerWidth;
       d = Math.min(window.devicePixelRatio || 1, 2);
-      const r = cv.getBoundingClientRect();
-      cv.width = r.width * d;
-      cv.height = r.height * d;
+      cw = entry.contentRect.width;
+      ch = entry.contentRect.height;
+      cv.width = Math.round(cw * d);
+      cv.height = Math.round(ch * d);
       cx.setTransform(d, 0, 0, d, 0, 0);
     };
-    window.addEventListener('resize', resize);
-    resize();
+    const sizeObserver = new ResizeObserver(resize);
+    sizeObserver.observe(cv);
+    const visibilityObserver = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; });
+    visibilityObserver.observe(cv);
 
     const onDown = (e) => {
       const r = cv.getBoundingClientRect();
@@ -53,16 +65,12 @@ export default function Constellation({ selected, onSelect }) {
 
     const frame = (now) => {
       raf = requestAnimationFrame(frame);
-      if (document.hidden || now - last < (rm ? 160 : 30)) return;
+      if (document.hidden || !visible || !cw || !ch || now - last < (rm ? 160 : 30)) return;
       last = now;
       if (!rm) time += 0.009;
-      const r = cv.getBoundingClientRect();
-      if (r.bottom <= 0) return;
       const { selected: sel, lang: currentLang } = live.current;
-      const glow = cssVar('--glow');
-      const acc = cssVar('--blue');
-      const cw = r.width;
-      const ch = r.height;
+      const glow = colors['--glow'];
+      const acc = colors['--blue'];
       cx.clearRect(0, 0, cw, ch);
       const pos = skills.map((n, i) => [
         (w < 760 ? 0.1 + n.x * 0.8 : n.x) * cw + Math.sin(time + i * 1.7) * 10,
@@ -101,7 +109,7 @@ export default function Constellation({ selected, onSelect }) {
         cx.arc(...p, 24, 0, 7);
         cx.fill();
         cx.globalAlpha = 1;
-        cx.fillStyle = i === sel ? acc : cssVar('--ink');
+        cx.fillStyle = i === sel ? acc : colors['--ink'];
         cx.beginPath();
         cx.arc(...p, i === sel ? 5.5 : 3.5, 0, 7);
         cx.fill();
@@ -121,7 +129,9 @@ export default function Constellation({ selected, onSelect }) {
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener('resize', resize);
+      sizeObserver.disconnect();
+      visibilityObserver.disconnect();
+      themeObserver.disconnect();
       cv.removeEventListener('pointerdown', onDown);
     };
   }, [onSelect]);

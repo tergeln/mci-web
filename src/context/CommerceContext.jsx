@@ -21,10 +21,11 @@ export function CommerceProvider({ children }) {
   const [classroomRequest, setClassroomRequest] = useState(null);
   const generation = useRef(0);
   const userId = user?.id;
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async ({ silent = false } = {}) => {
     const version = ++generation.current;
     if (!userId) { setLibrary({ userId: null, courses: [], orders: [] }); setLoading(false); setError(null); return; }
-    setLoading(true); setError(null);
+    if (!silent) setLoading(true);
+    setError(null);
     try {
       const [courses, orders] = await Promise.all([getMyCourses(userId), getMyOrders(userId)]);
       if (version === generation.current) setLibrary({ userId, courses, orders });
@@ -35,7 +36,8 @@ export function CommerceProvider({ children }) {
   useEffect(() => { refresh(); return () => { generation.current++; }; }, [refresh]);
   useEffect(() => {
     if (!userId) return;
-    const onFocus = () => refresh();
+    // Цонх руу буцахад товчнуудыг түгжихгүйгээр дэвсгэрт шинэчилнэ.
+    const onFocus = () => refresh({ silent: true });
     window.addEventListener('focus', onFocus);
     return () => window.removeEventListener('focus', onFocus);
   }, [userId, refresh]);

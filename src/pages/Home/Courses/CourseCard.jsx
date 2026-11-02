@@ -14,7 +14,7 @@ export default function CourseCard({ course, index, onSelect }) {
       <CourseArt course={course} />
       <div className="card-body">
         <p><Tr text={course.text} /></p>
-        <div className="meta"><Tr text={course.meta} /><CourseTerms /></div>
+        <div className="meta"><Tr text={course.meta} /><CourseTerms price={course.price} /></div>
         <div className="card-bottom">
           {!hasAccess(course.id) && <button className="course-preview-link" onClick={onSelect}>{t("Танилцуулга үзэх", "Watch preview")}</button>}
           <CoursePurchaseButton courseId={course.id} />
