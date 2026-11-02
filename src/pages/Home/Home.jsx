@@ -10,7 +10,7 @@ import Loader from './Loader';
 import ScrollProgress from './ScrollProgress';
 import CursorGlow from './CursorGlow';
 import Hero from './Hero/Hero';
-import TechStrip from './Hero/TechStrip';
+
 import CoursesSection from './Courses/CoursesSection';
 import AboutSection from './About/AboutSection';
 import Activities from './Activities';
@@ -59,7 +59,7 @@ export default function Home({ onIntroComplete }) {
         <CoursesSection onSelectCourse={openCourse} fetchEnabled={!mobile || introFinished} />
         <AboutSection />
         <Activities />
-        <TechStrip />
+
         <Contact />
       </main>
       <Footer />
