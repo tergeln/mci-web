@@ -39,15 +39,13 @@ test('only active paid entitlements unlock lessons; pending transfers and orders
   assert.deepEqual(activeCourseIds({ id: 'a' }, [{ courseId: 'python', status: 'pending_review' }, { courseId: 'python', status: 'paid' }]), []);
 });
 
-test('temporary Power BI access starts once per account and is not renewed by refresh', () => {
+test('Power BI requires payment and old waived entitlements do not unlock it', () => {
   const store = setup();
-  const first = store.entitlements('a')[0];
-  assert.equal(first.courseId, 'data-analysis');
-  assert.equal(first.paymentStatus, 'waived');
-  assert.deepEqual(store.entitlements('a')[0], first);
-  assert.deepEqual(activeCourseIds({id:'a'}, [first]), ['data-analysis']);
-  assert.throws(() => store.create('a', ['data-analysis'], [{id:'data-analysis', title:{mn:'Power BI'}, price:49900}]), /already_owned/);
+  assert.deepEqual(store.entitlements('a'), []);
+  assert.deepEqual(activeCourseIds({id:'a'}, [{courseId:'data-analysis',status:'active',paymentStatus:'waived',accessType:'temporary',activatedAt:new Date().toISOString(),expiresAt:'2099-01-01T00:00:00Z'}]), []);
+  assert.equal(store.create('a', ['data-analysis'], [{id:'data-analysis', title:{mn:'Power BI'}, price:49900}]).status, 'pending_payment');
 });
+
 test('pending overlap is rejected even when a second basket has additional courses', () => {
   const store = setup(); store.create('a', ['python'], catalog);
   assert.throws(() => store.create('a', ['python','sql'], catalog), /already_ordered/);

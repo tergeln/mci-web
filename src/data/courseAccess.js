@@ -1,6 +1,5 @@
 export const COURSE_PRICE = 49900;
 export const COURSE_ACCESS_MONTHS = 3;
-export const TEMPORARY_FREE_COURSE = 'data-analysis';
 
 // Calendar months, clamped at month end (Jan 31 + 3 months = Apr 30).
 export function accessExpiresAt(activatedAt) {
@@ -20,6 +19,6 @@ export function entitlementExpiry(item) {
 export function isActiveCourse(item, now = Date.now()) {
   const expiry = Date.parse(entitlementExpiry(item));
   const start = item.activatedAt || item.paidAt || item.startsAt;
-  const allowed = item.paymentStatus === 'paid' || (item.courseId === TEMPORARY_FREE_COURSE && item.paymentStatus === 'waived' && item.accessType === 'temporary');
+  const allowed = item.paymentStatus === 'paid';
   return item.status === 'active' && allowed && Number.isFinite(expiry) && expiry > now && (!start || Date.parse(start) <= now);
 }

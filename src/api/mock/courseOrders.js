@@ -1,4 +1,4 @@
-import { accessExpiresAt, isActiveCourse, TEMPORARY_FREE_COURSE } from '../../data/courseAccess.js';
+import { isActiveCourse } from '../../data/courseAccess.js';
 const KEY = 'mc-course-orders-v1';
 export function createOrderStore({ storage, id = () => crypto.randomUUID(), now = () => new Date().toISOString() }) {
   const fail = (code) => { throw Object.assign(new Error(code), { code }); };
@@ -13,16 +13,7 @@ export function createOrderStore({ storage, id = () => crypto.randomUUID(), now 
   function save(rows) { storage.setItem(KEY, JSON.stringify(rows)); }
   function entitlements(userId) {
     if (!userId) fail('unauthorized');
-    const key = 'mc-temporary-course-access-v1';
-    let saved;
-    try { saved = JSON.parse(storage.getItem(key) || '{}'); } catch { fail('corrupt_storage'); }
-    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) fail('corrupt_storage');
-    if (!saved[userId]) {
-      const activatedAt = now();
-      saved[userId] = { courseId: TEMPORARY_FREE_COURSE, status: 'active', paymentStatus: 'waived', accessType: 'temporary', activatedAt, expiresAt: accessExpiresAt(activatedAt) };
-      storage.setItem(key, JSON.stringify(saved));
-    }
-    return [saved[userId]];
+    return all().filter((order) => order.userId === userId && order.status === 'paid').flatMap((order) => order.items.map((item) => ({ courseId: item.courseId, status: 'active', paymentStatus: 'paid', activatedAt: order.paidAt, expiresAt: order.expiresAt })));
   }
   return {
     entitlements,

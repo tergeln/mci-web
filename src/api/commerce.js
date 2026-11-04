@@ -1,6 +1,6 @@
 import { ApiError, request } from './client';
 import { getLearningCourse } from '../data/lessons';
-import { isActiveCourse, TEMPORARY_FREE_COURSE } from '../data/courseAccess';
+import { isActiveCourse } from '../data/courseAccess';
 import { courses } from './mock/db';
 import { createOrderStore } from './mock/courseOrders';
 
@@ -20,7 +20,7 @@ export function getMyCourses(userId) {
 export function getCourseLessons(courseId, userId) {
   return request(`/me/courses/${encodeURIComponent(courseId)}/lessons`, {
     mock: () => {
-      if (userId && courseId === TEMPORARY_FREE_COURSE && orders.entitlements(userId).some((item) => item.courseId === courseId && isActiveCourse(item))) return { lessons: getLearningCourse(courseId).lessons };
+      if (userId && orders.entitlements(userId).some((item) => item.courseId === courseId && isActiveCourse(item))) return { lessons: getLearningCourse(courseId).lessons };
       throw new ApiError(403, 'payment_required', 'Payment confirmation is required');
     },
   });

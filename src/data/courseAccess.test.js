@@ -15,9 +15,9 @@ test('access expires at the boundary, rejects future and undated grants', () => 
   assert.equal(isActiveCourse(item, Date.parse('2026-10-01T05:00:00Z')), false);
   assert.equal(isActiveCourse({...item, activatedAt:undefined}), false);
 });
-test('temporary free access applies only to Power BI and has the same expiry', () => {
+test('unpaid Power BI trial grants no longer authorize access', () => {
   const item={courseId:'data-analysis',status:'active',paymentStatus:'waived',accessType:'temporary',activatedAt:'2026-11-01T05:00:00Z'};
-  assert.equal(isActiveCourse(item,Date.parse('2026-12-01T05:00:00Z')),true);
+  assert.equal(isActiveCourse(item,Date.parse('2026-12-01T05:00:00Z')),false);
   assert.equal(isActiveCourse({...item,courseId:'python'},Date.parse('2026-12-01T05:00:00Z')),false);
   assert.equal(isActiveCourse(item,Date.parse('2027-02-02T05:00:00Z')),false);
 });
