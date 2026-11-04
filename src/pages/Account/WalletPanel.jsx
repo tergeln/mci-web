@@ -5,7 +5,7 @@ import { checkQPay, createWalletTopup, getMyWallet, reportBankTransfer, startQPa
 import { errorMessage } from '../../api/client';
 import useApi from '../../hooks/useApi';
 import QPayInvoice from '../Cart/QPayInvoice';
-import { BANK_ACCOUNT } from '../../data/bankAccount';
+import BankAccounts from '../../components/BankAccounts/BankAccounts';
 
 const money = (amount) => `${new Intl.NumberFormat('mn-MN').format(amount)}₮`;
 
@@ -47,7 +47,7 @@ export default function WalletPanel() {
       {wallet?.topups?.map((order) => <div className="account-record wallet-open" key={order.id}>
         <div className="account-row"><strong>{money(order.amount)}</strong><span>{order.status === 'pending_review' ? t('Шилжүүлгийг шалгаж байна', 'Transfer under review') : t('Төлбөр хүлээгдэж байна', 'Awaiting payment')}</span></div>
         {order.status === 'pending_payment' && <>
-          <p>{wallet.bank ? `${wallet.bank.bankName} · ${wallet.bank.accountNumber} · ${wallet.bank.accountName}` : `${t('Хаан банк', 'Khan Bank')} · ${BANK_ACCOUNT.iban} · ${BANK_ACCOUNT.holder}`}</p>
+          <BankAccounts banks={wallet.banks} />
           <p>{t('Гүйлгээний утга:', 'Transfer reference:')} <strong>{order.id}</strong></p>
           <div className="account-actions">
             <button className="btn secondary" disabled={busy} onClick={() => run(() => reportBankTransfer(order.id))}>{t('Шилжүүлсэн, шалгуулах', 'I transferred — request review')}</button>
