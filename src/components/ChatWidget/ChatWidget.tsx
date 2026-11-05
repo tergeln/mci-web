@@ -3,6 +3,7 @@
 /// <reference path="./vite-env.d.ts" />
 /// <reference path="./react.d.ts" />
 import { useEffect, useRef, useState } from "react";
+import { useLang } from "../../context/LanguageContext";
 import "./ChatWidget.css";
 
 type Role = "user" | "assistant";
@@ -12,23 +13,71 @@ type Message = {
   content: string;
   error?: boolean;
   followups?: string[];
+  lang?: string;   // хариултын хэл: хэл солигдоход хуучин хэлний санал болгох асуултыг нууна
 };
 type Suggestion = { label: string; question: string };
 
 type Props = {
   apiUrl?: string;
   business?: "course" | "web" | "merch";
-  title?: string;
-  greeting?: string;
   avatarUrl?: string;
-  suggestions?: Suggestion[];
-  teaser?: string;
   teaserShowMs?: number;
   teaserGapMs?: number;
 };
 
 const API_URL = (import.meta.env.VITE_CHAT_API_URL as string | undefined) ?? "";
-const GENERIC_ERROR = "Түр алдаа гарлаа. Дахин оролдоно уу.";
+const STRINGS = {
+  mn: {
+    title: "Magi дижитал туслах",
+    greeting: "Сайн уу! Намайг Magi гэдэг. Би Magic Code AI-ийн туслах. Танд юугаар туслах вэ?",
+    suggestions: [
+      { label: "Сургалтууд", question: "Ямар сургалтууд байдаг вэ?" },
+      { label: "Вебсайтын үнэ", question: "Вебсайт хийлгэхэд хэдэн төгрөг вэ?" },
+      { label: "Холбогдох", question: "Тантай хэрхэн холбогдох вэ?" },
+    ],
+    online: "Онлайн",
+    typing: "Magi бичиж байна",
+    answering: "Хариулж байна",
+    commonQuestions: "Түгээмэл асуулт",
+    suggestedQuestions: "Санал болгох асуулт",
+    placeholder: "Асуух зүйлээ бичээрэй…",
+    question: "Асуулт",
+    send: "Илгээх",
+    restart: "Чатыг шинээр эхлүүлэх",
+    close: "Хаах",
+    open: "Magi дижитал туслахыг нээх",
+    dismissTeaser: "Мэдэгдлийг хаах",
+    genericError: "Түр алдаа гарлаа. Дахин оролдоно уу.",
+    rateLimited: "Хэт олон хүсэлт илгээлээ. Түр хүлээгээд дахин оролдоно уу.",
+    timeout: "Хариу удаан байна. Дахин оролдоно уу.",
+    network: "Сүлжээний алдаа. Интернэт холболтоо шалгана уу.",
+  },
+  en: {
+    title: "Magi Digital Assistant",
+    greeting: "Hi! I'm Magi, the Magic Code AI assistant. How can I help you?",
+    suggestions: [
+      { label: "Courses", question: "What courses do you offer?" },
+      { label: "Website pricing", question: "How much does a website cost?" },
+      { label: "Contact", question: "How can I contact you?" },
+    ],
+    online: "Online",
+    typing: "Magi is typing",
+    answering: "Answering",
+    commonQuestions: "Common questions",
+    suggestedQuestions: "Suggested questions",
+    placeholder: "Type your question…",
+    question: "Question",
+    send: "Send",
+    restart: "Start a new chat",
+    close: "Close",
+    open: "Open Magi Digital Assistant",
+    dismissTeaser: "Dismiss",
+    genericError: "Something went wrong. Please try again.",
+    rateLimited: "Too many requests. Please wait a moment and try again.",
+    timeout: "The reply is taking too long. Please try again.",
+    network: "Network error. Please check your connection.",
+  },
+};
 const MOBILE_QUERY = "(max-width: 480px)";   // ChatWidget.css-ийн @media-тай ижил байх ёстой
 
 // Хариулт дахь холбоосыг товч болгоно. Зөвхөн итгэмжлэгдсэн домэйн, имэйлийг: ботыг хууран
@@ -104,18 +153,12 @@ function renderAnswer(text: string) {
 export default function ChatWidget({
   apiUrl = API_URL,
   business,
-  title = "Magi дижитал туслах",
-  greeting = "Сайн уу! Намайг Magi гэдэг. Би Magic Code AI-ийн туслах. Танд юугаар туслах вэ?",
   avatarUrl = "/assets/chatbot-owl-96.webp",
-  suggestions = [
-    { label: "Сургалтууд", question: "Ямар сургалтууд байдаг вэ?" },
-    { label: "Вебсайтын үнэ", question: "Вебсайт хийлгэхэд хэдэн төгрөг вэ?" },
-    { label: "Холбогдох", question: "Тантай хэрхэн холбогдох вэ?" },
-  ],
-  teaser = "Magi дижитал туслах",
   teaserShowMs = 20 * 1000,
   teaserGapMs = 60 * 1000,
 }: Props) {
+  const { lang } = useLang();   // сайтын хэлийг дагана
+  const ui = STRINGS[lang] ?? STRINGS.mn;
   const [open, setOpen] = useState(false);
   const [teaserVisible, setTeaserVisible] = useState(false);
   const [teaserDismissed, setTeaserDismissed] = useState(false);
@@ -225,7 +268,7 @@ export default function ChatWidget({
 
     if (!apiUrl) {
       console.error("VITE_CHAT_API_URL тохируулагдаагүй байна");
-      push({ role: "assistant", content: GENERIC_ERROR, error: true });
+      push({ role: "assistant", content: ui.genericError, error: true });
       return;
     }
 
@@ -242,15 +285,23 @@ export default function ChatWidget({
       const res = await fetch(`${apiUrl.replace(/\/$/, "")}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: question, history, ...(business ? { business } : {}) }),
+        body: JSON.stringify({ message: question, history, lang, ...(business ? { business } : {}) }),
         signal: controller.signal,
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) {
-        throw new Error(typeof data?.detail === "string" ? data.detail : GENERIC_ERROR);
+        // API-ийн detail монгол хэлтэй тул англи сайтад өөрийн текстийг харуулна
+        throw new Error(
+          lang === "mn" && typeof data?.detail === "string"
+            ? data.detail
+            : res.status === 429
+              ? ui.rateLimited
+              : ui.genericError,
+        );
       }
       push({
         role: "assistant",
+        lang,
         content: String(data.answer ?? ""),
         followups: Array.isArray(data.followups)
           ? data.followups.filter((q: unknown) => typeof q === "string").slice(0, 3)
@@ -260,12 +311,12 @@ export default function ChatWidget({
       if (controller.signal.aborted && !timedOut) return; // reset() цуцалсан
       const message =
         e instanceof DOMException && e.name === "AbortError"
-          ? "Хариу удаан байна. Дахин оролдоно уу."
+          ? ui.timeout
           : e instanceof TypeError
-            ? "Сүлжээний алдаа. Интернэт холболтоо шалгана уу."
+            ? ui.network
             : e instanceof Error
               ? e.message
-              : GENERIC_ERROR;
+              : ui.genericError;
       push({ role: "assistant", content: message, error: true });
     } finally {
       window.clearTimeout(timer);
@@ -280,23 +331,23 @@ export default function ChatWidget({
   const last = messages[messages.length - 1];
   const chips: Suggestion[] =
     messages.length === 0
-      ? suggestions
-      : !loading && last.role === "assistant"
+      ? ui.suggestions
+      : !loading && last.role === "assistant" && last.lang === lang
         ? (last.followups ?? []).map((q) => ({ label: q, question: q }))
         : [];
 
   return (
     <div ref={rootRef} className={"cw-root" + (open ? " cw-open" : "")}>
       {open && (
-        <section className="cw-panel" role="dialog" aria-label={title}>
+        <section className="cw-panel" role="dialog" aria-label={ui.title}>
           {/* <header> биш: сайтын глобал `header {position: fixed}` дүрэмд өртөхгүйн тулд */}
           <div className="cw-header">
             <img className="cw-avatar" src={avatarUrl} alt="" width="44" height="44" />
             <div className="cw-title">
-              <strong>{title}</strong>
+              <strong>{ui.title}</strong>
               <span className="cw-status">
                 <i aria-hidden="true" />
-                Онлайн
+                {ui.online}
               </span>
             </div>
             <button
@@ -304,15 +355,15 @@ export default function ChatWidget({
               className="cw-icon-btn cw-refresh"
               onClick={reset}
               disabled={messages.length === 0 && !loading}
-              aria-label="Чатыг шинээр эхлүүлэх"
-              title="Чатыг шинээр эхлүүлэх"
+              aria-label={ui.restart}
+              title={ui.restart}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M20 11a8 8 0 1 0-2.34 5.66" />
                 <path d="M20 4v7h-7" />
               </svg>
             </button>
-            <button type="button" className="cw-icon-btn cw-close" onClick={() => setOpen(false)} aria-label="Хаах">
+            <button type="button" className="cw-icon-btn cw-close" onClick={() => setOpen(false)} aria-label={ui.close}>
               ×
             </button>
           </div>
@@ -321,7 +372,7 @@ export default function ChatWidget({
             <div className="cw-row">
               <img className="cw-mini" src={avatarUrl} alt="" width="28" height="28" />
               <div className="cw-msg cw-assistant">
-                <p>{greeting}</p>
+                <p>{ui.greeting}</p>
               </div>
             </div>
 
@@ -343,13 +394,13 @@ export default function ChatWidget({
             {loading && (
               <div className="cw-row">
                 <img className="cw-mini" src={avatarUrl} alt="" width="28" height="28" />
-                <div className="cw-msg cw-assistant cw-pending" aria-label="Хариулж байна">
+                <div className="cw-msg cw-assistant cw-pending" aria-label={ui.answering}>
                   <span className="cw-typing">
                     <i />
                     <i />
                     <i />
                   </span>
-                  <small>Magi бичиж байна</small>
+                  <small>{ui.typing}</small>
                 </div>
               </div>
             )}
@@ -357,7 +408,7 @@ export default function ChatWidget({
             {/* Сүүлийн хариултын доор, мессежүүдтэй хамт гүйлгэгдэнэ */}
             {chips.length > 0 && (
               <div className={"cw-chips" + (messages.length ? " cw-chips--next" : "")}>
-                <span className="cw-chips-label">{messages.length ? "Санал болгох асуулт" : "Түгээмэл асуулт"}</span>
+                <span className="cw-chips-label">{messages.length ? ui.suggestedQuestions : ui.commonQuestions}</span>
                 {chips.map((s) => (
                   <button type="button" key={s.label} onClick={() => send(s.question)} disabled={loading}>
                     {s.label}
@@ -378,11 +429,11 @@ export default function ChatWidget({
               ref={inputRef}
               value={input}
               onChange={(e: any) => setInput(e.target.value)}
-              placeholder="Асуух зүйлээ бичээрэй…"
+              placeholder={ui.placeholder}
               maxLength={500}
-              aria-label="Асуулт"
+              aria-label={ui.question}
             />
-            <button type="submit" disabled={loading || !input.trim()} aria-label="Илгээх">
+            <button type="submit" disabled={loading || !input.trim()} aria-label={ui.send}>
               ↑
             </button>
           </form>
@@ -392,13 +443,13 @@ export default function ChatWidget({
       {!open && teaserVisible && (
         <div className="cw-teaser" role="status">
           <button type="button" className="cw-teaser-text" onClick={() => setOpen(true)}>
-            {teaser}
+            {ui.title}
           </button>
           <button
             type="button"
             className="cw-teaser-close"
             onClick={() => setTeaserDismissed(true)}
-            aria-label="Мэдэгдлийг хаах"
+            aria-label={ui.dismissTeaser}
           >
             ×
           </button>
@@ -412,7 +463,7 @@ export default function ChatWidget({
           className="cw-launcher"
           ref={launcherRef}
           onClick={() => setOpen(true)}
-          aria-label="Magi дижитал туслахыг нээх"
+          aria-label={ui.open}
         >
           <img src={avatarUrl} srcSet={avatarUrl === '/assets/chatbot-owl-96.webp' ? '/assets/chatbot-owl-96.webp 96w, /assets/chatbot-owl-128.webp 128w, /assets/chatbot-owl-160.webp 160w, /assets/chatbot-owl-192.webp 192w' : undefined} sizes="(max-width:480px) 64px, 76px" alt="" width="76" height="76" loading="eager" fetchpriority="low" decoding="async" />
         </button>

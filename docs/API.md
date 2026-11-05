@@ -240,7 +240,7 @@ Optional `gallery: NewsImage[]` нь дэлгэрэнгүй хуудасны з�
 
 ## 4. Чат туслах
 
-Чат нь энэ backend-ийн нэг хэсэг биш. Тусдаа **mci-chatbot** RAG API (`VITE_CHAT_API_URL`, одоо `https://magiccode-chatbot.vercel.app`) руу `src/components/ChatWidget/` шууд хандана. `VITE_USE_MOCK`-д хамаарахгүй.
+Чат нь энэ backend-ийн нэг хэсэг биш. Тусдаа **mci-chatbot** RAG API (`VITE_CHAT_API_URL`, одоо `https://mci-chatbot-nine.vercel.app`) руу `src/components/ChatWidget/` шууд хандана. `VITE_USE_MOCK`-д хамаарахгүй.
 
 ### `POST {VITE_CHAT_API_URL}/chat`
 
@@ -259,6 +259,7 @@ Optional `gallery: NewsImage[]` нь дэлгэрэнгүй хуудасны з�
 | `message` | 1–500 тэмдэгт |
 | `history` | Өмнөх мессежүүд, хамгийн ихдээ 6, тус бүр ≤ 1000 тэмдэгт |
 | `business` | Заавал биш: `"course"`, `"web"`, `"merch"` — хайлтыг тухайн чиглэлээр хязгаарлана |
+| `lang` | Заавал биш: `"mn"` (анхдагч), `"en"` — хариулт болон санал болгох асуултын хэл |
 
 **200**
 
@@ -266,11 +267,12 @@ Optional `gallery: NewsImage[]` нь дэлгэрэнгүй хуудасны з�
 {
   "answer": "Онлайн дэлгүүрийн үнэ 5,000,000₮ – 15,000,000₮ байна.",
   "found": true,
-  "sources": [{ "title": "services", "heading": "…ОНЛАЙН ДЭЛГҮҮР", "page": null, "similarity": 0.79 }]
+  "sources": [{ "title": "services", "heading": "…ОНЛАЙН ДЭЛГҮҮР", "page": null, "similarity": 0.79 }],
+  "followups": ["Бизнес вебсайтын үнэ хэд вэ?"]
 }
 ```
 
-`found: false` үед `answer` нь холбоо барих мэдээлэлтэй стандарт татгалзах текст байна. Алдаа нь FastAPI хэлбэрээр `{ "detail": "…" }` ирнэ: 422 (буруу хүсэлт), 429 (IP-д минутад 10, өдөрт 100 хязгаар), 502/503 (түр алдаа). Сайтын домэйн тухайн API-ийн `ALLOWED_ORIGINS`-д байх ёстой.
+`found: false` үед `answer` нь `lang`-ийн дагуу холбоо барих мэдээлэлтэй стандарт татгалзах текст, `followups` нь хоосон байна. Алдаа нь FastAPI хэлбэрээр `{ "detail": "…" }` ирнэ: 422 (буруу хүсэлт), 429 (IP-д минутад 10, өдөрт 100 хязгаар), 502/503 (түр алдаа). Сайтын домэйн тухайн API-ийн `ALLOWED_ORIGINS`-д байх ёстой.
 
 ---
 
