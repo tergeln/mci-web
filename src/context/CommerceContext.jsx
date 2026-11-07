@@ -1,20 +1,29 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useAuth } from './AuthContext';
 import { getMyCourses, getMyOrders } from '../api/commerce';
-import { learningCourses } from '../data/lessons';
+import { getCourses } from '../api/courses';
+import { canAddCourse } from '../data/ordering';
+import useApi from '../hooks/useApi';
 import { readStorage, writeStorage } from '../hooks/useLocalStorage';
 import { entitlementExpiry } from '../data/courseAccess';
 import { activeCourseIds } from '../api/mock/courseOrders';
 
 const CommerceContext = createContext(null);
 const KEY = 'mc-course-cart-v1';
-const validIds = new Set(learningCourses.map((course) => course.id));
+const validCartId = (id) => typeof id === 'string' && id.length > 0 && id.length <= 100;
 function savedCart() {
-  try { const items = JSON.parse(readStorage(KEY, '[]')); return Array.isArray(items) ? [...new Set(items.filter((id) => validIds.has(id)))] : []; } catch { return []; }
+  try { const items = JSON.parse(readStorage(KEY, '[]')); return Array.isArray(items) ? [...new Set(items.filter((id) => validCartId(id)))] : []; } catch { return []; }
 }
 export function CommerceProvider({ children }) {
   const { user } = useAuth();
   const [cart, setCart] = useState(savedCart);
+  const catalog = useApi((signal) => getCourses({ signal }), []);
+  const canAddToCart = (id) => !catalog.loading && !catalog.error && canAddCourse(catalog.data?.find((course) => course.id === id));
+  useEffect(() => {
+    const refreshCatalog = () => catalog.reload();
+    window.addEventListener('focus', refreshCatalog);
+    return () => window.removeEventListener('focus', refreshCatalog);
+  }, []);
   const [library, setLibrary] = useState({ userId: null, courses: [], orders: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -56,7 +65,7 @@ export function CommerceProvider({ children }) {
     if (!writeStorage(KEY, JSON.stringify(next))) throw new Error('storage_error');
     setCart(next);
   };
-  const addCourse = (id) => { if (validIds.has(id) && !owned.has(id)) updateCart([...new Set([...cart, id])]); };
+  const addCourse = (id) => { if (canAddToCart(id) && !owned.has(id)) updateCart([...new Set([...cart, id])]); };
   const removeCourse = (id) => updateCart(cart.filter((item) => item !== id));
   useEffect(() => {
     const onStorage = (event) => { if (event.key === KEY) setCart(savedCart()); };
@@ -64,7 +73,7 @@ export function CommerceProvider({ children }) {
     return () => window.removeEventListener('storage', onStorage);
   }, []);
   return <CommerceContext.Provider value={{ cart: cart.filter((id) => !owned.has(id)), addCourse, removeCourse,
-    entitlements, ownedIds, hasAccess: (id) => owned.has(id), orders: library.userId === userId ? library.orders : [],
+    canAddToCart, catalogLoading: catalog.loading, entitlements, ownedIds, hasAccess: (id) => owned.has(id), orders: library.userId === userId ? library.orders : [],
     loading, error, refresh, classroomRequest,
     openCourse,
   }}>{children}</CommerceContext.Provider>;

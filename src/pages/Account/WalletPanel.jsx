@@ -1,3 +1,5 @@
+import PhoneOrderNotice from '../../components/PhoneOrderNotice';
+import { PHONE_ONLY_ORDERING } from '../../data/ordering';
 import { useState } from 'react';
 import { useLang } from '../../context/LanguageContext';
 import { useCommerce } from '../../context/CommerceContext';
@@ -33,20 +35,20 @@ export default function WalletPanel() {
     <h2>{t('Миний хэтэвч', 'My wallet')}</h2>
     {loadError ? <p role="alert">{t('Хэтэвчийн мэдээлэл авч чадсангүй.', 'Could not load your wallet.')} <button className="text-link" onClick={reload}>{t('Дахин оролдох', 'Try again')}</button></p> : <>
       <p className="wallet-balance"><small>{t('Үлдэгдэл', 'Balance')}</small><strong>{loading && !wallet ? '…' : money(wallet?.balance ?? 0)}</strong></p>
-      <p>{t('Хэтэвчээ цэнэглээд сургалтын төлбөрөө шууд төлөх боломжтой. Үлдэгдлийг бэлнээр буцаахгүй.', 'Top up your wallet to pay for courses instantly. Balances cannot be cashed out.')}</p>
+      {!PHONE_ONLY_ORDERING && <p>{t('Хэтэвчээ цэнэглээд сургалтын төлбөрөө шууд төлөх боломжтой. Үлдэгдлийг бэлнээр буцаахгүй.', 'Top up your wallet to pay for courses instantly. Balances cannot be cashed out.')}</p>}
       {error && <p className="account-error" role="alert">{error}</p>}
 
-      <form className="wallet-topup" onSubmit={(event) => {
+      {PHONE_ONLY_ORDERING ? <PhoneOrderNotice /> : <form className="wallet-topup" onSubmit={(event) => {
         event.preventDefault();
         if (valid) run(async () => { await createWalletTopup(value); setAmount(''); });
       }}>
         <label>{t('Цэнэглэх дүн (₮)', 'Top-up amount (₮)')}<input type="number" inputMode="numeric" min={limits?.min} max={limits?.max} step="1" value={amount} onChange={(event) => setAmount(event.target.value)} /></label>
         <button className="btn" disabled={busy || !valid}>{t('Цэнэглэх', 'Top up')}</button>
-      </form>
+      </form>}
 
       {wallet?.topups?.map((order) => <div className="account-record wallet-open" key={order.id}>
         <div className="account-row"><strong>{money(order.amount)}</strong><span>{order.status === 'pending_review' ? t('Шилжүүлгийг шалгаж байна', 'Transfer under review') : t('Төлбөр хүлээгдэж байна', 'Awaiting payment')}</span></div>
-        {order.status === 'pending_payment' && <>
+        {!PHONE_ONLY_ORDERING && order.status === 'pending_payment' && <>
           <BankAccounts banks={wallet.banks} />
           <p>{t('Гүйлгээний утга:', 'Transfer reference:')} <strong>{order.id}</strong></p>
           <div className="account-actions">

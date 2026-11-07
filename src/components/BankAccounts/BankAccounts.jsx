@@ -1,3 +1,4 @@
+import { PHONE_ONLY_ORDERING } from '../../data/ordering';
 import { useLang } from '../../context/LanguageContext';
 import { BANK_ACCOUNTS } from '../../data/bankAccount';
 import './BankAccounts.css';
@@ -5,6 +6,7 @@ import CopyButton from '../CopyButton/CopyButton';
 
 export default function BankAccounts({ banks = BANK_ACCOUNTS }) {
   const { t } = useLang();
+  if (PHONE_ONLY_ORDERING) return null;
   return <div className="bank-choices">
     <h3>{t('Төлөх дансаа сонгоно уу', 'Choose a bank account')}</h3>
     <p className="bank-choices-note">{t('Доорх 2 дансны аль нэг рүү нийт дүнгээ нэг удаа шилжүүлнэ үү.', 'Transfer the full amount once to either of the two accounts below.')}</p>

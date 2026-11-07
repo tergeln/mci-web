@@ -8,11 +8,12 @@ import { useCommerce } from '../context/CommerceContext';
 import { useLang } from '../context/LanguageContext';
 
 export default function CoursePurchaseButton({ courseId, className = 'btn' }) {
-  const { cart, addCourse, hasAccess, openCourse } = useCommerce();
+  const { cart, addCourse, hasAccess, openCourse, canAddToCart, catalogLoading } = useCommerce();
   const { t } = useLang();
   const [error, setError] = useState('');
   const buttonClass = `${className} course-purchase-button`;
   if (hasAccess(courseId)) return <button className={buttonClass} onClick={() => openCourse(courseId)}>{t('Хичээл үзэх', 'Watch lessons')}</button>;
+  if (!canAddToCart(courseId)) return <button className={buttonClass} disabled>{catalogLoading ? t('Ачааллаж байна…', 'Loading…') : t('Сагслах түр хаалттай', 'Enrollment paused')}</button>;
   if (cart.includes(courseId)) return <Link className={`${buttonClass} course-in-cart`} to="/cart">{t('Сагс руу очих', 'Go to cart')}</Link>;
   return <><button className={buttonClass} onClick={() => { try { addCourse(courseId); } catch { setError(t('Сагс хадгалж чадсангүй. Дахин оролдоно уу.', 'Could not save your cart. Please try again.')); } }}>{t('Сагслах', 'Add to cart')}</button>{error && <small role="alert">{error}</small>}</>;
 }
