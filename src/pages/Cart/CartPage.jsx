@@ -1,5 +1,5 @@
 import PhoneOrderNotice from '../../components/PhoneOrderNotice';
-import { PHONE_ONLY_ORDERING, canAddCourse } from '../../data/ordering';
+import { canPayOnline, splitCartCourses } from '../../data/ordering';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
@@ -47,7 +47,12 @@ export default function CartPage() {
     return () => window.clearInterval(timer);
   }, [active?.id, active?.status, qpay, refresh]);
   const items = (catalog || []).filter((course) => cart.includes(course.id));
-  const total = cartTotal(items);
+  const { payable, contact } = splitCartCourses(items);
+  const activeCanPay = active?.items?.length > 0 && active.items.every((item) => {
+    const course = catalog?.find((course) => course.id === item.courseId);
+    return course ? canPayOnline(course) : canPayOnline(item);
+  });
+  const total = cartTotal(payable);
   const amountKnown = total !== null;
   const money = (amount) => hasCoursePrice(amount) ? `${new Intl.NumberFormat('mn-MN').format(amount)}₮` : t('Үнэ баталгаажихыг хүлээж байна', 'Price to be confirmed');
   useDocumentTitle(t('Миний сагс — Magic Code AI', 'My cart — Magic Code AI'), { noindex: true });
@@ -59,8 +64,8 @@ export default function CartPage() {
     finally { setBusy(false); }
   }
   const checkout = () => run(async () => {
-    if (PHONE_ONLY_ORDERING || !user || !items.length || items.length !== cart.length || items.some((course) => !canAddCourse(course))) return;
-    const order = await createCourseOrder({ userId: user.id, courseIds: items.map((course) => course.id) });
+    if (!user || !payable.length || catalogLoading || catalogError || items.length !== cart.length) return;
+    const order = await createCourseOrder({ userId: user.id, courseIds: payable.map((course) => course.id) });
     await refresh(); setParams({ order: order.id }); setMethod('bank'); setQpay(null);
   });
   return <main className="cart-page wrap">
@@ -73,7 +78,7 @@ export default function CartPage() {
         {active.items.map((item) => <div className="cart-order-line" key={item.courseId}><span>{item.title[lang]}</span><strong>{money(item.price)}</strong></div>)}
         <div className="cart-order-line"><strong>{t('Нийт', 'Total')}</strong><strong>{money(active.amount)}</strong></div>
         <p className="cart-status" role="status">{statusLabel(active.status, t)}</p>
-        {active.status === 'paid' ? <><p>{t('Хичээлүүд “Миний сургалт” хэсэгт нээгдэнэ.', 'Your lessons are available in My learning once access is confirmed.')}</p><Link className="btn" to="/account">{t('Миний сургалт', 'My learning')}</Link></> : active.status === 'cancelled' ? <p>{t('Энэ захиалга цуцлагдсан.', 'This order was cancelled.')}</p> : PHONE_ONLY_ORDERING ? <PhoneOrderNotice /> : <>
+        {active.status === 'paid' ? <><p>{t('Хичээлүүд “Миний сургалт” хэсэгт нээгдэнэ.', 'Your lessons are available in My learning once access is confirmed.')}</p><Link className="btn" to="/account">{t('Миний сургалт', 'My learning')}</Link></> : active.status === 'cancelled' ? <p>{t('Энэ захиалга цуцлагдсан.', 'This order was cancelled.')}</p> : !activeCanPay ? <PhoneOrderNotice /> : <>
           {active.status === 'awaiting_quote' && <p>{t('Сургалтын үнийн дүн хараахан ороогүй байна. magiccodeai@gmail.com хаягаар үнээ баталгаажуулсны дараа төлбөрөө хийнэ үү.', 'The course price is not configured yet. Confirm your total with magiccodeai@gmail.com before making a transfer.')}</p>}
           <div className="payment-options"><button type="button" aria-pressed={method === 'bank'} onClick={() => setMethod('bank')}>{t('Дансаар төлөх', 'Bank transfer')}</button><button type="button" aria-pressed={method === 'qpay'} onClick={() => setMethod('qpay')}>QPay</button></div>
           {method === 'bank' ? <div className="cart-bank">
@@ -89,14 +94,14 @@ export default function CartPage() {
         </>}
         <button className="btn secondary" disabled={loading || busy} onClick={() => run(async () => {
           setReviewNotice('');
-          if (!PHONE_ONLY_ORDERING && method === 'bank' && active.status === 'pending_payment' && active.amount > 0) {
+          if (activeCanPay && method === 'bank' && active.status === 'pending_payment' && active.amount > 0) {
             await reportBankTransfer(active.id, user.id);
             setReviewNotice(t('Админд шалгах хүсэлт илгээлээ. Гүйлгээг гараар шалгаж баталгаажуулах хүртэл түр хүлээнэ үү.', 'Your review request was sent to the admin. Please wait for manual payment verification.'));
           } else if (active.status === 'pending_review') {
             setReviewNotice(t('Таны хүсэлт админд очсон. Шалгаж баталгаажуулах хүртэл түр хүлээнэ үү.', 'Your request is already with the admin. Please wait for verification.'));
           }
           await refresh();
-        })}>{t('Төлбөрийн төлөв шалгах', 'Check payment status')}</button>
+        })}>{activeCanPay && active.status === 'pending_payment' && method === 'bank' ? t('Шилжүүлсэн, шалгах хүсэлт илгээх', 'I transferred — request review') : t('Төлбөрийн төлөв шалгах', 'Check payment status')}</button>
         <p role="status" className="cart-note">{reviewNotice}</p>
       </div>
     </section> : <div className="cart-layout">
@@ -106,13 +111,14 @@ export default function CartPage() {
         {!cart.length && <p>{t('Сагс хоосон байна. Суралцах сургалтаа сонгоорой.', 'Your cart is empty. Choose a course to begin.')}</p>}
         {items.map((course) => <article className="cart-item" key={course.id}>
           {course.image && <ContentImage image={course.image} sizes="140px" />}
-          <div><h3>{course.title[lang]}</h3><p>{!canAddCourse(course) && t('Сагслах түр хаалттай · ', 'Ordering paused · ')}{money(course.price)} · {t('3 сарын эрх', '3 months access')}</p><button className="text-link cart-remove" onClick={() => { try { removeCourse(course.id); } catch { setError(t('Сагс хадгалж чадсангүй.', 'Could not save your cart.')); } }}>{t('Хасах', 'Remove')}</button></div>
+          <div><h3>{course.title[lang]}</h3><p>{canPayOnline(course) ? money(course.price) : t('Төлбөрийн дүнд орохгүй', 'Not included in payment')} · {t('3 сарын эрх', '3 months access')}</p>{!canPayOnline(course) && <PhoneOrderNotice />}<button className="text-link cart-remove" onClick={() => { try { removeCourse(course.id); } catch { setError(t('Сагс хадгалж чадсангүй.', 'Could not save your cart.')); } }}>{t('Хасах', 'Remove')}</button></div>
         </article>)}
         <Link className="text-link" to="/courses">{t('Сургалт нэмж сонгох →', 'Explore more courses →')}</Link>
       </section>
-      <aside className="cart-panel cart-summary"><h2>{t('Захиалгын дүн', 'Summary')}</h2><p className="cart-access-note">{t('Сургалт бүр 3 сарын эрхтэй.', 'Each course includes 3 months of access.')}</p><div className="cart-summary-count"><span>{t('Сургалтын тоо', 'Courses')}</span><span>{items.length}</span></div><div className="cart-summary-total"><span>{t('Нийт төлөх', 'Total')}</span><strong>{amountKnown ? money(total) : money(null)}</strong></div>
-        {!PHONE_ONLY_ORDERING && !user && <p>{t('Төлбөр рүү орохын өмнө нэвтрэх эсвэл бүртгүүлэх шаардлагатай.', 'Log in or sign up before checkout.')}</p>}
-        {PHONE_ONLY_ORDERING ? <PhoneOrderNotice /> : user ? <button className="btn" disabled={busy || loading || catalogLoading || !items.length || !!loadError || !!catalogError || items.length !== cart.length || items.some((course) => !canAddCourse(course))} onClick={checkout}>{busy ? t('Бэлдэж байна…', 'Preparing…') : t('Худалдаж авах', 'Checkout')}</button> : <><Link className={`btn${!items.length ? ' cart-disabled' : ''}`} to="/login" state={{ from: '/cart' }}>{t('Нэвтэрч үргэлжлүүлэх', 'Log in to continue')}</Link><Link className="text-link" to="/register" state={{ from: '/cart' }}>{t('Бүртгүүлэх', 'Create an account')}</Link></>}
+      <aside className="cart-panel cart-summary"><h2>{t('Захиалгын дүн', 'Summary')}</h2><p className="cart-access-note">{t('Сургалт бүр 3 сарын эрхтэй.', 'Each course includes 3 months of access.')}</p><div className="cart-summary-count"><span>{t('Төлбөрт тооцох сургалт', 'Courses included in payment')}</span><span>{payable.length}</span></div><div className="cart-summary-total"><span>{t('Нийт төлөх', 'Total')}</span><strong>{amountKnown ? money(total) : money(null)}</strong></div>
+        {payable.length > 0 && !user && <p>{t('Төлбөр рүү орохын өмнө нэвтрэх эсвэл бүртгүүлэх шаардлагатай.', 'Log in or sign up before checkout.')}</p>}
+        {contact.length > 0 && <p>{t('Утсаар холбогдох сургалтууд төлбөрийн дүнд орохгүй.', 'Courses requiring contact are excluded from the payment total.')}</p>}
+        {payable.length === 0 ? (contact.length > 0 ? <PhoneOrderNotice /> : null) : user ? <button className="btn" disabled={busy || loading || catalogLoading || !payable.length || !!loadError || !!catalogError || items.length !== cart.length} onClick={checkout}>{busy ? t('Бэлдэж байна…', 'Preparing…') : t('Худалдаж авах', 'Checkout')}</button> : <><Link className={`btn${!items.length ? ' cart-disabled' : ''}`} to="/login" state={{ from: '/cart' }}>{t('Нэвтэрч үргэлжлүүлэх', 'Log in to continue')}</Link><Link className="text-link" to="/register" state={{ from: '/cart' }}>{t('Бүртгүүлэх', 'Create an account')}</Link></>}
       </aside>
     </div>}
     {user && orders.length > 0 && <section className="cart-panel cart-orders"><h2>{t('Миний захиалгууд', 'My orders')}</h2>{orders.map((order) => <button className="cart-order-button" key={order.id} onClick={() => { setParams({ order: order.id }); setQpay(null); }}><span>{order.items.map((item) => item.title[lang]).join(', ')}</span><small>{statusLabel(order.status, t)}</small></button>)}</section>}

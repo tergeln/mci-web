@@ -63,7 +63,7 @@ export async function request(path, { method = 'GET', body, signal, mock } = {})
 }
 
 const MESSAGES = {
-  phone_ordering_only: ['Одоогоор захиалгыг зөвхөн утсаар авна.', 'Orders are currently accepted by phone only.'],
+  phone_ordering_only: ['Энэ сургалтыг үзэхийн тулд 94140478 дугаарт холбогдоно уу.', 'Please call 94140478 to access this course.'],
   validation_error: ['Мэдээллээ шалгаад дахин оролдоно уу.', 'Please check your details and try again.'],
   unauthorized: ['Дахин нэвтэрнэ үү.', 'Please log in again.'],
   not_found: ['Хайсан зүйл олдсонгүй.', 'We could not find what you were looking for.'],
