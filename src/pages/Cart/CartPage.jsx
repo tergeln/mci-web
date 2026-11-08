@@ -92,7 +92,8 @@ export default function CartPage() {
           </div>}
           <p className="cart-note">{t('Төлбөр баталгаажсаны дараа хичээл үзэх эрх автоматаар нээгдэнэ.', 'Lesson access unlocks after payment confirmation.')}</p>
         </>}
-        <button className="btn secondary" disabled={loading || busy} onClick={() => run(async () => {
+        {/* Төлөгдсөн эсвэл цуцлагдсан захиалгад шалгах товч хэрэггүй. */}
+        {!['paid', 'cancelled'].includes(active.status) && <button className="btn secondary" disabled={loading || busy} onClick={() => run(async () => {
           setReviewNotice('');
           if (activeCanPay && method === 'bank' && active.status === 'pending_payment' && active.amount > 0) {
             await reportBankTransfer(active.id, user.id);
@@ -101,7 +102,7 @@ export default function CartPage() {
             setReviewNotice(t('Таны хүсэлт админд очсон. Шалгаж баталгаажуулах хүртэл түр хүлээнэ үү.', 'Your request is already with the admin. Please wait for verification.'));
           }
           await refresh();
-        })}>{activeCanPay && active.status === 'pending_payment' && method === 'bank' ? t('Шилжүүлсэн, шалгах хүсэлт илгээх', 'I transferred — request review') : t('Төлбөрийн төлөв шалгах', 'Check payment status')}</button>
+        })}>{activeCanPay && active.status === 'pending_payment' && method === 'bank' ? t('Шилжүүлсэн, шалгах хүсэлт илгээх', 'I transferred — request review') : t('Төлбөрийн төлөв шалгах', 'Check payment status')}</button>}
         <p role="status" className="cart-note">{reviewNotice}</p>
       </div>
     </section> : <div className="cart-layout">
