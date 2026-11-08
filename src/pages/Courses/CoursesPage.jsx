@@ -9,6 +9,7 @@ import CoursePurchaseButton, { CourseTerms } from '../../components/CoursePurcha
 import { useCommerce } from '../../context/CommerceContext';
 import './courses.css';
 import ContentImage from '../../components/ContentImage/ContentImage';
+import { courseImage } from '../../data/courseImages';
 import { useLang } from '../../context/LanguageContext';
 
 const ART_TEXT = ['{ }', 'SQL', '✧'];
@@ -53,7 +54,7 @@ export default function CoursesPage() {
         <p id="catalog-result-count" className="catalog-result-count" role="status">{results && !loading && !error ? t(`${results.length} сургалт олдлоо`, `${results.length} courses found`) : ''}</p>
         {results && !loading && !error && (
           <div id="catalog-results" className="catalog-grid">
-            {results.map((c, i) => (
+            {results.map((course, i) => { const c = { ...course, image: courseImage(course) }; return (
               <article key={c.id} className="catalog-card">
                 <div className={`catalog-art catalog-art-${i % 3}${c.image ? ' catalog-art--image' : ''}${c.image?.slide ? ' catalog-art--slide' : ''}`} aria-hidden={c.image ? undefined : true}>
                   {c.image ? <ContentImage image={c.image} sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 900px) 45vw, 370px" /> : ART_TEXT[i % 3]}
@@ -68,7 +69,7 @@ export default function CoursesPage() {
                   </div>
                 </div>
               </article>
-            ))}
+            ); })}
             {!results.length && <div className="catalog-empty">
               <h2>{t('Сургалт олдсонгүй', 'No courses found')}</h2>
               <p>{t('Өөр үгээр хайх эсвэл чиглэлийн шүүлтүүрээ өөрчлөөрэй.', 'Try another search term or change the category filter.')}</p>

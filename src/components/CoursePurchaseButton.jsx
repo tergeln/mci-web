@@ -6,6 +6,7 @@ import { COURSE_ACCESS_MONTHS } from '../data/courseAccess';
 import { useState } from 'react';
 import { useCommerce } from '../context/CommerceContext';
 import { useLang } from '../context/LanguageContext';
+import '../pages/Cart/cart.css';
 
 export default function CoursePurchaseButton({ courseId, className = 'btn' }) {
   const { cart, addCourse, hasAccess, openCourse, canAddToCart, catalogLoading } = useCommerce();

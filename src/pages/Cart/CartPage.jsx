@@ -16,6 +16,7 @@ import useDocumentTitle from '../../hooks/useDocumentTitle';
 import ContentImage from '../../components/ContentImage/ContentImage';
 import { cartTotal, hasCoursePrice } from '../../data/coursePricing';
 import './cart.css';
+import { courseImage } from '../../data/courseImages';
 
 const statusLabel = (status, t) => ({
   awaiting_quote: t('Үнийн дүн баталгаажихыг хүлээж байна', 'Awaiting confirmed price'),
@@ -111,7 +112,7 @@ export default function CartPage() {
         {catalogLoading && <p role="status">{t('Ачааллаж байна…', 'Loading…')}</p>}
         {!cart.length && <p>{t('Сагс хоосон байна. Суралцах сургалтаа сонгоорой.', 'Your cart is empty. Choose a course to begin.')}</p>}
         {items.map((course) => <article className="cart-item" key={course.id}>
-          {course.image && <ContentImage image={course.image} sizes="140px" />}
+          {courseImage(course) && <ContentImage image={courseImage(course)} sizes="140px" />}
           <div><h3>{course.title[lang]}</h3><p>{canPayOnline(course) ? money(course.price) : t('Төлбөрийн дүнд орохгүй', 'Not included in payment')} · {t('3 сарын эрх', '3 months access')}</p>{!canPayOnline(course) && <PhoneOrderNotice />}<button className="text-link cart-remove" onClick={() => { try { removeCourse(course.id); } catch { setError(t('Сагс хадгалж чадсангүй.', 'Could not save your cart.')); } }}>{t('Хасах', 'Remove')}</button></div>
         </article>)}
         <Link className="text-link" to="/courses">{t('Сургалт нэмж сонгох →', 'Explore more courses →')}</Link>
