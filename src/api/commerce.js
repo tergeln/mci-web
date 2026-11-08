@@ -25,6 +25,15 @@ export function getCourseLessons(courseId, userId) {
     },
   });
 }
+const videoUnavailable = () => { throw new ApiError(503, 'video_unavailable', 'Videos are unavailable in demo mode'); };
+/** Нээлттэй танилцуулга видео: { lesson, url, expiresAt } */
+export function getCoursePreview(courseId) {
+  return request(`/courses/${encodeURIComponent(courseId)}/preview`, { mock: videoUnavailable });
+}
+/** Төлбөр батлагдсан хэрэглэгчийн хичээлийн видео: { lesson, url, expiresAt } */
+export function getLessonVideo(courseId, lessonId) {
+  return request(`/me/courses/${encodeURIComponent(courseId)}/lessons/${encodeURIComponent(lessonId)}/video`, { mock: videoUnavailable });
+}
 export function reportBankTransfer(orderId, userId) {
   return request(`/orders/${encodeURIComponent(orderId)}/bank-transfer`, {
     method: 'POST', mock: () => orders.reportTransfer(userId, orderId),

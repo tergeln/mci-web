@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { learningCourses, getLearningCourse, lessonStorageKeys } from './lessons.js';
 
 test('all catalog courses resolve to their own curriculum', () => {
-  const ids = ['vip-course', 'data-analysis', 'computer-skills', 'python-programming', 'web-development', 'sql-databases', 'ai-rag-systems', 'machine-learning', 'cybersecurity'];
+  const ids = ['vip-course', 'data-analysis', 'computer-skills', 'python-programming', 'web-development', 'sql-databases', 'ai-rag-systems', 'machine-learning', 'cybersecurity', 'course_86a45b6609a5'];
   assert.deepEqual(learningCourses.map((course) => course.id), ids);
   for (const id of ids) {
     const course = getLearningCourse(id);
@@ -11,7 +11,7 @@ test('all catalog courses resolve to their own curriculum', () => {
     assert.ok(course.title.mn && course.title.en);
     assert.ok(course.lessons.length > 0);
     assert.equal(new Set(course.lessons.map((lesson) => lesson.id)).size, course.lessons.length);
-    for (const lesson of course.lessons) assert.match(lesson.id, /^[\w-]{11}$/);
+    for (const lesson of course.lessons) assert.match(lesson.id, course.video ? /^lesson-\d{2}$/ : /^[\w-]{11}$/);
   }
   assert.equal(getLearningCourse('unknown-course'), undefined);
 });

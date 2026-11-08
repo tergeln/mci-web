@@ -8,6 +8,7 @@ import closeOnBackdrop from '../../hooks/dialogBackdrop';
 import { readStorage, writeStorage } from '../../hooks/useLocalStorage';
 import { getLearningCourse, lessonStorageKeys } from '../../data/lessons';
 import CoursePurchaseButton, { CourseTerms } from '../CoursePurchaseButton';
+import SignedVideo from './SignedVideo';
 import './classroom-dialog.css';
 import '../../pages/Cart/cart.css';
 
@@ -54,8 +55,13 @@ function ClassroomWindow({ request, course, userId, unlocked }) {
     <div className="classroom-top"><div><small>MAGIC CODE · LEARNING SPACE</small><h3>{t(course.title.mn, course.title.en)}</h3></div><button type="button" className="icon-btn" aria-label={t('Хичээлийг хаах', 'Close lessons')} onClick={() => dialog.current.close()}>×</button></div>
     {!unlocked ? <div className="classroom-preview classroom-preview-grid">
       <div className="classroom-preview-main"><h3>{t('Богино танилцуулга', 'Short preview')}</h3>
-        <div className="lesson-video">{opened && <iframe title={t('Сургалтын танилцуулга', 'Course preview')} src={`https://www.youtube-nocookie.com/embed/${preview.id}?start=0&end=60&rel=0`} allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" />}</div>
-        <p>{t('60 секундийн жишээ танилцуулга · Англи хэлээр.', '60-second sample preview · In English.')}</p>
+        {course.video ? <>
+          {opened ? <SignedVideo courseId={course.id} preview title={t(preview.mn, preview.en)} /> : <div className="lesson-video" />}
+          <p>{t(`${preview.mn} · үнэгүй үзэх боломжтой. Бусад хичээл төлбөр баталгаажсаны дараа нээгдэнэ.`, `${preview.en} · free to watch. Other lessons unlock after payment is confirmed.`)}</p>
+        </> : <>
+          <div className="lesson-video">{opened && <iframe title={t('Сургалтын танилцуулга', 'Course preview')} src={`https://www.youtube-nocookie.com/embed/${preview.id}?start=0&end=60&rel=0`} allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" />}</div>
+          <p>{t('60 секундийн жишээ танилцуулга · Англи хэлээр.', '60-second sample preview · In English.')}</p>
+        </>}
       </div>
       <aside className="classroom-preview-syllabus"><h3>{t('Сургалтын агуулга', 'Course syllabus')}</h3>
         <ol>{course.lessons.map((lesson) => <li key={lesson.id}>{t(lesson.mn, lesson.en)}</li>)}</ol>
@@ -82,8 +88,8 @@ function PaidLessons({ course, userId }) {
     setCompleted(next); writeStorage(progressKey, JSON.stringify(next));
   };
   return <div className="classroom-layout"><div className="classroom-main">
-    <div className="lesson-video">{lesson.videoUrl && /^https:\/\//.test(lesson.videoUrl) ? <video key={lesson.id} controls src={lesson.videoUrl} style={{ width: '100%', height: '100%' }} /> : <iframe title={t(lesson.mn, lesson.en)} src={`https://www.youtube-nocookie.com/embed/${lesson.id}?rel=0`} allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />}</div>
-    <small>{lesson.creator}</small><h3>{t(lesson.mn, lesson.en)}</h3>
+    {lesson.video ? <SignedVideo key={lesson.id} courseId={course.id} lessonId={lesson.id} title={t(lesson.mn, lesson.en)} /> : <div className="lesson-video">{lesson.videoUrl && /^https:\/\//.test(lesson.videoUrl) ? <video key={lesson.id} controls src={lesson.videoUrl} style={{ width: '100%', height: '100%' }} /> : <iframe title={t(lesson.mn, lesson.en)} src={`https://www.youtube-nocookie.com/embed/${lesson.id}?rel=0`} allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />}</div>}
+    {lesson.creator && <small>{lesson.creator}</small>}<h3>{t(lesson.mn, lesson.en)}</h3>
     <div className="lesson-actions"><button className="btn" onClick={toggleComplete}>{completed.includes(lesson.id) ? t('Үзсэн тэмдэглэгээг авах', 'Undo completion') : t('Үзсэн гэж тэмдэглэх', 'Mark completed')}</button><button className="btn secondary" disabled={current === course.lessons.length - 1} onClick={() => play(current + 1)}>{t('Дараагийн хичээл', 'Next lesson')}</button></div>
   </div><aside className="classroom-sidebar"><h3>{t('Хичээлийн агуулга', 'Course content')}</h3><p>{completed.length} / {course.lessons.length}</p><progress value={completed.length} max={course.lessons.length} />{course.lessons.map((item, index) => <button className="lesson-choice" key={item.id} aria-current={index === current ? 'true' : 'false'} onClick={() => play(index)}><span>{completed.includes(item.id) ? '✓' : String(index + 1).padStart(2, '0')}</span><span>{t(item.mn, item.en)}</span></button>)}</aside></div>;
 }
